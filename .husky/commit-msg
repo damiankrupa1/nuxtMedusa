@@ -1,3 +1,11 @@
 #!/usr/bin/env sh
 
-npx --no -- commitlint --edit "$1"
+echo "🔍 Checking commit message..."
+
+pnpm exec commitlint --edit "$1"
+
+if [ $? -ne 0 ]; then
+  echo "❌ Invalid commit message."
+  echo "Use format: type: description"
+  echo "Example: feat: add product page"
+fi

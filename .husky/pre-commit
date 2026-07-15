@@ -1,1 +1,17 @@
-npx lint-staged
+#!/usr/bin/env sh
+
+echo "🔍 Running ESLint..."
+
+pnpm lint
+
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "❌ Commit blocked!"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "ESLint found problems."
+  echo "Fix the errors above and try again."
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  exit 1
+fi
+
+echo "✅ ESLint passed"
