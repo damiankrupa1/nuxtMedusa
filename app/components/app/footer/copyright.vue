@@ -17,7 +17,7 @@ const {
       v-if="!minimal"
       class=""
     >
-      © 2025 {{ title }}. All rights reserved.
+      © 2026 {{ title }}. All rights reserved.
     </div>
     <div class="flex gap-x-2 items-center">
       <div>Powered by</div>

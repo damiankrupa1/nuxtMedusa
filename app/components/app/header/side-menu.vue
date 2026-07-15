@@ -42,30 +42,21 @@ const { country } = useCountry()
           </AppLink>
         </div>
         <div>
-          <AppHeaderCountrySelector
-            :countries="countries"
-            @select:country="isOpen = false"
+          <div
+            class="flex items-center justify-between cursor-pointer group"
           >
-            <div
-              class="flex items-center justify-between cursor-pointer group"
-            >
-              <div class="text-xs flex items-center space-x-2">
-                <span>Shipping to:</span>
-                <UIcon :name="`i-flag-${country?.iso_2}-4x3`" />
-                <span>{{ country?.display_name }}</span>
-              </div>
-              <UIcon
-                name="i-lucide-arrow-right"
-                class="group-hover:-rotate-90 ease-in-out duration-150 size-5"
-              />
+            <div class="text-xs flex items-center space-x-2">
+              <span>Shipping to:</span>
+              <UIcon :name="`i-flag-${country?.iso_2}-4x3`" />
+              <span>{{ country?.display_name }}</span>
             </div>
-          </AppHeaderCountrySelector>
+          </div>
         </div>
       </div>
     </template>
     <template #footer>
       <p class="text-xs text-color-muted">
-        © 2025 {{ title }}. All rights reserved.
+        © 2026 {{ title }}. All rights reserved.
       </p>
     </template>
   </USlideover>

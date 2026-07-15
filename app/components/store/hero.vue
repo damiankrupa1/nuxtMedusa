@@ -2,24 +2,28 @@
 </script>
 
 <template>
-  <div class="h-[75vh] w-full flex flex-col justify-center items-center text-center bg-color-muted border-b border-color-muted sm:p-32 gap-6">
-    <div>
-      <h1 class="text-3xl leading-10 tracking-tight text-color-highlighted">
-        Ecommerce Starter Template
+  <div class="h-[100vh] w-full flex flex-col justify-center items-center text-center relative">
+    <NuxtImg
+      src="/images/hero/people.jpg"
+      alt="New collection"
+      width="1920"
+      height="1080"
+      class="h-full w-full object-cover"
+    />
+    <div class="absolute top-0 left-0 w-full h-full bg-black/50 flex flex-col justify-center items-center text-center gap-y-4 px-4">
+      <h1 class="text-3xl leading-10 tracking-tight text-white">
+        Movement, simplified.
       </h1>
-      <h2 class="text-3xl leading-10 tracking-tight">
-        Powered by Medusa and Nuxt
-      </h2>
     </div>
-    <UButton
-      to="https://github.com/OlivierBelaud/nuxt-starter-medusa"
-      target="_blank"
-      color="neutral"
-      variant="subtle"
-      :trailing="true"
-      icon="i-simple-icons-github"
+    <!-- TODO: Update to your own GitHub repository -->
+    <AppButtonPrimary
+      to="/store"
+      block
+      class="mt-30 absolute max-w-[500px] bg-transparent"
+      variant="outline"
     >
-      View on GitHub
-    </UButton>
+      Shop
+    </AppButtonPrimary>
   </div>
 </template>
+  

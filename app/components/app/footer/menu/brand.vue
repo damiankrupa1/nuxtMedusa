@@ -8,10 +8,6 @@ const items = ref([
     title: 'Documentation',
     link: 'https://github.com/medusajs',
   },
-  {
-    title: 'Source code',
-    link: 'https://github.com/OlivierBelaud/nuxt-starter-medusa',
-  },
 ])
 </script>
 

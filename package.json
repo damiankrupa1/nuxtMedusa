@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "author": "Olivier Belaud <olivierbelaudpro@gmail.com>",
-  "description": "Nuxt Starter Storefront to be used with Medusa V2",
+  "author": "Damian Krupa",
+  "description": "Modern fashion ecommerce storefront built with Nuxt 3, Medusa and Tailwind CSS.",
   "keywords": [
     "nuxt",
     "medusa",

@@ -1,6 +1,6 @@
 export default defineAppConfig({
-  title: 'Nuxt Medusa Storefront',
-  defaultCountry: 'fr',
+  title: 'Fashion',
+  defaultCountry: 'pl',
   defaultProductsPerPage: 12,
   homepageCollections: ['latest-drops', 'weekly-picks', 'sale'],
   ui: {
