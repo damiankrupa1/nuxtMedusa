@@ -10,6 +10,7 @@
       width="1920"
       height="1080"
       class="h-full w-full object-cover"
+      loading="lazy"
     />
     <div
       class="absolute top-0 left-0 w-full h-full bg-black/50 flex flex-col justify-center items-center text-center gap-y-4 px-4"
@@ -18,7 +19,7 @@
         Movement, simplified.
       </h1>
     </div>
-    <!-- TODO: Update to your own GitHub repository -->
+    <!-- TODO: Update link -->
     <AppButtonPrimary
       to="/store"
       block
