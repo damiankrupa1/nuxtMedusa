@@ -1,15 +1,13 @@
 @import 'tailwindcss' theme(static);
 @import '@nuxt/ui';
 
-@theme static {
-  /* Declaring Font Sans */
-  --font-sans: 'Inter', sans-serif;
-
-  /* Extending default Tailwind utilities */
-  --container-8xl: 90rem;
-
-  --color-brand: #171717;
-  --color-secondary: #fbfbfb;
+@theme {
+  --color-primary: var(--color-primary);
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-text: var(--color-text);
+  --color-brand: var(--color-brand);
+  --color-secondary: var(--color-secondary);
 }
 
 :root {
