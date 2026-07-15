@@ -8,7 +8,6 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/image',
     '@nuxt/eslint',
-    '@nuxthub/core',
   ],
   devtools: { enabled: true },
 
@@ -29,7 +28,6 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/**/': { prerender: true },
     '/**/products/**': { ssr: true },
     '/**/collections/**': { ssr: true },
     '/**/categories/**': { ssr: true },
@@ -46,7 +44,6 @@ export default defineNuxtConfig({
   experimental: {
     payloadExtraction: true,
   },
-  compatibilityDate: '2024-11-06',
 
   hooks: {
     async 'prerender:routes'(ctx) {
