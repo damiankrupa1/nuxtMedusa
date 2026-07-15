@@ -11,7 +11,7 @@ const {
 <template>
   <div
     class="flex w-full text-color-dimmed text-xs"
-    :class="[minimal ? 'py-4 justify-center' : 'mb-16 justify-between']"
+    :class="[minimal ? 'py-4 justify-center' : 'pb-16 justify-between']"
   >
     <div
       v-if="!minimal"

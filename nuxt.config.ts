@@ -2,13 +2,13 @@ import type { StoreRegion } from '@medusajs/types'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-
   modules: [
     '@nuxtjs/medusa',
     '@nuxt/ui',
     '@nuxt/image',
     '@nuxt/eslint',
   ],
+
   devtools: { enabled: true },
 
   app: {

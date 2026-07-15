@@ -7,6 +7,9 @@
 
   /* Extending default Tailwind utilities */
   --container-8xl: 90rem;
+
+  --color-brand: #171717;
+  --color-secondary: #fbfbfb;
 }
 
 :root {
@@ -29,9 +32,9 @@ body {
 @utility text-color-toned {
   color: var(--ui-text-toned);
 }
-/* @utility text-color-normal {
+@utility text-color-normal {
   color: var(--ui-text);
-} */
+}
 @utility text-color-highlighted {
   color: var(--ui-text-highlighted);
 }

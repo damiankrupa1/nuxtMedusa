@@ -3,10 +3,10 @@ const { title } = useAppConfig()
 </script>
 
 <template>
-  <footer class="flex flex-col gap-y-6 sm:flex-row items-start justify-between py-40">
+  <footer class="flex flex-col gap-y-6 sm:flex-row items-start justify-between py-40 bg-brand">
     <AppLink
       to="/"
-      class="text-lg uppercase font-medium text-color-highlighted"
+      class="text-lg uppercase font-medium text-color-dimmed"
     >
       {{ title }}
     </AppLink>

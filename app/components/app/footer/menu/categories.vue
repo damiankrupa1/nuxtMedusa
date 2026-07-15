@@ -5,7 +5,7 @@ const categories = computed(() => data.value?.product_categories.filter(category
 
 <template>
   <div class="flex flex-col gap-y-4">
-    <div class="font-medium text-color-highlighted">
+    <div class="font-medium text-color-dimmed">
       Categories
     </div>
     <ul class="grid grid-cols-1 gap-y-2">

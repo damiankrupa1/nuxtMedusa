@@ -5,7 +5,7 @@ const collections = computed(() => data.value?.collections)
 
 <template>
   <div class="flex flex-col gap-y-4">
-    <div class="font-medium text-color-highlighted">
+    <div class="font-medium text-color-dimmed">
       Collections
     </div>
     <ul class="grid grid-cols-1 gap-y-2">
