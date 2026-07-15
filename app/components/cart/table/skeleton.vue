@@ -1,10 +1,7 @@
 <script lang="ts" setup>
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 
-const {
-  isPreview,
-  isDropDown,
-} = defineProps<{
+const { isPreview, isDropDown } = defineProps<{
   isPreview?: boolean
   isDropDown?: boolean
 }>()
@@ -35,7 +32,9 @@ const data = computed(() => {
 const breakpoints = useBreakpoints(breakpointsTailwind, { ssrWidth: 768 })
 const activeBreakpoint = breakpoints.active()
 
-const isMobile = computed(() => activeBreakpoint.value === 'sm' || !activeBreakpoint.value)
+const isMobile = computed(
+  () => activeBreakpoint.value === 'sm' || !activeBreakpoint.value,
+)
 
 const isSmall = computed(() => isPreview || isDropDown)
 

@@ -6,8 +6,5 @@ const { data: category } = await useFetchCategoryByHandle(handle.value)
 </script>
 
 <template>
-  <StoreCatalog
-    :title="category?.name"
-    :category-id="category?.id"
-  />
+  <StoreCatalog :title="category?.name" :category-id="category?.id" />
 </template>

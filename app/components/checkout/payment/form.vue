@@ -20,7 +20,7 @@ interface PaymentProviderData {
 
 const paymentProviders = computed<PaymentProviderData[] | undefined>(() => {
   const availableProviders = data.value?.payment_providers?.map((provider) => {
-    const providerConfig = providers.find(p => p.id === provider.id)
+    const providerConfig = providers.find((p) => p.id === provider.id)
     return {
       id: provider.id,
       label: providerConfig?.label || provider.id,
@@ -32,7 +32,7 @@ const paymentProviders = computed<PaymentProviderData[] | undefined>(() => {
 
 const activeSession = computed(() => {
   const session = cart.value?.payment_collection?.payment_sessions?.find(
-    paymentSession => paymentSession.status === 'pending',
+    (paymentSession) => paymentSession.status === 'pending',
   )
   return session
 })
@@ -56,7 +56,10 @@ const validatePayment = async () => {
       return
     }
 
-    if (activeSession.value && activeSession.value.provider_id === value.value) {
+    if (
+      activeSession.value &&
+      activeSession.value.provider_id === value.value
+    ) {
       emit('validate', true)
       return
     }
@@ -64,13 +67,11 @@ const validatePayment = async () => {
     try {
       await mutate(value.value)
       emit('validate', true)
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Error initializing payment session:', error)
       paymentError.value = 'Failed to initialize payment. Please try again.'
     }
-  }
-  finally {
+  } finally {
     isValidating.value = false
   }
 }
@@ -78,10 +79,7 @@ const validatePayment = async () => {
 
 <template>
   <div>
-    <div
-      v-if="paymentProviders"
-      class="w-full mb-6"
-    >
+    <div v-if="paymentProviders" class="w-full mb-6">
       <URadioGroup
         v-model="value"
         :items="paymentProviders"
@@ -100,25 +98,16 @@ const validatePayment = async () => {
         }"
       >
         <template #label="{ item }">
-          <div class="flex items-center justify-between gap-x-2 w-full ">
+          <div class="flex items-center justify-between gap-x-2 w-full">
             <div>{{ item.label }}</div>
-            <UIcon
-              :name="item.icon || 'i-lucide-credit-card'"
-              class="size-5"
-            />
+            <UIcon :name="item.icon || 'i-lucide-credit-card'" class="size-5" />
           </div>
         </template>
         <template #description />
       </URadioGroup>
     </div>
-    <div
-      v-else
-      class="mb-6"
-    >
-      <UIcon
-        name="i-lucide-loader-circle"
-        class="size-6 animate-spin"
-      />
+    <div v-else class="mb-6">
+      <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin" />
     </div>
 
     <UAlert

@@ -1,17 +1,14 @@
 <script lang="ts" setup>
 import type { StoreCartLineItem, StoreOrderLineItem } from '@medusajs/types'
 
-const {
-  item,
-} = defineProps<{
+const { item } = defineProps<{
   item: StoreCartLineItem | StoreOrderLineItem
 }>()
 
 const { mutate, loading } = useUpdateLineItem()
 
 const updateQuantity = (quantity: number) => {
-  if (quantity !== item.quantity)
-    mutate(item.id, { quantity })
+  if (quantity !== item.quantity) mutate(item.id, { quantity })
 }
 </script>
 
@@ -31,9 +28,6 @@ const updateQuantity = (quantity: number) => {
       name="i-lucide-refresh-cw"
       class="size-4 animate-spin"
     />
-    <CartItemDeleteButton
-      v-else
-      :item="item"
-    />
+    <CartItemDeleteButton v-else :item="item" />
   </div>
 </template>

@@ -5,14 +5,10 @@ export default defineWrappedResponseHandler(async (event) => {
   const body = await readBody(event)
 
   // Step 1: Get an authentication token via the auth.register method
-  const token = await medusa.auth.register(
-    'customer',
-    'emailpass',
-    {
-      email: body.email,
-      password: body.password,
-    },
-  )
+  const token = await medusa.auth.register('customer', 'emailpass', {
+    email: body.email,
+    password: body.password,
+  })
 
   setCookie(event, 'medusa_jwt', token)
 

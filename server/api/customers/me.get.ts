@@ -9,11 +9,13 @@ export default defineWrappedResponseHandler(async (event) => {
 
   try {
     // Retrieve current customer information
-    return await medusa.store.customer.retrieve({}, {
-      Authorization: `Bearer ${token}`,
-    })
-  }
-  catch (error) {
+    return await medusa.store.customer.retrieve(
+      {},
+      {
+        Authorization: `Bearer ${token}`,
+      },
+    )
+  } catch (error) {
     // If the error is a 401 error, the user is not logged in
     const medusaError = error as MedusaError
     if (medusaError.status === 401) {

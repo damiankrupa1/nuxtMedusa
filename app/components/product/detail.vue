@@ -9,21 +9,18 @@ defineProps<{
 <template>
   <div>
     <UContainer class="flex flex-col sm:flex-row sm:items-start py-6 relative">
-      <div class="flex flex-col sm:sticky sm:top-48 sm:py-0 sm:max-w-[300px] w-full py-8 gap-y-6">
-        <ProductInfo
-          :product="product"
-        />
+      <div
+        class="flex flex-col sm:sticky sm:top-48 sm:py-0 sm:max-w-[300px] w-full py-8 gap-y-6"
+      >
+        <ProductInfo :product="product" />
       </div>
       <div class="block w-full relative">
-        <ProductGallery
-          :product="product"
-        />
+        <ProductGallery :product="product" />
       </div>
-      <div class="flex flex-col sm:sticky sm:top-48 sm:py-0 sm:max-w-[300px] w-full py-8 gap-y-12">
-        <ProductVariantSelector
-          v-if="product"
-          :product="product"
-        />
+      <div
+        class="flex flex-col sm:sticky sm:top-48 sm:py-0 sm:max-w-[300px] w-full py-8 gap-y-12"
+      >
+        <ProductVariantSelector v-if="product" :product="product" />
       </div>
     </UContainer>
   </div>

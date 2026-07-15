@@ -38,8 +38,7 @@ const onSubmit = async (_event: FormSubmitEvent<FormType>) => {
 
     await login(loginData)
     await refreshNuxtData('customer')
-  }
-  catch {
+  } catch {
     // Use API error or form error
     if (!apiError.value) {
       formError.value = 'An error occurred during sign in. Please try again.'
@@ -61,11 +60,7 @@ const switchToRegister = () => {
       description="Sign in to your account to continue."
     />
 
-    <AppFormError
-      :message="displayError"
-      :show="!!displayError"
-      class="mb-4"
-    />
+    <AppFormError :message="displayError" :show="!!displayError" class="mb-4" />
 
     <UForm
       :schema="formSchema"
@@ -111,12 +106,7 @@ const switchToRegister = () => {
       </UFormField>
 
       <!-- Sign in button -->
-      <AppButtonPrimary
-        type="submit"
-        block
-        :loading="isLoggingIn"
-        class="mt-6"
-      >
+      <AppButtonPrimary type="submit" block :loading="isLoggingIn" class="mt-6">
         Sign in
       </AppButtonPrimary>
     </UForm>
@@ -124,10 +114,7 @@ const switchToRegister = () => {
     <div class="mt-6 text-center text-xs">
       <p>
         Not a member?
-        <span
-          class="underline cursor-pointer"
-          @click="switchToRegister"
-        >
+        <span class="underline cursor-pointer" @click="switchToRegister">
           Join us
         </span>
       </p>

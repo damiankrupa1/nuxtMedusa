@@ -8,26 +8,23 @@ const countries = await useCountries()
 
 function getCountryName(countryCode?: string) {
   if (!countryCode) return
-  return countries.value?.find(country => country.iso_2 === countryCode)?.display_name
+  return countries.value?.find((country) => country.iso_2 === countryCode)
+    ?.display_name
 }
 
 const sameAsBilling = computed(() => {
-  return compareAddresses(cart.value?.shipping_address, cart.value?.billing_address)
+  return compareAddresses(
+    cart.value?.shipping_address,
+    cart.value?.billing_address,
+  )
 })
 </script>
 
 <template>
-  <div
-    v-if="cart"
-    class="flex items-start gap-x-8 text-sm"
-  >
+  <div v-if="cart" class="flex items-start gap-x-8 text-sm">
     <div class="flex items-start gap-x-1 w-full">
-      <div
-        class="flex flex-col w-1/3"
-      >
-        <div class="font-semibold text-black mb-1">
-          Shipping Address
-        </div>
+      <div class="flex flex-col w-1/3">
+        <div class="font-semibold text-black mb-1">Shipping Address</div>
         <div>
           {{ cart.shipping_address?.first_name }}
           {{ cart.shipping_address?.last_name }}
@@ -45,12 +42,8 @@ const sameAsBilling = computed(() => {
         </div>
       </div>
 
-      <div
-        class="flex flex-col w-1/3 "
-      >
-        <div class="font-semibold text-black mb-1">
-          Contact
-        </div>
+      <div class="flex flex-col w-1/3">
+        <div class="font-semibold text-black mb-1">Contact</div>
         <div>
           {{ cart.shipping_address?.phone }}
         </div>
@@ -59,21 +52,13 @@ const sameAsBilling = computed(() => {
         </div>
       </div>
 
-      <div
-        class="flex flex-col w-1/3"
-      >
-        <div class="font-semibold text-black mb-1">
-          Billing Address
-        </div>
+      <div class="flex flex-col w-1/3">
+        <div class="font-semibold text-black mb-1">Billing Address</div>
 
-        <div
-          v-if="sameAsBilling"
-        >
+        <div v-if="sameAsBilling">
           Billing- and delivery address are the same.
         </div>
-        <div
-          v-else
-        >
+        <div v-else>
           <div>
             {{ cart.billing_address?.first_name }}
             {{ cart.billing_address?.last_name }}
@@ -93,7 +78,5 @@ const sameAsBilling = computed(() => {
       </div>
     </div>
   </div>
-  <div v-else>
-    ...loading
-  </div>
+  <div v-else>...loading</div>
 </template>

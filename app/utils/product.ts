@@ -7,12 +7,15 @@ export function getCheapestVariant(product?: StoreProduct) {
     throw new Error('No product provided')
   }
   return product.variants
-    ?.filter(v => !!v.calculated_price)
+    ?.filter((v) => !!v.calculated_price)
     .sort((a, b) => {
-      if (a.calculated_price?.calculated_amount && b.calculated_price?.calculated_amount) {
+      if (
+        a.calculated_price?.calculated_amount &&
+        b.calculated_price?.calculated_amount
+      ) {
         return (
-          a.calculated_price?.calculated_amount
-          - b.calculated_price?.calculated_amount
+          a.calculated_price?.calculated_amount -
+          b.calculated_price?.calculated_amount
         )
       }
       return 0
@@ -35,8 +38,7 @@ export function sortProducts(
 
       return sortBy === SORT_OPTIONS.PRICE_ASC ? diff : -diff
     })
-  }
-  else {
+  } else {
     return products.sort((a, b) => {
       return (
         new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime()
@@ -48,9 +50,12 @@ export function sortProducts(
 export function optionsAsKeyMap(
   variantOptions: StoreProductOptionValue[] | null,
 ) {
-  return variantOptions?.reduce((acc: Record<string, string>, varOpt: StoreProductOptionValue) => {
-    if (!varOpt.option_id) return acc
-    acc[varOpt.option_id] = varOpt.value
-    return acc
-  }, {})
+  return variantOptions?.reduce(
+    (acc: Record<string, string>, varOpt: StoreProductOptionValue) => {
+      if (!varOpt.option_id) return acc
+      acc[varOpt.option_id] = varOpt.value
+      return acc
+    },
+    {},
+  )
 }

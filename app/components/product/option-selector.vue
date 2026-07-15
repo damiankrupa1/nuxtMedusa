@@ -7,11 +7,15 @@ const props = defineProps<{
 }>()
 
 defineEmits<{
-  'select:option': [{ optionId: string, value: string }]
+  'select:option': [{ optionId: string; value: string }]
 }>()
 
 const optionValues = computed(() => {
-  return props.option.values?.map(v => v.value).sort((a, b) => a.localeCompare(b)) ?? []
+  return (
+    props.option.values
+      ?.map((v) => v.value)
+      .sort((a, b) => a.localeCompare(b)) ?? []
+  )
 })
 </script>
 
@@ -20,9 +24,7 @@ const optionValues = computed(() => {
     <div class="text-sm font-medium text-neutral-900">
       Select {{ option.title }}
     </div>
-    <div
-      class="flex flex-wrap justify-between gap-2"
-    >
+    <div class="flex flex-wrap justify-between gap-2">
       <div
         v-for="optionValue in optionValues"
         :key="optionValue"
@@ -33,7 +35,9 @@ const optionValues = computed(() => {
           color="neutral"
           class="cursor-pointer"
           :variant="current === optionValue ? 'outline' : 'subtle'"
-          @click="$emit('select:option', { optionId: option.id, value: optionValue })"
+          @click="
+            $emit('select:option', { optionId: option.id, value: optionValue })
+          "
         >
           {{ optionValue }}
         </UButton>

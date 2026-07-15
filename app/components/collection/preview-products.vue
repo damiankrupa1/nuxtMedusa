@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import type { StoreCollection } from '@medusajs/types'
 
-const {
-  collectionId,
-} = defineProps<{
+const { collectionId } = defineProps<{
   collectionId?: StoreCollection['id']
 }>()
 
@@ -16,9 +14,6 @@ const products = computed(() => productsFromCollection.value?.products || [])
 </script>
 
 <template>
-  <ProductList
-    v-if="products"
-    :products="products"
-  />
+  <ProductList v-if="products" :products="products" />
   <ProductListSkeleton v-if="products?.length === 0 && status === 'pending'" />
 </template>

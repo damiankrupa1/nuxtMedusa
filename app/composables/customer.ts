@@ -64,29 +64,31 @@ export const useCustomer = () => {
     isLoading.value = true
 
     try {
-      const response = await $fetch<CustomerResponse>('/api/customers/register', {
-        method: 'POST',
-        body: data,
-      })
+      const response = await $fetch<CustomerResponse>(
+        '/api/customers/register',
+        {
+          method: 'POST',
+          body: data,
+        },
+      )
 
       await refreshNuxtData('customer')
       return response
-    }
-    catch (err: unknown) {
-      const errorResponse = err as { data?: { message?: string }, message?: string }
+    } catch (err: unknown) {
+      const errorResponse = err as {
+        data?: { message?: string }
+        message?: string
+      }
 
       if (errorResponse.data?.message) {
         error.value = errorResponse.data.message
-      }
-      else if (errorResponse.message) {
+      } else if (errorResponse.message) {
         error.value = errorResponse.message
-      }
-      else {
+      } else {
         error.value = 'An error occurred during registration'
       }
       throw err
-    }
-    finally {
+    } finally {
       isLoading.value = false
     }
   }
@@ -104,22 +106,21 @@ export const useCustomer = () => {
 
       await refreshNuxtData('customer')
       return response
-    }
-    catch (err: unknown) {
-      const errorResponse = err as { data?: { message?: string }, message?: string }
+    } catch (err: unknown) {
+      const errorResponse = err as {
+        data?: { message?: string }
+        message?: string
+      }
 
       if (errorResponse.data?.message) {
         error.value = errorResponse.data.message
-      }
-      else if (errorResponse.message) {
+      } else if (errorResponse.message) {
         error.value = errorResponse.message
-      }
-      else {
+      } else {
         error.value = 'Invalid email or password'
       }
       throw err
-    }
-    finally {
+    } finally {
       isLoading.value = false
     }
   }
@@ -135,11 +136,9 @@ export const useCustomer = () => {
       })
 
       await refreshNuxtData('customer')
-    }
-    catch {
+    } catch {
       // Silence error
-    }
-    finally {
+    } finally {
       isLoading.value = false
     }
   }
@@ -157,9 +156,12 @@ export const useCustomer = () => {
 
       await refreshNuxtData('customer')
       return response
-    }
-    catch (err: unknown) {
-      const errorResponse = err as { status?: number, data?: { message?: string }, message?: string }
+    } catch (err: unknown) {
+      const errorResponse = err as {
+        status?: number
+        data?: { message?: string }
+        message?: string
+      }
 
       if (errorResponse.status === 401) {
         await refreshNuxtData('customer')
@@ -167,16 +169,13 @@ export const useCustomer = () => {
 
       if (errorResponse.data?.message) {
         error.value = errorResponse.data.message
-      }
-      else if (errorResponse.message) {
+      } else if (errorResponse.message) {
         error.value = errorResponse.message
-      }
-      else {
+      } else {
         error.value = 'An error occurred while updating your profile'
       }
       throw err
-    }
-    finally {
+    } finally {
       isLoading.value = false
     }
   }

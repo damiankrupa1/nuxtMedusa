@@ -1,10 +1,7 @@
 <script setup lang="ts">
 const { country } = useCountry()
 
-const {
-  to,
-  countryCode,
-} = defineProps<{
+const { to, countryCode } = defineProps<{
   to: string
   countryCode?: string
 }>()

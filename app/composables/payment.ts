@@ -11,12 +11,10 @@ export const useInitiatePaymentSession = () => {
 
     try {
       data.value = await initiatePaymentSession(provider_id)
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Error initiating payment session:', error)
       throw error
-    }
-    finally {
+    } finally {
       loading.value = false
     }
   }

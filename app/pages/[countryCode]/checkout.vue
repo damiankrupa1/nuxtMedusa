@@ -9,15 +9,9 @@ const cart = computed(() => cartResponse.value?.cart || undefined)
 
 <template>
   <UContainer class="py-12">
-    <div
-      class="grid grid-cols-1 sm:grid-cols-[1fr_416px] gap-x-40"
-    >
+    <div class="grid grid-cols-1 sm:grid-cols-[1fr_416px] gap-x-40">
       <CheckoutForm />
-      <CartSummary
-        title="In your Cart"
-        :cart="cart"
-        is-checkout
-      />
+      <CartSummary title="In your Cart" :cart="cart" is-checkout />
     </div>
   </UContainer>
 </template>

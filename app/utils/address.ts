@@ -3,7 +3,10 @@ import lodash from 'lodash'
 
 const { isEqual, pick } = lodash
 
-export function compareAddresses(address1?: StoreCartAddress, address2?: StoreCartAddress) {
+export function compareAddresses(
+  address1?: StoreCartAddress,
+  address2?: StoreCartAddress,
+) {
   return isEqual(
     pick(address1, [
       'first_name',

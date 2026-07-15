@@ -1,7 +1,7 @@
-@import "tailwindcss" theme(static);
-@import "@nuxt/ui";
+@import 'tailwindcss' theme(static);
+@import '@nuxt/ui';
 
-@theme static {  
+@theme static {
   /* Declaring Font Sans */
   --font-sans: 'Inter', sans-serif;
 
@@ -48,5 +48,4 @@ body {
 
 @utility border-color-muted {
   border-color: var(--ui-border-muted);
-} 
-
+}

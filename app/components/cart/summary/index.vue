@@ -3,9 +3,7 @@ import type { StoreCart } from '@medusajs/types'
 
 const { country } = useCountry()
 
-const {
-  cart,
-} = defineProps<{
+const { cart } = defineProps<{
   title: string
   cart?: StoreCart
   isCheckout?: boolean
@@ -25,14 +23,8 @@ const isCartUndefined = computed(() => cart === undefined)
       {{ title }}
     </AppHeading>
     <USeparator />
-    <CartTotals
-      :cart="cart"
-    />
-    <CartTable
-      v-if="isCheckout"
-      :cart="cart"
-      is-preview
-    />
+    <CartTotals :cart="cart" />
+    <CartTable v-if="isCheckout" :cart="cart" is-preview />
     <UButton
       v-if="!isCheckout"
       :to="`/${country?.iso_2}/checkout`"

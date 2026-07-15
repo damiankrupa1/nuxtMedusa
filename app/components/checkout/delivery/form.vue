@@ -24,10 +24,7 @@ const validateDelivery = async () => {
 
 <template>
   <div>
-    <div
-      v-if="cart && shippingOptions"
-      class="w-full mb-6"
-    >
+    <div v-if="cart && shippingOptions" class="w-full mb-6">
       <URadioGroup
         v-model="value"
         :items="shippingOptions"
@@ -46,7 +43,7 @@ const validateDelivery = async () => {
         }"
       >
         <template #label="{ item }">
-          <div class="flex items-center justify-between gap-x-2 w-full ">
+          <div class="flex items-center justify-between gap-x-2 w-full">
             <div>{{ item.name }}</div>
             <div class="text-neutral-500">
               <StoreLocalizedPrice
@@ -59,14 +56,8 @@ const validateDelivery = async () => {
         </template>
       </URadioGroup>
     </div>
-    <div
-      v-else
-      class="mb-6"
-    >
-      <UIcon
-        name="i-lucide-loader-circle"
-        class="size-6 animate-spin"
-      />
+    <div v-else class="mb-6">
+      <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin" />
     </div>
     <UButton
       class="cursor-pointer"

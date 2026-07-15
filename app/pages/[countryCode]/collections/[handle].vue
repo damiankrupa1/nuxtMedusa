@@ -6,8 +6,5 @@ const { data: collection } = await useFetchCollectionByHandle(handle.value)
 </script>
 
 <template>
-  <StoreCatalog
-    :title="collection?.title"
-    :collection-id="collection?.id"
-  />
+  <StoreCatalog :title="collection?.title" :collection-id="collection?.id" />
 </template>

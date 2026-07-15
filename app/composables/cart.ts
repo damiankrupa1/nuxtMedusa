@@ -1,4 +1,11 @@
-import type { StoreAddCartLineItem, StoreCart, StoreCartShippingMethod, StoreOrder, StoreUpdateCart, StoreUpdateCartLineItem } from '@medusajs/types'
+import type {
+  StoreAddCartLineItem,
+  StoreCart,
+  StoreCartShippingMethod,
+  StoreOrder,
+  StoreUpdateCart,
+  StoreUpdateCartLineItem,
+} from '@medusajs/types'
 
 export const useUserCart = () => {
   const cartIdCookie = useCookie('cart_id', {
@@ -6,8 +13,7 @@ export const useUserCart = () => {
   })
 
   const setCartId = (cartId?: string) => {
-    if (!cartId)
-      cartIdCookie.value = null
+    if (!cartId) cartIdCookie.value = null
     cartIdCookie.value = cartId
   }
 
@@ -22,8 +28,7 @@ export const useCartDropdown = () => {
   const isCartDropdownOpen = useState('cart-dropdown', () => false)
 
   watch(route, (newRoute) => {
-    if (newRoute.path.includes('cart'))
-      isCartDropdownOpen.value = false
+    if (newRoute.path.includes('cart')) isCartDropdownOpen.value = false
   })
 
   return {
@@ -34,10 +39,7 @@ export const useCartDropdown = () => {
 export const useFetchCart = async () => {
   const { retrieveCart } = useCart()
 
-  return useLazyAsyncData(
-    'cart',
-    async () => await retrieveCart(),
-  )
+  return useLazyAsyncData('cart', async () => await retrieveCart())
 }
 
 export const useAddToCart = () => {
@@ -51,12 +53,10 @@ export const useAddToCart = () => {
 
     try {
       data.value = await updateOrCreateLineItem(item)
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Error updating cart:', error)
       throw error
-    }
-    finally {
+    } finally {
       loading.value = false
     }
   }
@@ -79,12 +79,10 @@ export const useUpdateCart = () => {
 
     try {
       data.value = await updateCart(dataToUpdate)
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Error updating cart:', error)
       throw error
-    }
-    finally {
+    } finally {
       loading.value = false
     }
   }
@@ -102,17 +100,18 @@ export const useUpdateLineItem = () => {
   const loading = ref(false)
   const data = ref<StoreCart>()
 
-  const mutate = async (itemId: string, dataToUpdate: StoreUpdateCartLineItem) => {
+  const mutate = async (
+    itemId: string,
+    dataToUpdate: StoreUpdateCartLineItem,
+  ) => {
     loading.value = true
 
     try {
       data.value = await updateLineItem(itemId, dataToUpdate)
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Error updating line item:', error)
       throw error
-    }
-    finally {
+    } finally {
       loading.value = false
     }
   }
@@ -135,12 +134,10 @@ export const useDeleteLineItem = () => {
 
     try {
       data.value = await deleteLineItem(itemId)
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Error deleting line item:', error)
       throw error
-    }
-    finally {
+    } finally {
       loading.value = false
     }
   }
@@ -163,12 +160,10 @@ export const useSetShippingMethod = () => {
 
     try {
       data.value = await addShippingMethod(shippingMethodId)
-    }
-    catch (error) {
+    } catch (error) {
       console.error('Error setting shipping method:', error)
       throw error
-    }
-    finally {
+    } finally {
       loading.value = false
     }
   }
@@ -197,16 +192,14 @@ export const usePlaceOrder = () => {
         setCartId()
         refreshNuxtData(`cart`)
         data.value = orderResponse.order
-        navigateTo(`/${country.value?.iso_2}/order/${orderResponse.order.id}/confirmed`)
-      }
-      else
-        data.value = orderResponse.cart
-    }
-    catch (error) {
+        navigateTo(
+          `/${country.value?.iso_2}/order/${orderResponse.order.id}/confirmed`,
+        )
+      } else data.value = orderResponse.cart
+    } catch (error) {
       console.error('Error placing order:', error)
       throw error
-    }
-    finally {
+    } finally {
       loading.value = false
     }
   }

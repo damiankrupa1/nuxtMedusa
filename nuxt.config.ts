@@ -2,12 +2,7 @@ import type { StoreRegion } from '@medusajs/types'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: [
-    '@nuxtjs/medusa',
-    '@nuxt/ui',
-    '@nuxt/image',
-    '@nuxt/eslint',
-  ],
+  modules: ['@nuxtjs/medusa', '@nuxt/ui', '@nuxt/image', '@nuxt/eslint'],
 
   devtools: { enabled: true },
 
@@ -47,14 +42,20 @@ export default defineNuxtConfig({
 
   hooks: {
     async 'prerender:routes'(ctx) {
-      const { regions } = await fetch(`${process.env.NUXT_PUBLIC_MEDUSA_BACKEND_URL}/store/regions`, {
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-publishable-api-key': process.env.NUXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
+      const { regions } = await fetch(
+        `${process.env.NUXT_PUBLIC_MEDUSA_BACKEND_URL}/store/regions`,
+        {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-publishable-api-key':
+              process.env.NUXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
+          },
         },
-      }).then(res => res.json())
-      const countries = regions?.map((region: StoreRegion) => region.countries).flat()
+      ).then((res) => res.json())
+      const countries = regions
+        ?.map((region: StoreRegion) => region.countries)
+        .flat()
       for (const country of countries) {
         ctx.routes.add(`/${country.iso_2}`)
       }

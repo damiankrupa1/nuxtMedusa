@@ -1,10 +1,7 @@
 <script setup lang="ts">
 const { country } = useCountry()
 
-const {
-  to,
-  countryCode,
-} = defineProps<{
+const { to, countryCode } = defineProps<{
   to?: string
   countryCode?: string
 }>()
@@ -17,11 +14,7 @@ const link = computed(() => {
 
 <template>
   <span>
-    <NuxtLink
-      v-if="link"
-      prefetch
-      :to="link"
-    >
+    <NuxtLink v-if="link" prefetch :to="link">
       <slot />
     </NuxtLink>
     <slot v-else />

@@ -4,13 +4,18 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const { countryCode, country, setCountry } = useCountry()
 
   const countries = await useCountries()
-  const defaultCountry = getCountryFromCountryCode(countries.value, defaultCountryCode)
+  const defaultCountry = getCountryFromCountryCode(
+    countries.value,
+    defaultCountryCode,
+  )
   const newCountry = getCountryFromCountryCode(countries.value, newCountryCode)
-
 
   // Handle User Country from cookie
   if (countryCode.value && !country.value) {
-    const userCountry = getCountryFromCountryCode(countries.value, countryCode.value)
+    const userCountry = getCountryFromCountryCode(
+      countries.value,
+      countryCode.value,
+    )
 
     if (userCountry?.iso_2 !== newCountryCode) {
       setCountry(userCountry)
@@ -20,7 +25,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return
   }
 
-  if (newCountry) { // Check if the asked country is valid
+  if (newCountry) {
+    // Check if the asked country is valid
     setCountry(newCountry)
     return
   }

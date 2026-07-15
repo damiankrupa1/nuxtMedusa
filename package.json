@@ -17,7 +17,9 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@medusajs/js-sdk": "2.6.1",
@@ -39,6 +41,8 @@
     "@nuxt/eslint": "^1.2.0",
     "@types/lodash": "^4.17.16",
     "eslint": "^9.22.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.5",
     "typescript": "^5.8.2",
     "wrangler": "^3.109.2"
   }

@@ -1,21 +1,13 @@
 <script setup lang="ts">
 const { defaultProductsPerPage } = useAppConfig()
 
-const {
-  title,
-  collectionId,
-  categoryId,
-} = defineProps<{
+const { title, collectionId, categoryId } = defineProps<{
   title?: string
   collectionId?: string
   categoryId?: string
 }>()
 
-const {
-  sortOptions,
-  sortBy,
-  pageNumber,
-} = useFilters()
+const { sortOptions, sortBy, pageNumber } = useFilters()
 
 const productsQuery = computed(() => ({
   collection_id: collectionId,
@@ -47,31 +39,18 @@ const displayPagination = computed(() => count.value > defaultProductsPerPage)
       />
     </div>
     <div class="w-full">
-      <AppHeading
-        v-if="title && products"
-        as="h1"
-        class="mb-8"
-      >
+      <AppHeading v-if="title && products" as="h1" class="mb-8">
         {{ title }} ({{ count }})
       </AppHeading>
-      <USkeleton
-        v-else
-        class="mb-8 h-12 w-[300px]"
-      />
+      <USkeleton v-else class="mb-8 h-12 w-[300px]" />
       <ProductList
         v-if="products"
         :products="products"
         :sort-by="sortBy"
         class="mb-8"
       />
-      <ProductListSkeleton
-        v-else
-        class="mb-8"
-      />
-      <div
-        v-if="displayPagination"
-        class="flex justify-end"
-      >
+      <ProductListSkeleton v-else class="mb-8" />
+      <div v-if="displayPagination" class="flex justify-end">
         <UPagination
           v-model:page="pageNumber"
           active-color="neutral"

@@ -19,7 +19,6 @@
 Based on:
 https://github.com/OlivierBelaud/nuxt-starter-medusa
 
-
 Combine Medusa's modules for your commerce backend with the newest Nuxt v3, ready for v4, features for a performant storefront.</p>
 
 ### Prerequisites
@@ -49,7 +48,7 @@ Features include:
   - Product Overview Page
   - Product Collections
   - Cart
-  - Checkout 
+  - Checkout
   - Stripe Integration
   - User Accounts: in progress
   - Order Details

@@ -6,7 +6,11 @@ const { data: cartResponse } = useNuxtData<StoreCartResponse>('cart')
 const cart = computed(() => cartResponse.value?.cart)
 
 const isAddressValid = computed(() => {
-  return !!cart.value?.shipping_address && !!cart.value?.billing_address && !!cart.value?.email
+  return (
+    !!cart.value?.shipping_address &&
+    !!cart.value?.billing_address &&
+    !!cart.value?.email
+  )
 })
 
 const isDeliveryValid = computed(() => {
@@ -15,21 +19,23 @@ const isDeliveryValid = computed(() => {
 
 const isPaymentValid = computed(() => {
   return !!cart.value?.payment_collection?.payment_sessions?.find(
-    paymentSession => paymentSession.status === 'pending',
+    (paymentSession) => paymentSession.status === 'pending',
   )
 })
 </script>
 
 <template>
-  <div
-    class="w-full grid grid-cols-1 gap-y-8"
-  >
+  <div class="w-full grid grid-cols-1 gap-y-8">
     <!-- Address Step -->
     <div>
       <div class="flex flex-row items-center justify-between mb-6">
         <AppHeading
           as="h2"
-          :class="[isAddressValid || currentStep === 'address' ? 'text-black' : 'text-neutral-500']"
+          :class="[
+            isAddressValid || currentStep === 'address'
+              ? 'text-black'
+              : 'text-neutral-500',
+          ]"
         >
           Shipping Address
           <UIcon
@@ -52,9 +58,7 @@ const isPaymentValid = computed(() => {
         v-if="currentStep === 'address'"
         @validate="goToStep('delivery')"
       />
-      <CheckoutAddress
-        v-else
-      />
+      <CheckoutAddress v-else />
       <USeparator class="mt-8" />
     </div>
 
@@ -63,7 +67,11 @@ const isPaymentValid = computed(() => {
       <div class="flex flex-row items-center justify-between mb-6">
         <AppHeading
           as="h2"
-          :class="[isDeliveryValid || currentStep === 'delivery' ? 'text-black' : 'text-neutral-500']"
+          :class="[
+            isDeliveryValid || currentStep === 'delivery'
+              ? 'text-black'
+              : 'text-neutral-500',
+          ]"
         >
           Delivery Options
           <UIcon
@@ -95,7 +103,11 @@ const isPaymentValid = computed(() => {
       <div class="flex flex-row items-center justify-between mb-6">
         <AppHeading
           as="h2"
-          :class="[isPaymentValid || currentStep === 'payment' ? 'text-black' : 'text-neutral-500']"
+          :class="[
+            isPaymentValid || currentStep === 'payment'
+              ? 'text-black'
+              : 'text-neutral-500',
+          ]"
         >
           Payment
           <UIcon
@@ -127,7 +139,9 @@ const isPaymentValid = computed(() => {
       <div class="flex flex-row items-center justify-between mb-6">
         <AppHeading
           as="h2"
-          :class="[currentStep === 'review' ? 'text-black' : 'text-neutral-500']"
+          :class="[
+            currentStep === 'review' ? 'text-black' : 'text-neutral-500',
+          ]"
         >
           Review Order
         </AppHeading>

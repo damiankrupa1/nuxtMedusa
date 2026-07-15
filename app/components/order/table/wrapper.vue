@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import type { StoreOrder } from '@medusajs/types'
 
-const {
-  order,
-  isPreview,
-  isDropDown,
-} = defineProps<{
+const { order, isPreview, isDropDown } = defineProps<{
   order?: StoreOrder
   isPreview?: boolean
   isDropDown?: boolean
@@ -24,10 +20,7 @@ const {
       <CartEmpty v-else-if="!isPreview && !isDropDown" />
     </template>
     <template v-else>
-      <CartTableSkeleton
-        :is-preview="isPreview"
-        :is-drop-down="isDropDown"
-      />
+      <CartTableSkeleton :is-preview="isPreview" :is-drop-down="isDropDown" />
     </template>
   </div>
 </template>

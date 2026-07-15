@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import type { StoreProduct } from '@medusajs/types'
 
-const {
-  product,
-} = defineProps<{
+const { product } = defineProps<{
   product?: StoreProduct
 }>()
 
 const cheapestVariant = computed(() => getCheapestVariant(product))
 
-const currentPrice = computed(() => cheapestVariant.value?.calculated_price?.calculated_amount || undefined)
-const originalPrice = computed(() => cheapestVariant.value?.calculated_price?.original_amount || undefined)
-const currencyCode = computed(() => cheapestVariant.value?.calculated_price?.currency_code || undefined)
+const currentPrice = computed(
+  () => cheapestVariant.value?.calculated_price?.calculated_amount || undefined,
+)
+const originalPrice = computed(
+  () => cheapestVariant.value?.calculated_price?.original_amount || undefined,
+)
+const currencyCode = computed(
+  () => cheapestVariant.value?.calculated_price?.currency_code || undefined,
+)
 </script>
 
 <template>
@@ -37,10 +41,7 @@ const currencyCode = computed(() => cheapestVariant.value?.calculated_price?.cur
       <h3 v-if="product">
         {{ product?.title }}
       </h3>
-      <USkeleton
-        v-else
-        class="h-4 w-[160px]"
-      />
+      <USkeleton v-else class="h-4 w-[160px]" />
       <div class="text-color-dimmed">
         <ProductPrice
           v-if="product"
@@ -49,10 +50,7 @@ const currencyCode = computed(() => cheapestVariant.value?.calculated_price?.cur
           :currency-code="currencyCode"
           display-inline
         />
-        <USkeleton
-          v-else
-          class="h-4 w-[60px]"
-        />
+        <USkeleton v-else class="h-4 w-[60px]" />
       </div>
     </div>
   </AppLink>

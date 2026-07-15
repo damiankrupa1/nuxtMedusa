@@ -4,4 +4,4 @@ export const SORT_OPTIONS = {
   PRICE_DESC: 'price_desc',
 } as const
 
-export type SortOptionsType = typeof SORT_OPTIONS[keyof typeof SORT_OPTIONS]
+export type SortOptionsType = (typeof SORT_OPTIONS)[keyof typeof SORT_OPTIONS]

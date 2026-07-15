@@ -18,8 +18,7 @@ export const useFilters = () => {
       const newQuery = { ...route.query }
       if (newPage === 1) {
         delete newQuery.page
-      }
-      else {
+      } else {
         newQuery.page = newPage.toString()
       }
       router.push({ query: newQuery })
@@ -34,8 +33,7 @@ export const useFilters = () => {
       const newQuery = { ...route.query }
       if (newSortBy === SORT_OPTIONS.CREATED_AT) {
         delete newQuery.sortBy
-      }
-      else {
+      } else {
         newQuery.sortBy = newSortBy
       }
       await router.push({ query: newQuery })

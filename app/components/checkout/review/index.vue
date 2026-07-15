@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import type { StoreCartResponse } from '@medusajs/types'
 import { loadStripe } from '@stripe/stripe-js'
-import type { Stripe, StripeElements, StripeCardElement } from '@stripe/stripe-js'
+import type {
+  Stripe,
+  StripeElements,
+  StripeCardElement,
+} from '@stripe/stripe-js'
 // import { providers } from '~/utils/payment'
 
 const { data: cartResponse } = useNuxtData<StoreCartResponse>('cart')
@@ -10,14 +14,16 @@ const config = useRuntimeConfig()
 // const { country } = useCountry()
 
 const notReady = computed(() => {
-  return !cart.value
-    || !cart.value.shipping_address
-    || !cart.value.billing_address
-    || !cart.value.email
-    || (cart.value.shipping_methods?.length ?? 0) < 1
-    || !cart.value.payment_collection?.payment_sessions?.find(
-      session => session.status === 'pending',
+  return (
+    !cart.value ||
+    !cart.value.shipping_address ||
+    !cart.value.billing_address ||
+    !cart.value.email ||
+    (cart.value.shipping_methods?.length ?? 0) < 1 ||
+    !cart.value.payment_collection?.payment_sessions?.find(
+      (session) => session.status === 'pending',
     )
+  )
 })
 
 const processingState = ref<'idle' | 'processing' | 'success' | 'error'>('idle')
@@ -34,7 +40,8 @@ const cardError = ref<string | undefined>(undefined)
 
 const stripeSession = computed(() => {
   return cart.value?.payment_collection?.payment_sessions?.find(
-    session => session.status === 'pending' && session.provider_id.includes('stripe'),
+    (session) =>
+      session.status === 'pending' && session.provider_id.includes('stripe'),
   )
 })
 
@@ -69,8 +76,8 @@ onMounted(async () => {
       const card = elementsInstance.create('card', {
         style: {
           base: {
-            'fontSize': '16px',
-            'color': '#424770',
+            fontSize: '16px',
+            color: '#424770',
             '::placeholder': {
               color: '#aab7c4',
             },
@@ -92,12 +99,12 @@ onMounted(async () => {
         })
       })
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.error('Stripe initialization error:', error)
-    errorMessage.value = error instanceof Error
-      ? error.message
-      : 'Failed to initialize payment form'
+    errorMessage.value =
+      error instanceof Error
+        ? error.message
+        : 'Failed to initialize payment form'
   }
 })
 
@@ -117,7 +124,12 @@ const handlePlaceOrder = async () => {
     errorMessage.value = undefined
 
     if (isStripePayment.value) {
-      if (!stripe.value || !elements.value || !cardElement.value || !clientSecret.value) {
+      if (
+        !stripe.value ||
+        !elements.value ||
+        !cardElement.value ||
+        !clientSecret.value
+      ) {
         throw new Error('Stripe payment elements are not fully initialized')
       }
 
@@ -134,12 +146,15 @@ const handlePlaceOrder = async () => {
         },
       }
 
-      const { error: paymentError } = await stripe.value.confirmCardPayment(clientSecret.value, {
-        payment_method: {
-          card: cardElement.value,
-          billing_details: billingDetails,
+      const { error: paymentError } = await stripe.value.confirmCardPayment(
+        clientSecret.value,
+        {
+          payment_method: {
+            card: cardElement.value,
+            billing_details: billingDetails,
+          },
         },
-      })
+      )
 
       if (paymentError) {
         throw new Error(paymentError.message)
@@ -147,22 +162,22 @@ const handlePlaceOrder = async () => {
     }
 
     await placeOrder()
-  }
-  catch (error) {
+  } catch (error) {
     processingState.value = 'error'
-    errorMessage.value = error instanceof Error
-      ? error.message
-      : 'An error occurred during payment processing. Please try again.'
+    errorMessage.value =
+      error instanceof Error
+        ? error.message
+        : 'An error occurred during payment processing. Please try again.'
     console.error('Payment error:', error)
   }
 }
 
 const isButtonDisabled = computed(() => {
   return (
-    loading.value
-    || processingState.value === 'processing'
-    || notReady.value
-    || (isStripePayment.value && (!cardComplete.value || !!cardError.value))
+    loading.value ||
+    processingState.value === 'processing' ||
+    notReady.value ||
+    (isStripePayment.value && (!cardComplete.value || !!cardError.value))
   )
 })
 
@@ -190,7 +205,11 @@ const isButtonDisabled = computed(() => {
 <template>
   <div>
     <div class="mb-6 text-sm">
-      By clicking the Place Order button, you confirm that you have read, understand and accept our <strong>Terms of Use</strong>, <strong>Terms of Sale</strong> and <strong>Returns Policy</strong> and acknowledge that you have read <strong>Medusa Store's Privacy Policy</strong>.
+      By clicking the Place Order button, you confirm that you have read,
+      understand and accept our
+      <strong>Terms of Use</strong>, <strong>Terms of Sale</strong> and
+      <strong>Returns Policy</strong> and acknowledge that you have read
+      <strong>Medusa Store's Privacy Policy</strong>.
     </div>
 
     <!-- <div class="mb-6 p-4 bg-neutral-50 rounded-lg border border-neutral-200">
@@ -212,27 +231,16 @@ const isButtonDisabled = computed(() => {
       </div>
     </div> -->
 
-    <div
-      v-if="isStripePayment"
-      class="mb-6"
-    >
-      <h3 class="text-sm font-medium mb-2">
-        Credit Card Information
-      </h3>
+    <div v-if="isStripePayment" class="mb-6">
+      <h3 class="text-sm font-medium mb-2">Credit Card Information</h3>
       <div
         id="stripe-card-element"
         class="p-4 border rounded-lg border-neutral-200 bg-white"
       />
-      <p
-        v-if="cardError"
-        class="mt-2 text-sm text-red-600"
-      >
+      <p v-if="cardError" class="mt-2 text-sm text-red-600">
         {{ cardError }}
       </p>
-      <p
-        v-else-if="cardComplete"
-        class="mt-2 text-sm text-green-600"
-      >
+      <p v-else-if="cardComplete" class="mt-2 text-sm text-green-600">
         Card information complete
       </p>
     </div>

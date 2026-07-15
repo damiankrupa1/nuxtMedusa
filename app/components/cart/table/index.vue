@@ -2,11 +2,7 @@
 import type { StoreCart, StoreOrder } from '@medusajs/types'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 
-const {
-  cart,
-  isPreview,
-  isDropDown,
-} = defineProps<{
+const { cart, isPreview, isDropDown } = defineProps<{
   cart?: StoreCart | StoreOrder
   isPreview?: boolean
   isDropDown?: boolean
@@ -33,7 +29,8 @@ const columns = [
 
 const data = computed(() => {
   return [...(cart?.items ?? [])].sort((a, b) => {
-    if (!a.created_at || !b.created_at || a.created_at === b.created_at) return 0
+    if (!a.created_at || !b.created_at || a.created_at === b.created_at)
+      return 0
     const dateA = a.created_at.toString()
     const dateB = b.created_at.toString()
     return dateA.localeCompare(dateB)
@@ -43,7 +40,9 @@ const data = computed(() => {
 const breakpoints = useBreakpoints(breakpointsTailwind, { ssrWidth: 768 })
 const activeBreakpoint = breakpoints.active()
 
-const isMobile = computed(() => activeBreakpoint.value === 'sm' || !activeBreakpoint.value)
+const isMobile = computed(
+  () => activeBreakpoint.value === 'sm' || !activeBreakpoint.value,
+)
 
 const isSmall = computed(() => isPreview || isDropDown)
 

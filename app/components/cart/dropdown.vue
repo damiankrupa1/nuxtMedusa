@@ -7,12 +7,16 @@ const { updateCart } = useCart()
 const { data: cartResponse, status } = await useFetchCart()
 const cart = computed(() => cartResponse.value?.cart || undefined)
 
-const cartItemsCount = computed(() => cart.value?.items?.reduce((acc, item) => acc + item.quantity, 0))
-const subtotal = computed(() => convertToLocale({
-  amount: cart.value?.subtotal,
-  currency_code: cart.value?.currency_code,
-  country: country.value?.iso_2,
-}))
+const cartItemsCount = computed(() =>
+  cart.value?.items?.reduce((acc, item) => acc + item.quantity, 0),
+)
+const subtotal = computed(() =>
+  convertToLocale({
+    amount: cart.value?.subtotal,
+    currency_code: cart.value?.currency_code,
+    country: country.value?.iso_2,
+  }),
+)
 
 watch(country, () => {
   if (cart.value && cart.value.region_id !== country.value?.region_id) {
@@ -32,16 +36,12 @@ watch(country, () => {
     }"
     :ui="{ content: 'w-[420px] rounded-none' }"
   >
-    <AppLink
-      to="/cart"
-    >
+    <AppLink to="/cart">
       Cart <span v-if="cartItemsCount">({{ cartItemsCount }})</span>
     </AppLink>
     <template #content>
       <div class="p-4 flex items-center justify-center">
-        <h3 class="font-bold text-lg">
-          Cart
-        </h3>
+        <h3 class="font-bold text-lg">Cart</h3>
       </div>
       <div
         v-if="cart === null || cart?.items?.length === 0"
@@ -51,16 +51,15 @@ watch(country, () => {
           <div>Your shopping cart is empty</div>
         </div>
         <div class="flex items-center justify-center pb-8">
-          <UButton
-            :to="`/${country?.iso_2}/store`"
-            color="neutral"
-          >
+          <UButton :to="`/${country?.iso_2}/store`" color="neutral">
             Explore products
           </UButton>
         </div>
       </div>
       <div v-else>
-        <div class="overflow-y-scroll max-h-[402px] px-4 grid grid-cols-1 gap-y-8 no-scrollbar p-px">
+        <div
+          class="overflow-y-scroll max-h-[402px] px-4 grid grid-cols-1 gap-y-8 no-scrollbar p-px"
+        >
           <CartTable
             is-drop-down
             :cart="!cart && status === 'pending' ? undefined : cart"

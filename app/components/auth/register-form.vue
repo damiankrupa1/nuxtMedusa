@@ -12,7 +12,9 @@ const { register, isLoading: isRegistering, error: apiError } = useCustomer()
 
 // Validation schema
 const formSchema = z.object({
-  first_name: z.string().min(2, 'First name must contain at least 2 characters'),
+  first_name: z
+    .string()
+    .min(2, 'First name must contain at least 2 characters'),
   last_name: z.string().min(2, 'Last name must contain at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
   phone: z.string().optional(),
@@ -50,11 +52,11 @@ const onSubmit = async (_event: FormSubmitEvent<FormType>) => {
     // Call registration API
     await register(customerData)
     await refreshNuxtData('customer')
-  }
-  catch {
+  } catch {
     // Use API error or form error
     if (!apiError.value) {
-      formError.value = 'An error occurred during registration. Please try again.'
+      formError.value =
+        'An error occurred during registration. Please try again.'
     }
   }
 }
@@ -75,11 +77,7 @@ const switchToSignin = () => {
       description="Create your Medusa Store Member profile, and get access to an enhanced shopping experience."
     />
 
-    <AppFormError
-      :message="displayError"
-      :show="!!displayError"
-      class="mb-4"
-    />
+    <AppFormError :message="displayError" :show="!!displayError" class="mb-4" />
 
     <UForm
       :schema="formSchema"
@@ -179,27 +177,15 @@ const switchToSignin = () => {
 
       <div class="text-xs py-6">
         By creating an account, you agree to Medusa Store's
-        <AppLink
-          class="underline"
-          to="/privacy-policy"
-        >
+        <AppLink class="underline" to="/privacy-policy">
           Privacy Policy
         </AppLink>
         and
-        <AppLink
-          class="underline"
-          to="/terms-of-use"
-        >
-          Terms of Use
-        </AppLink>.
+        <AppLink class="underline" to="/terms-of-use"> Terms of Use </AppLink>.
       </div>
 
       <!-- Join button -->
-      <AppButtonPrimary
-        type="submit"
-        block
-        :loading="isRegistering"
-      >
+      <AppButtonPrimary type="submit" block :loading="isRegistering">
         Join
       </AppButtonPrimary>
     </UForm>
@@ -207,10 +193,7 @@ const switchToSignin = () => {
     <div class="mt-6 text-center text-xs">
       <p>
         Already a member?
-        <span
-          class="underline cursor-pointer"
-          @click="switchToSignin"
-        >
+        <span class="underline cursor-pointer" @click="switchToSignin">
           Sign in
         </span>
       </p>

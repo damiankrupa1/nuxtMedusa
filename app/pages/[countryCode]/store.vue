@@ -1,8 +1,5 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <StoreCatalog
-    title="All products"
-  />
+  <StoreCatalog title="All products" />
 </template>

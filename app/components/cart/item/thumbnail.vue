@@ -7,9 +7,7 @@ defineProps<{
 </script>
 
 <template>
-  <AppLink
-    :to="link"
-  >
+  <AppLink :to="link">
     <NuxtImg
       :src="src"
       :alt="alt"

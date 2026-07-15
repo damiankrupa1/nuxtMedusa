@@ -2,9 +2,7 @@
 import type { NuxtError } from '#app'
 
 // TODO: Customize error page
-const {
-  error,
-} = defineProps<{
+const { error } = defineProps<{
   error: NuxtError
 }>()
 </script>

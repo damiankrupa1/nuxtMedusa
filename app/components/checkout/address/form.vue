@@ -15,18 +15,32 @@ const { mutate: updateCart, loading } = useUpdateCart()
 
 const schema = z.object({
   shipping_address: z.object({
-    first_name: z.string({ required_error: 'First name is required' }).min(1, 'First name is required'),
-    last_name: z.string({ required_error: 'Last name is required' }).min(1, 'Last name is required'),
-    address_1: z.string({ required_error: 'Address is required' }).min(1, 'Address is required'),
+    first_name: z
+      .string({ required_error: 'First name is required' })
+      .min(1, 'First name is required'),
+    last_name: z
+      .string({ required_error: 'Last name is required' })
+      .min(1, 'Last name is required'),
+    address_1: z
+      .string({ required_error: 'Address is required' })
+      .min(1, 'Address is required'),
     address_2: z.string().optional(),
     company: z.string().optional(),
-    postal_code: z.string({ required_error: 'Postal code is required' }).min(1, 'Postal code is required'),
-    city: z.string({ required_error: 'City is required' }).min(1, 'City is required'),
-    country_code: z.string({ required_error: 'Country is required' }).min(1, 'Country is required'),
+    postal_code: z
+      .string({ required_error: 'Postal code is required' })
+      .min(1, 'Postal code is required'),
+    city: z
+      .string({ required_error: 'City is required' })
+      .min(1, 'City is required'),
+    country_code: z
+      .string({ required_error: 'Country is required' })
+      .min(1, 'Country is required'),
     province: z.string().optional(),
     phone: z.string().optional(),
   }),
-  email: z.string({ required_error: 'Email is required' }).email('Invalid email address'),
+  email: z
+    .string({ required_error: 'Email is required' })
+    .email('Invalid email address'),
   billing_address: z.object({
     first_name: z.string().optional(),
     last_name: z.string().optional(),
@@ -77,7 +91,9 @@ const state = reactive<PartialSchema>({
   },
 })
 
-const sameAsBilling = ref(compareAddresses(cart.value?.shipping_address, cart.value?.billing_address))
+const sameAsBilling = ref(
+  compareAddresses(cart.value?.shipping_address, cart.value?.billing_address),
+)
 
 async function onSubmit(event: FormSubmitEvent<PartialSchema>) {
   if (sameAsBilling.value)
@@ -89,11 +105,15 @@ async function onSubmit(event: FormSubmitEvent<PartialSchema>) {
 }
 
 // Use the current user country as the default shipping address country
-watch(country, (newCountry) => {
-  if (newCountry?.iso_2 && state.shipping_address) {
-    state.shipping_address.country_code = newCountry?.iso_2
-  }
-}, { immediate: true })
+watch(
+  country,
+  (newCountry) => {
+    if (newCountry?.iso_2 && state.shipping_address) {
+      state.shipping_address.country_code = newCountry?.iso_2
+    }
+  },
+  { immediate: true },
+)
 
 // Redirect to the right store if shipping address changes - Not applicable for billing address
 watch(state, (value) => {
@@ -105,11 +125,7 @@ watch(state, (value) => {
 
 <template>
   <div class="pb-8">
-    <UForm
-      :schema="schema"
-      :state="state"
-      @submit="onSubmit"
-    >
+    <UForm :schema="schema" :state="state" @submit="onSubmit">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-8">
         <UFormField
           required
@@ -208,11 +224,7 @@ watch(state, (value) => {
         >
           <StoreSelectCountry v-model="state.shipping_address.country_code" />
         </UFormField>
-        <UFormField
-          size="xl"
-          class="w-full"
-          name="shipping_address.province"
-        >
+        <UFormField size="xl" class="w-full" name="shipping_address.province">
           <AppInput
             v-model="state.shipping_address.province"
             name="shipping_address.province"
@@ -235,9 +247,7 @@ watch(state, (value) => {
           />
         </UFormField>
       </div>
-      <div
-        class="py-4"
-      >
+      <div class="py-4">
         <UCheckbox
           v-model="sameAsBilling"
           color="neutral"
@@ -277,15 +287,8 @@ watch(state, (value) => {
           />
         </UFormField>
       </div>
-      <div
-        v-if="!sameAsBilling"
-      >
-        <AppHeading
-          as="h2"
-          class="mb-6"
-        >
-          Billing Address
-        </AppHeading>
+      <div v-if="!sameAsBilling">
+        <AppHeading as="h2" class="mb-6"> Billing Address </AppHeading>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-8">
           <UFormField
             required

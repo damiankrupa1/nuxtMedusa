@@ -15,8 +15,12 @@ const {
   extended?: boolean
 }>()
 
-const percentageDiff = computed(() => getPercentageDiff(originalPrice, currentPrice))
-const hasReducedPrice = computed(() => currentPrice && originalPrice ? currentPrice < originalPrice : false)
+const percentageDiff = computed(() =>
+  getPercentageDiff(originalPrice, currentPrice),
+)
+const hasReducedPrice = computed(() =>
+  currentPrice && originalPrice ? currentPrice < originalPrice : false,
+)
 </script>
 
 <template>
@@ -24,10 +28,7 @@ const hasReducedPrice = computed(() => currentPrice && originalPrice ? currentPr
     class="flex gap-x-2"
     :class="[displayInline ? 'flex-row items-center' : 'flex-col']"
   >
-    <div
-      v-if="hasReducedPrice"
-      class="flex items-center gap-x-1"
-    >
+    <div v-if="hasReducedPrice" class="flex items-center gap-x-1">
       <span v-if="extended">Original:</span>
       <StoreLocalizedPrice
         :amount="originalPrice"
@@ -44,10 +45,7 @@ const hasReducedPrice = computed(() => currentPrice && originalPrice ? currentPr
         :amount="currentPrice"
         :currency-code="currencyCode"
       />
-      <div
-        v-if="hasReducedPrice && extended"
-        class="text-primary-500"
-      >
+      <div v-if="hasReducedPrice && extended" class="text-primary-500">
         (-{{ percentageDiff }}%)
       </div>
     </div>

@@ -13,14 +13,9 @@ const items = ref([
 
 <template>
   <div class="flex flex-col gap-y-4">
-    <div class="font-medium text-color-dimmed">
-      Medusa
-    </div>
+    <div class="font-medium text-color-dimmed">Medusa</div>
     <ul class="grid grid-cols-1 gap-y-2">
-      <li
-        v-for="item in items"
-        :key="item.title"
-      >
+      <li v-for="item in items" :key="item.title">
         <NuxtLink
           :href="item.link"
           target="_blank"

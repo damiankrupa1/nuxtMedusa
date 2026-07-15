@@ -15,19 +15,10 @@ const isCartEmpty = computed(() => cart.value?.items?.length === 0)
       >
         <div class="flex flex-col bg-white py-6 gap-y-6">
           <div class="flex flex-col gap-y-3">
-            <AppHeading
-              as="h1"
-            >
-              Cart
-            </AppHeading>
+            <AppHeading as="h1"> Cart </AppHeading>
             <ClientOnly>
-              <CartEmpty
-                v-if="isCartEmpty"
-              />
-              <CartTable
-                v-else-if="cart"
-                :cart="cart"
-              />
+              <CartEmpty v-if="isCartEmpty" />
+              <CartTable v-else-if="cart" :cart="cart" />
               <CartTableSkeleton v-else />
               <template #fallback>
                 <CartTableSkeleton />
@@ -39,16 +30,9 @@ const isCartEmpty = computed(() => cart.value?.items?.length === 0)
           <div class="flex flex-col gap-y-8 sticky top-12">
             <div class="bg-white py-6">
               <ClientOnly>
-                <CartSummary
-                  v-if="!isCartEmpty"
-                  title="Summary"
-                  :cart="cart"
-                />
+                <CartSummary v-if="!isCartEmpty" title="Summary" :cart="cart" />
                 <template #fallback>
-                  <CartSummary
-                    title="Summary"
-                    :cart="undefined"
-                  />
+                  <CartSummary title="Summary" :cart="undefined" />
                 </template>
               </ClientOnly>
             </div>
