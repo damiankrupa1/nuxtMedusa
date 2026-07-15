@@ -10,7 +10,7 @@ export default defineNuxtConfig({
     pageTransition: { name: 'page', mode: 'out-in' },
   },
 
-  css: ['~/assets/css/main.css', '~/assets/css/tokens.css'],
+  css: ['~/assets/css/main.css', '~/assets/css/variables.css'],
 
   ui: {
     colorMode: false,
