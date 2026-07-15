@@ -1,8 +1,6 @@
 <script setup lang="ts">
 const isOpen = defineModel<boolean>()
 const { title } = useAppConfig()
-
-const countries = await useCountries()
 const { country } = useCountry()
 </script>
 

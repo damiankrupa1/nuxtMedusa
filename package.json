@@ -12,6 +12,14 @@
     "storefront",
     "medusa-storefront"
   ],
+  "lint-staged": {
+    "*.{js,ts,vue}": [
+      "eslint --fix"
+    ],
+    "*.{json,css,scss,md}": [
+      "prettier --write"
+    ]
+  },
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -19,7 +27,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "dependencies": {
     "@medusajs/js-sdk": "2.6.1",
@@ -42,6 +51,8 @@
     "@types/lodash": "^4.17.16",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8",
     "prettier": "^3.9.5",
     "typescript": "^5.8.2",
     "wrangler": "^3.109.2"
