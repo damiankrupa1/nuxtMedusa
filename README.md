@@ -9,7 +9,7 @@
 </p>
 
 <h1 align="center">
-  Medusa Nuxt Starter Template
+  Fashion Store
 </h1>
 
 <p align="center">
@@ -19,100 +19,73 @@
 Based on:
 https://github.com/OlivierBelaud/nuxt-starter-medusa
 
-Combine Medusa's modules for your commerce backend with the newest Nuxt v3, ready for v4, features for a performant storefront.</p>
+Combine Medusa's modules for your commerce backend with the newest Nuxt v3, ready for v4, features for a performant storefront.
+</p>
 
-### Prerequisites
+# Fashion Store
 
-To use the [Nuxt Starter Template](https://nuxt-medusa.pages.dev), you should have a Medusa server running locally on port 9000.
-For a quick setup, run:
+Modern headless e-commerce storefront built with Nuxt 4 and Medusa.js.
 
-```shell
-npx create-medusa-app@latest
-```
+## ✨ Features
 
-Check out [create-medusa-app docs](https://docs.medusajs.com/create-medusa-app) for more details and troubleshooting.
+- Server-side rendered storefront
+- Product catalog
+- Collections and categories
+- Shopping cart
+- Customer accounts
+- Checkout flow
+- Stripe payments
+- Responsive UI
+- SEO optimized
+- Type-safe development
 
-# Overview
+## 🛠 Tech Stack
 
-The Medusa Nuxt Starter is built with:
+### Frontend
 
-- [Nuxt v3, ready for v4](https://nextjs.org/)
-- [Tailwind CSS v4](https://tailwindcss.com/)
-- [Typescript](https://www.typescriptlang.org/)
-- [Medusa v2](https://medusajs.com/)
+- Nuxt 4
+- Vue 3
+- TypeScript
+- Nuxt UI
+- Tailwind CSS
+- VueUse
 
-Features include:
+### Commerce
 
-- Full ecommerce support:
-  - Product Detail Page
-  - Product Overview Page
-  - Product Collections
-  - Cart
-  - Checkout
-  - Stripe Integration
-  - User Accounts: in progress
-  - Order Details
-- Full Nuxt support:
-  - App Router
-  - Nuxt fetching/caching
-  - NuxtHub (Cloudflare deployment)
-  - NuxtUi
+- Medusa.js
+- PostgreSQL
+- Redis
 
-# Quickstart
+### Infrastructure
 
-### Setting up the environment variables
+- Vercel (frontend)
+- Railway (backend)
+- Docker
 
-Navigate into your projects directory and get your environment variables ready:
+## 📸 Screenshots
 
-```shell
-cd nuxt-starter-medusa/
-mv .env.template .env.local
-```
+(TODO screenshots here)
 
-### Install dependencies
+## 🚀 Getting Started
 
-Use Pnpm to install all dependencies.
+### Requirements
 
-```shell
+- Node.js >= 22
+- pnpm >= 9
+- Medusa backend running
+
+### Installation
+
+Clone repository:
+
+```bash
+git clone https://github.com/user/fashion-store.git
+
+cd fashion-store
+
 pnpm install
+
+## Payment Integrations
+
+- Stripe: https://stripe.com/
 ```
-
-### Start developing
-
-You are now ready to start up your project.
-
-```shell
-pnpm run dev
-```
-
-### Open the code and start customizing
-
-Your site is now running at http://localhost:3000!
-
-# Payment integrations
-
-By default this starter supports the following payment integrations
-
-- [Stripe](https://stripe.com/)
-
-To enable the integrations you need to add the following to your `.env.local` file:
-
-```shell
-NUXT_PUBLIC_STRIPE_KEY=<your-stripe-public-key>
-```
-
-You'll also need to setup the integrations in your Medusa server. See the [Medusa documentation](https://docs.medusajs.com) for more information on how to configure [Stripe](https://docs.medusajs.com/resources/commerce-modules/payment/payment-provider/stripe#main).
-
-# Resources
-
-## Learn more about Medusa
-
-- [Website](https://www.medusajs.com/)
-- [GitHub](https://github.com/medusajs)
-- [Documentation](https://docs.medusajs.com/)
-
-## Learn more about Nuxt
-
-- [Website](https://nuxt.com/)
-- [GitHub](https://github.com/nuxt/nuxt)
-- [Documentation](https://nuxt.com/docs/getting-started/introduction)
