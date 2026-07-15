@@ -14,7 +14,8 @@
   ],
   "lint-staged": {
     "*.{js,ts,vue}": [
-      "eslint --fix"
+      "eslint --fix",
+      "prettier --write"
     ],
     "*.{json,css,scss,md}": [
       "prettier --write"
@@ -28,6 +29,8 @@
     "postinstall": "nuxt prepare",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "prepare": "husky"
   },
   "dependencies": {
