@@ -16,7 +16,7 @@ const formSchema = z.object({
     .string()
     .min(2, 'First name must contain at least 2 characters'),
   last_name: z.string().min(2, 'Last name must contain at least 2 characters'),
-  email: z.string().email('Please enter a valid email address'),
+  email: z.email('Please enter a valid email address'),
   phone: z.string().optional(),
   password: z.string().min(6, 'Password must contain at least 6 characters'),
 })
