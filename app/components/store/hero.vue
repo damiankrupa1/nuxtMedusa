@@ -10,7 +10,8 @@
       width="1920"
       height="1080"
       class="h-full w-full object-cover"
-      loading="lazy"
+      preload
+      fetchpriority="high"
     />
     <div
       class="absolute top-0 left-0 w-full h-full bg-black/50 flex flex-col justify-center items-center text-center gap-y-4 px-4"

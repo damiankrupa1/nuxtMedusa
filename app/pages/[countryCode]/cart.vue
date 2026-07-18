@@ -5,6 +5,11 @@ const { data: cartResponse } = useNuxtData<StoreCartResponse>('cart')
 const cart = computed(() => cartResponse.value?.cart)
 
 const isCartEmpty = computed(() => cart.value?.items?.length === 0)
+
+useSeoMeta({
+  title: 'Cart',
+  robots: 'noindex',
+})
 </script>
 
 <template>

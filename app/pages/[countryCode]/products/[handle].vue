@@ -4,14 +4,14 @@ const route = useRoute()
 const handle = computed(() => route.params.handle as string)
 const { data: product } = await useFetchProductByHandle(handle.value)
 
-// useSeoMeta({ //TODO: Uncomment this when product data is available
-//   title: product.title,
-//   description: product.description,
-//   ogTitle: product.title,
-//   ogDescription: product.description,
-//   ogImage: product.thumbnail,
-//   ogType: 'product',
-// })
+useSeoMeta({
+  title: () => product.value?.title,
+  description: () => product.value?.description ?? undefined,
+  ogTitle: () => product.value?.title,
+  ogDescription: () => product.value?.description ?? undefined,
+  ogImage: () => product.value?.thumbnail ?? undefined,
+  ogType: 'website',
+})
 </script>
 
 <template>

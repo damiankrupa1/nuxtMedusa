@@ -23,6 +23,11 @@ const paymentDate = computed(() => {
   if (!paymentMethod.value?.created_at) return
   return new Date(paymentMethod.value?.created_at).toDateString()
 })
+
+useSeoMeta({
+  title: 'Order confirmed',
+  robots: 'noindex',
+})
 </script>
 
 <template>

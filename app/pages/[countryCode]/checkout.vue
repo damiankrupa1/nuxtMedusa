@@ -5,6 +5,11 @@ definePageMeta({
 
 const { data: cartResponse } = await useFetchCart()
 const cart = computed(() => cartResponse.value?.cart || undefined)
+
+useSeoMeta({
+  title: 'Checkout',
+  robots: 'noindex',
+})
 </script>
 
 <template>

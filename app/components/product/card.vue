@@ -30,6 +30,8 @@ const currencyCode = computed(
       <NuxtImg
         v-if="product?.thumbnail"
         :src="product.thumbnail || undefined"
+        :alt="product?.title"
+        sizes="50vw sm:33vw md:25vw"
         class="object-cover object-center w-full h-full"
       />
     </div>

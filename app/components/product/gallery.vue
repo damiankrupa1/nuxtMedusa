@@ -16,6 +16,9 @@ defineProps<{
         <NuxtImg
           v-if="product?.images?.[0]?.url"
           :src="product?.images?.[0]?.url"
+          :alt="product?.title"
+          sizes="100vw sm:40vw"
+          class="w-full h-full object-cover"
         />
       </div>
       <USkeleton

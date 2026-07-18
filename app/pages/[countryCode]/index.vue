@@ -1,4 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+useSeoMeta({
+  title: 'Fashion',
+  ogTitle: 'Fashion',
+})
+</script>
 
 <template>
   <div>
