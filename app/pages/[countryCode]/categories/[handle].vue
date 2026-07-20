@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useFetchCategoryByHandle } from '~/services/category.service'
+
 const route = useRoute()
 
 const handle = computed(() => route.params.handle as string)

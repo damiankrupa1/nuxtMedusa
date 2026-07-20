@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { StoreCollection } from '@medusajs/types'
+import { useFetchCollectionByHandle } from '~/services/collection.service'
 
 const { handle } = defineProps<{
   handle: StoreCollection['handle']

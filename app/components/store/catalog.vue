@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useFetchProducts } from '~/services/product.service'
+
 const { defaultProductsPerPage } = useAppConfig()
 
 const { title, collectionId, categoryId } = defineProps<{

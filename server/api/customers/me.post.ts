@@ -6,8 +6,10 @@ export default defineWrappedResponseHandler(async (event) => {
 
   const token = getCookie(event, 'medusa_jwt')
 
+  if (!token || typeof token !== 'string') {
+    throw new Error('Missing authentication token')
+  }
+
   // Update customer information
-  return await medusa.store.customer.update(body, {
-    Authorization: `Bearer ${token}`,
-  })
+  return await medusa.store.customer.update(body)
 })

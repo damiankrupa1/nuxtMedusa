@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useFetchCollectionByHandle } from '~/services/collection.service'
+
 const route = useRoute()
 
 const handle = computed(() => route.params.handle as string)

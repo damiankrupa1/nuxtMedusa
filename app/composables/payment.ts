@@ -1,4 +1,5 @@
 import type { StorePaymentCollection } from '@medusajs/types'
+import { usePaymentSession } from '~/services/payment.service'
 
 export const useInitiatePaymentSession = () => {
   const { initiatePaymentSession } = usePaymentSession()

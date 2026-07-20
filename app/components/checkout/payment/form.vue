@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { StoreCartResponse } from '@medusajs/types'
 import { providers } from '~/utils/payment'
+import { useFetchPaymentProviders } from '~/services/payment.service'
+import { useInitiatePaymentSession } from '~/composables/payment'
 
 const emit = defineEmits<{
   validate: [boolean]

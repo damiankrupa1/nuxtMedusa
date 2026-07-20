@@ -6,6 +6,7 @@ import type {
   StoreUpdateCart,
   StoreUpdateCartLineItem,
 } from '@medusajs/types'
+import { useCartService } from '../services/cart.service'
 
 export const useUserCart = () => {
   const cartIdCookie = useCookie('cart_id', {
@@ -37,16 +38,16 @@ export const useCartDropdown = () => {
 }
 
 export const useFetchCart = async () => {
-  const { retrieveCart } = useCart()
+  const { retrieveCart } = useCartService()
 
   return useLazyAsyncData('cart', async () => await retrieveCart())
 }
 
 export const useAddToCart = () => {
-  const { updateOrCreateLineItem } = useCart()
+  const { updateOrCreateLineItem } = useCartService()
 
   const loading = ref(false)
-  const data = ref<StoreCart>()
+  const data = ref<StoreCart | null>(null)
 
   const mutate = async (item: StoreAddCartLineItem) => {
     loading.value = true
@@ -69,10 +70,10 @@ export const useAddToCart = () => {
 }
 
 export const useUpdateCart = () => {
-  const { updateCart } = useCart()
+  const { updateCart } = useCartService()
 
   const loading = ref(false)
-  const data = ref<StoreCart>()
+  const data = ref<StoreCart | null>(null)
 
   const mutate = async (dataToUpdate: StoreUpdateCart) => {
     loading.value = true
@@ -95,10 +96,10 @@ export const useUpdateCart = () => {
 }
 
 export const useUpdateLineItem = () => {
-  const { updateLineItem } = useCart()
+  const { updateLineItem } = useCartService()
 
   const loading = ref(false)
-  const data = ref<StoreCart>()
+  const data = ref<StoreCart | null>(null)
 
   const mutate = async (
     itemId: string,
@@ -124,7 +125,7 @@ export const useUpdateLineItem = () => {
 }
 
 export const useDeleteLineItem = () => {
-  const { deleteLineItem } = useCart()
+  const { deleteLineItem } = useCartService()
 
   const loading = ref(false)
   const data = ref<boolean>()
@@ -150,7 +151,7 @@ export const useDeleteLineItem = () => {
 }
 
 export const useSetShippingMethod = () => {
-  const { addShippingMethod } = useCart()
+  const { addShippingMethod } = useCartService()
 
   const loading = ref(false)
   const data = ref<StoreCart>()
@@ -176,7 +177,7 @@ export const useSetShippingMethod = () => {
 }
 
 export const usePlaceOrder = () => {
-  const { completeOrder } = useCart()
+  const { completeOrder } = useCartService()
   const { setCartId } = useUserCart()
   const { country } = useCountry()
 

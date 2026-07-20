@@ -9,6 +9,10 @@ export default defineWrappedResponseHandler(async (event) => {
     password: body.password,
   })
 
+  if (typeof token !== 'string') {
+    throw new Error('Unexpected login response from Medusa')
+  }
+
   setCookie(event, 'medusa_jwt', token)
 
   return await medusa.store.customer.retrieve(

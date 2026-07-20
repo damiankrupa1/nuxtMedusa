@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useFetchProductByHandle } from '~/services/product.service'
+
 const route = useRoute()
 
 const handle = computed(() => route.params.handle as string)
@@ -16,7 +18,7 @@ useSeoMeta({
 
 <template>
   <div>
-    <ProductDetail :product="product" />
+    <ProductDetail v-if="product" :product="product" />
     <!-- TODO: Implement ProductRelated component -->
     <!-- <LazyProductRelated :product="product" /> -->
   </div>

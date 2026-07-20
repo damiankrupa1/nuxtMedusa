@@ -1,9 +1,11 @@
 <script lang="ts" setup>
+import { useFetchOrder } from '~/services/order.service'
+
 const route = useRoute()
 
 const orderId = computed(() => route.params.orderId as string)
 
-const { data: order } = useFetchOrder(orderId.value)
+const { data: order } = await useFetchOrder(orderId.value)
 
 const countries = await useCountries()
 

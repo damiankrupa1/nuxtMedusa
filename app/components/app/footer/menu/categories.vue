@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { useFetchCategories } from '~/services/category.service'
+
 const { data } = await useFetchCategories()
 const categories = computed(() =>
   data.value?.product_categories.filter(
