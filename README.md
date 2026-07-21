@@ -66,6 +66,24 @@ Modern headless e-commerce storefront built with Nuxt 4 and Medusa.js.
 
 (TODO screenshots here)
 
+## 🧪 Testing
+
+This repository uses Jest for a small, focused unit test suite.
+
+Run all tests:
+
+```bash
+pnpm test
+```
+
+Run a single test file:
+
+```bash
+pnpm exec jest tests/unit/product.test.ts --runInBand
+```
+
+The test suite lives under the [tests](tests) folder and is organized into `unit` and `integration` directories.
+
 ## 🚀 Getting Started
 
 ### Requirements

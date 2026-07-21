@@ -31,7 +31,8 @@
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": "jest --runInBand"
   },
   "dependencies": {
     "@medusajs/js-sdk": "2.6.1",
@@ -55,12 +56,19 @@
     "@iconify-json/simple-icons": "^1.2.28",
     "@medusajs/types": "2.6.1",
     "@nuxt/eslint": "^1.2.0",
+    "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.16",
+    "@vue/compiler-sfc": "^3.5.40",
+    "@vue/test-utils": "^2.4.11",
+    "@vue/vue3-jest": "^29.2.6",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
+    "jest": "^30.4.2",
+    "jest-environment-jsdom": "^30.4.1",
     "lint-staged": "^17.0.8",
     "prettier": "^3.9.5",
+    "ts-jest": "^29.4.11",
     "typescript": "^5.8.2",
     "wrangler": "^3.109.2"
   }
