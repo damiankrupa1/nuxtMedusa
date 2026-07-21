@@ -1,3 +1,7 @@
+import type { StoreRegionFilters } from '@medusajs/types'
+import { countryRepository } from '../repository/country.repository'
+import { getCountriesFromRegions } from '../utils/country'
+
 export const useCountry = () => {
   const countryCodeFromCookie = useCookie('country_code', {
     maxAge: 60 * 60 * 24 * 365,
@@ -18,6 +22,21 @@ export const useCountry = () => {
     country: readonly(country),
     setCountry: setCountry,
   }
+}
+
+export const useFetchCountries = (query?: StoreRegionFilters) => {
+  const { listCountries } = countryRepository()
+
+  return useLazyAsyncData(
+    'countries',
+    async () => {
+      const response = await listCountries(query)
+      return getCountriesFromRegions(response.regions)
+    },
+    {
+      default: () => undefined,
+    },
+  )
 }
 
 export const useCountries = async () => {
