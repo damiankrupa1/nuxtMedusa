@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals'
-import { providers } from '../../app/utils/payment'
+import { providers } from '../../../app/utils/payment'
 
 describe('payment utils', () => {
   it('contains the expected payment provider labels', () => {

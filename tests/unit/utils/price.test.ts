@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals'
 
-import { convertToLocale } from '../../app/utils/price'
+import { convertToLocale } from '../../../app/utils/price'
 
 describe('price utils', () => {
   it('formats a price using the mapped locale', () => {

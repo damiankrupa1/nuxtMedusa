@@ -1,12 +1,12 @@
 import type { StoreProduct, StoreProductOptionValue } from '@medusajs/types'
 import { describe, expect, it } from '@jest/globals'
 
-import { SORT_OPTIONS } from '../../app/types/filter'
+import { SORT_OPTIONS } from '../../../app/types/filter'
 import {
   getCheapestVariant,
   optionsAsKeyMap,
   sortProducts,
-} from '../../app/utils/product'
+} from '../../../app/utils/product'
 
 describe('product utils', () => {
   const makeProduct = (

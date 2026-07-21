@@ -4,7 +4,7 @@ import { describe, expect, it } from '@jest/globals'
 import {
   getCountriesFromRegions,
   getCountryFromCountryCode,
-} from '../../app/utils/country'
+} from '../../../app/utils/country'
 
 describe('country utils', () => {
   const makeCountry = (
@@ -27,6 +27,7 @@ describe('country utils', () => {
 
     expect(getCountryFromCountryCode(countries, 'fr')).toEqual(countries[1])
     expect(getCountryFromCountryCode(countries, 'xx')).toBeUndefined()
+    expect(getCountryFromCountryCode(countries, undefined)).toBeUndefined()
   })
 
   it('flattens and sorts countries from regions by name', () => {
@@ -45,6 +46,25 @@ describe('country utils', () => {
     expect(getCountriesFromRegions(regions)).toEqual([
       makeCountry('fr', 'France', 'region-2'),
       makeCountry('de', 'Germany', 'region-3'),
+      makeCountry('us', 'United States', 'region-1'),
+    ])
+  })
+
+  it('returns an empty list when regions are missing', () => {
+    expect(getCountriesFromRegions(undefined)).toEqual([])
+  })
+
+  it('ignores countries without a name when flattening regions', () => {
+    const regions = [
+      {
+        countries: [
+          makeCountry('us', 'United States', 'region-1'),
+          { iso_2: 'fr', display_name: 'France', region_id: 'region-2' },
+        ],
+      },
+    ] as unknown as StoreRegion[]
+
+    expect(getCountriesFromRegions(regions)).toEqual([
       makeCountry('us', 'United States', 'region-1'),
     ])
   })

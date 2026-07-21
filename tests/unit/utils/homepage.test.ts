@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals'
-import { sections } from '../../app/utils/homepage'
+import { sections } from '../../../app/utils/homepage'
 
 describe('homepage utils', () => {
   it('defines the expected featured products section', () => {

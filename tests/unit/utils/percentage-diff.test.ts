@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals'
 
-import { getPercentageDiff } from '../../app/utils/percentage-diff'
+import { getPercentageDiff } from '../../../app/utils/percentage-diff'
 
 describe('percentage diff utils', () => {
   it('returns undefined when inputs are missing', () => {
