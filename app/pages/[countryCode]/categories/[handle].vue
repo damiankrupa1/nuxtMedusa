@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFetchCategoryByHandle } from '~/services/category.service'
+import { useFetchCategoryByHandle } from '~/composables/category'
 
 const route = useRoute()
 

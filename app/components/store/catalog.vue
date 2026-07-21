@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFetchProducts } from '~/services/product.service'
+import { useFetchProducts } from '~/composables/product'
 
 const { defaultProductsPerPage } = useAppConfig()
 

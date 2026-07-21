@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFetchCollectionByHandle } from '~/services/collection.service'
+import { useFetchCollectionByHandle } from '~/composables/collection'
 
 const route = useRoute()
 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { StoreCartResponse } from '@medusajs/types'
-import { useFetchShippingOptions } from '~/services/payment.service'
+import { useFetchShippingOptions } from '~/composables/payment'
 
 const emit = defineEmits<{
   validate: [boolean]

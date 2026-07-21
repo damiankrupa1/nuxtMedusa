@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useFetchOrder } from '~/services/order.service'
+import { useFetchOrder } from '~/composables/order'
 
 const route = useRoute()
 

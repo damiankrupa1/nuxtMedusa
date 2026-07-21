@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { StoreCollection } from '@medusajs/types'
-import { useFetchProducts } from '~/services/product.service'
+import { useFetchProducts } from '~/composables/product'
 
 const { collectionId } = defineProps<{
   collectionId?: StoreCollection['id']

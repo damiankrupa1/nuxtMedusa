@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFetchProductByHandle } from '~/services/product.service'
+import { useFetchProductByHandle } from '~/composables/product'
 
 const route = useRoute()
 

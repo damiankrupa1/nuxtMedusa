@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useFetchCategories } from '~/services/category.service'
+import { useFetchCategories } from '~/composables/category'
 
 const { data } = await useFetchCategories()
 const categories = computed(() =>

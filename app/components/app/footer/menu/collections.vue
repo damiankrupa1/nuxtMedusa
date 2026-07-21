@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useFetchCollections } from '~/services/collection.service'
+import { useFetchCollections } from '~/composables/collection'
 
 const { data } = await useFetchCollections()
 const collections = computed(() => data.value?.collections)
