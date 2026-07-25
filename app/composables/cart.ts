@@ -38,9 +38,9 @@ export const useCartDropdown = () => {
 }
 
 export const useFetchCart = async () => {
-  const { retrieveCart } = useCartService()
+  const { retrieveOrCreateCart } = useCartService()
 
-  return useLazyAsyncData('cart', async () => await retrieveCart())
+  return useLazyAsyncData('cart', async () => await retrieveOrCreateCart())
 }
 
 export const useAddToCart = () => {

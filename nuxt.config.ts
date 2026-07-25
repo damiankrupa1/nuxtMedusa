@@ -73,4 +73,6 @@ export default defineNuxtConfig({
     publishableKey: process.env.NUXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
     server: true,
   },
+
+  compatibilityDate: '2026-07-25',
 })

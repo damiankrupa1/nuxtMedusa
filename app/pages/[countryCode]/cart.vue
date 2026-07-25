@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import type { StoreCartResponse } from '@medusajs/types'
-
-const { data: cartResponse } = useNuxtData<StoreCartResponse>('cart')
-const cart = computed(() => cartResponse.value?.cart)
+const { data: cartResponse } = await useFetchCart()
+const cart = computed(() => cartResponse.value?.cart || undefined)
 
 const isCartEmpty = computed(() => cart.value?.items?.length === 0)
 
