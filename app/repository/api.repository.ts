@@ -1,4 +1,4 @@
-export function useApiRepository() {
+export function apiRepository() {
   const client = useMedusaClient()
 
   async function request<T>(promise: Promise<T>): Promise<T> {

@@ -1,9 +1,9 @@
 import type { StoreProductListParams } from '@medusajs/types'
 import { SORT_OPTIONS } from '../types/filter'
-import { useApiRepository } from './api.repository'
+import { apiRepository } from './api.repository'
 
 export function productRepository() {
-  const { client, request } = useApiRepository()
+  const { client, request } = apiRepository()
 
   return {
     async listProducts(query: StoreProductListParams) {

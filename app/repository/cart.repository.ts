@@ -6,10 +6,10 @@ import type {
   StoreUpdateCart,
   StoreUpdateCartLineItem,
 } from '@medusajs/types'
-import { useApiRepository } from './api.repository'
+import { apiRepository } from './api.repository'
 
 export function cartRepository() {
-  const { client, request } = useApiRepository()
+  const { client, request } = apiRepository()
 
   return {
     async retrieveCart(cartId: string) {
