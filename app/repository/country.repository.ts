@@ -1,8 +1,8 @@
 import type { StoreRegionFilters } from '@medusajs/types'
-import { useApiRepository } from './api.repository'
+import { apiRepository } from './api.repository'
 
 export function countryRepository() {
-  const { client, request } = useApiRepository()
+  const { client, request } = apiRepository()
 
   return {
     async listCountries(query?: StoreRegionFilters) {

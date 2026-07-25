@@ -3,10 +3,10 @@ import type {
   StorePaymentCollection,
   StorePaymentProviderFilters,
 } from '@medusajs/types'
-import { useApiRepository } from './api.repository'
+import { apiRepository } from './api.repository'
 
 export function paymentRepository() {
-  const { client, request } = useApiRepository()
+  const { client, request } = apiRepository()
 
   return {
     async listPaymentProviders(query: StorePaymentProviderFilters) {

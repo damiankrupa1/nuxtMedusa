@@ -1,8 +1,8 @@
 import type { StoreCollectionFilters } from '@medusajs/types'
-import { useApiRepository } from './api.repository'
+import { apiRepository } from './api.repository'
 
 export function collectionRepository() {
-  const { client, request } = useApiRepository()
+  const { client, request } = apiRepository()
 
   return {
     async listCollections(query?: StoreCollectionFilters) {

@@ -2,7 +2,7 @@
 const { isCartDropdownOpen } = useCartDropdown()
 
 const { country } = useCountry()
-const { updateCart } = useCart()
+const { mutate: updateCart } = useUpdateCart()
 
 const { data: cartResponse, status } = await useFetchCart()
 const cart = computed(() => cartResponse.value?.cart || undefined)

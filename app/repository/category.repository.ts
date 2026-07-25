@@ -1,8 +1,8 @@
 import type { StoreProductCategoryListParams } from '@medusajs/types'
-import { useApiRepository } from './api.repository'
+import { apiRepository } from './api.repository'
 
 export function categoryRepository() {
-  const { client, request } = useApiRepository()
+  const { client, request } = apiRepository()
 
   return {
     async listCategories(query?: StoreProductCategoryListParams) {
