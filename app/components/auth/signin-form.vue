@@ -1,16 +1,18 @@
 <script lang="ts" setup>
 import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
-import type { LoginCustomerData } from '~/composables/customer'
+import type { LoginCustomerData } from '~/types/customer'
 
 const emit = defineEmits<{
   'switch-to-register': []
 }>()
 
-// Connection with Medusa API
-const { login, isLoading: isLoggingIn, error: apiError } = useCustomer()
+const {
+  mutate: login,
+  loading: isLoggingIn,
+  error: apiError,
+} = useLoginCustomer()
 
-// Validation schema
 const formSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
   password: z.string().min(1, 'Please enter your password'),
@@ -18,7 +20,6 @@ const formSchema = z.object({
 
 type FormType = z.infer<typeof formSchema>
 
-// Form initial state
 const form = ref<FormType>({
   email: '',
   password: '',
@@ -26,7 +27,6 @@ const form = ref<FormType>({
 
 const formError = ref<string | undefined>(undefined)
 
-// Form submission
 const onSubmit = async (_event: FormSubmitEvent<FormType>) => {
   formError.value = undefined
 
@@ -39,7 +39,6 @@ const onSubmit = async (_event: FormSubmitEvent<FormType>) => {
     await login(loginData)
     await refreshNuxtData('customer')
   } catch {
-    // Use API error or form error
     if (!apiError.value) {
       formError.value = 'An error occurred during sign in. Please try again.'
     }
@@ -68,7 +67,6 @@ const switchToRegister = () => {
       class="space-y-2"
       @submit="onSubmit"
     >
-      <!-- Email input -->
       <UFormField
         name="email"
         required
@@ -87,7 +85,6 @@ const switchToRegister = () => {
         />
       </UFormField>
 
-      <!-- Password input with button to show/hide -->
       <UFormField
         name="password"
         required
@@ -105,7 +102,6 @@ const switchToRegister = () => {
         />
       </UFormField>
 
-      <!-- Sign in button -->
       <AppButtonPrimary type="submit" block :loading="isLoggingIn" class="mt-6">
         Sign in
       </AppButtonPrimary>

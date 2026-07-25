@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { useFetchCustomer, useCustomer } from '~/composables/customer'
+import { useFetchCustomer, useLogoutCustomer } from '~/composables/customer'
 
-// Metadata
 definePageMeta({
   layout: 'default',
 })
@@ -11,19 +10,16 @@ useHead({
   meta: [{ name: 'description', content: 'Manage your Medusa Store account' }],
 })
 
-// Form management
 const mode = ref<'signin' | 'register'>('signin')
 
-// User data
 const { status, data: customerData } = useFetchCustomer()
-const { logout } = useCustomer()
+const { mutate: logout } = useLogoutCustomer()
 const isAuthenticated = computed(() => !!customerData.value?.customer)
 </script>
 
 <template>
   <UContainer class="py-32">
     <div class="min-h-[40vh] flex items-center justify-center">
-      <!-- Loading state -->
       <div v-if="status === 'pending'" class="text-center">
         <UIcon
           name="i-heroicons-arrow-path"
@@ -32,7 +28,6 @@ const isAuthenticated = computed(() => !!customerData.value?.customer)
         <p>Loading your account information...</p>
       </div>
 
-      <!-- Connected user -->
       <div
         v-else-if="isAuthenticated && customerData?.customer"
         class="w-full max-w-md p-6 bg-white shadow-md rounded-lg"
@@ -64,16 +59,13 @@ const isAuthenticated = computed(() => !!customerData.value?.customer)
         </div>
       </div>
 
-      <!-- Authentication forms -->
       <Transition v-else name="fade" mode="out-in">
-        <!-- Sign in form -->
         <AuthSigninForm
           v-if="mode === 'signin'"
           :key="'signin'"
           @switch-to-register="mode = 'register'"
         />
 
-        <!-- Registration form -->
         <AuthRegisterForm
           v-else
           :key="'register'"

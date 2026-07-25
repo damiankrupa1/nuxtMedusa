@@ -1,16 +1,18 @@
 <script lang="ts" setup>
 import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
-import type { RegisterCustomerData } from '~/composables/customer'
+import type { RegisterCustomerData } from '~/types/customer'
 
 const emit = defineEmits<{
   'switch-to-signin': []
 }>()
 
-// Connection with Medusa API
-const { register, isLoading: isRegistering, error: apiError } = useCustomer()
+const {
+  mutate: register,
+  loading: isRegistering,
+  error: apiError,
+} = useRegisterCustomer()
 
-// Validation schema
 const formSchema = z.object({
   first_name: z
     .string()
@@ -23,7 +25,6 @@ const formSchema = z.object({
 
 type FormType = z.infer<typeof formSchema>
 
-// Form initial state
 const form = ref<FormType>({
   first_name: '',
   last_name: '',
@@ -32,15 +33,12 @@ const form = ref<FormType>({
   password: '',
 })
 
-// Error message
 const formError = ref<string | undefined>(undefined)
 
-// Form submission
 const onSubmit = async (_event: FormSubmitEvent<FormType>) => {
   formError.value = undefined
 
   try {
-    // Prepare API data
     const customerData: RegisterCustomerData = {
       first_name: form.value.first_name,
       last_name: form.value.last_name,
@@ -49,11 +47,9 @@ const onSubmit = async (_event: FormSubmitEvent<FormType>) => {
       phone: form.value.phone || undefined,
     }
 
-    // Call registration API
     await register(customerData)
     await refreshNuxtData('customer')
   } catch {
-    // Use API error or form error
     if (!apiError.value) {
       formError.value =
         'An error occurred during registration. Please try again.'
@@ -61,10 +57,8 @@ const onSubmit = async (_event: FormSubmitEvent<FormType>) => {
   }
 }
 
-// Display API error or local error
 const displayError = computed(() => apiError.value || formError.value)
 
-// Switch to sign in form
 const switchToSignin = () => {
   emit('switch-to-signin')
 }
@@ -85,7 +79,6 @@ const switchToSignin = () => {
       class="space-y-2"
       @submit="onSubmit"
     >
-      <!-- First name input -->
       <UFormField
         name="first_name"
         required
@@ -103,7 +96,6 @@ const switchToSignin = () => {
         />
       </UFormField>
 
-      <!-- Last name input -->
       <UFormField
         name="last_name"
         required
@@ -121,7 +113,6 @@ const switchToSignin = () => {
         />
       </UFormField>
 
-      <!-- Email input -->
       <UFormField
         name="email"
         required
@@ -140,7 +131,6 @@ const switchToSignin = () => {
         />
       </UFormField>
 
-      <!-- Phone input -->
       <UFormField
         name="phone"
         size="xl"
@@ -157,7 +147,6 @@ const switchToSignin = () => {
         />
       </UFormField>
 
-      <!-- Password input with button to show/hide -->
       <UFormField
         name="password"
         required
@@ -184,7 +173,6 @@ const switchToSignin = () => {
         <AppLink class="underline" to="/terms-of-use"> Terms of Use </AppLink>.
       </div>
 
-      <!-- Join button -->
       <AppButtonPrimary type="submit" block :loading="isRegistering">
         Join
       </AppButtonPrimary>
