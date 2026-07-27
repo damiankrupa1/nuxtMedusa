@@ -1,4 +1,4 @@
-import type { StoreRegion } from '@medusajs/types'
+import { prerenderRoutesHook } from './config/prerender-routes-hook'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -40,26 +40,10 @@ export default defineNuxtConfig({
     payloadExtraction: true,
   },
 
+  compatibilityDate: '2026-07-25',
+
   hooks: {
-    async 'prerender:routes'(ctx) {
-      const { regions } = await fetch(
-        `${process.env.NUXT_PUBLIC_MEDUSA_BACKEND_URL}/store/regions`,
-        {
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-publishable-api-key':
-              process.env.NUXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
-          },
-        },
-      ).then((res) => res.json())
-      const countries = regions
-        ?.map((region: StoreRegion) => region.countries)
-        .flat()
-      for (const country of countries) {
-        ctx.routes.add(`/${country.iso_2}`)
-      }
-    },
+    'prerender:routes': prerenderRoutesHook,
   },
 
   eslint: {

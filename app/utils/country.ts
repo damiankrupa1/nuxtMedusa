@@ -22,10 +22,9 @@ export function getCountriesFromRegions(regions?: StoreRegion[]) {
   return regions
     .map((region: StoreRegion) => region.countries)
     .flat()
-    .filter((country): country is BaseRegionCountryWithRegionId =>
-      Boolean(country?.name),
+    .filter(
+      (country): country is BaseRegionCountryWithRegionId & { name: string } =>
+        Boolean(country?.name),
     )
-    .sort((a, b) =>
-      a.name.localeCompare(b.name),
-    ) as BaseRegionCountryWithRegionId[]
+    .sort((a, b) => a.name.localeCompare(b.name))
 }

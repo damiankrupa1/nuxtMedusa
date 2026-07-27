@@ -2,6 +2,7 @@
 import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
 import type { LoginCustomerData } from '~/types/customer'
+import { useLoginCustomer } from '~/composables/customer'
 
 const emit = defineEmits<{
   'switch-to-register': []
