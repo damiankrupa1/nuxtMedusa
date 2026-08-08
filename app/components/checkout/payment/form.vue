@@ -16,6 +16,8 @@ const cart = computed(() => cartResponse.value?.cart)
 const { data } = await useFetchPaymentProviders()
 const { loading, mutate } = useInitiatePaymentSession()
 
+const { t } = useI18n()
+
 interface PaymentProviderData {
   id: string
   label: string
@@ -55,7 +57,7 @@ const validatePayment = async () => {
     isValidating.value = true
 
     if (!value.value) {
-      paymentError.value = 'Please select a payment method'
+      paymentError.value = t('checkout.payment.selectMethod')
       isValidating.value = false
       return
     }
@@ -73,7 +75,7 @@ const validatePayment = async () => {
       emit('validate', true)
     } catch (error) {
       console.error('Error initializing payment session:', error)
-      paymentError.value = 'Failed to initialize payment. Please try again.'
+      paymentError.value = t('checkout.payment.initFailed')
     }
   } finally {
     isValidating.value = false
@@ -132,7 +134,7 @@ const validatePayment = async () => {
       :loading="loading || isValidating"
       @click="validatePayment"
     >
-      Continue to review
+      {{ $t('checkout.payment.continue') }}
     </UButton>
   </div>
 </template>

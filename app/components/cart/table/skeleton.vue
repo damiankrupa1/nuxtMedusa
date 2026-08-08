@@ -6,24 +6,26 @@ const { isPreview, isDropDown } = defineProps<{
   isDropDown?: boolean
 }>()
 
-const columns = [
+const { t } = useI18n()
+
+const columns = computed(() => [
   {
     accessorKey: 'item',
-    header: 'Item',
+    header: t('cart.table.item'),
   },
   {
     accessorKey: 'quantity',
-    header: 'Quantity',
+    header: t('cart.table.quantity'),
   },
   {
     accessorKey: 'price',
-    header: 'Price',
+    header: t('cart.table.price'),
   },
   {
     accessorKey: 'total',
-    header: () => h('div', { class: 'text-right' }, 'Total'),
+    header: () => h('div', { class: 'text-right' }, t('cart.table.total')),
   },
-]
+])
 
 const data = computed(() => {
   return [{}]

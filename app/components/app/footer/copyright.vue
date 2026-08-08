@@ -4,6 +4,8 @@ const { title } = useAppConfig()
 const { minimal } = defineProps<{
   minimal?: boolean
 }>()
+
+const currentYear = new Date().getFullYear()
 </script>
 
 <template>
@@ -11,9 +13,11 @@ const { minimal } = defineProps<{
     class="flex w-full text-color-dimmed text-xs"
     :class="[minimal ? 'py-4 justify-center' : 'pb-16 justify-between']"
   >
-    <div v-if="!minimal" class="">© 2026 {{ title }}. All rights reserved.</div>
+    <div v-if="!minimal" class="">
+      {{ $t('app.footer.copyright', { year: currentYear, title }) }}
+    </div>
     <div class="flex gap-x-2 items-center">
-      <div>Powered by</div>
+      <div>{{ $t('app.footer.poweredBy') }}</div>
       <NuxtLink
         href="https://medusajs.com"
         target="_blank"

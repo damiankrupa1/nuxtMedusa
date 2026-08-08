@@ -33,7 +33,7 @@ const isCartUndefined = computed(() => cart === undefined)
       :disabled="isCartUndefined"
       size="lg"
     >
-      Go to checkout
+      {{ $t('cart.summary.checkoutCta') }}
     </UButton>
   </div>
 </template>

@@ -1,11 +1,13 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 const { data: cartResponse } = await useFetchCart()
 const cart = computed(() => cartResponse.value?.cart || undefined)
 
 const isCartEmpty = computed(() => cart.value?.items?.length === 0)
 
 useSeoMeta({
-  title: 'Cart',
+  title: t('pages.cart.title'),
   robots: 'noindex',
 })
 </script>
@@ -18,7 +20,9 @@ useSeoMeta({
       >
         <div class="flex flex-col bg-white py-6 gap-y-6">
           <div class="flex flex-col gap-y-3">
-            <AppHeading as="h1"> Cart </AppHeading>
+            <AppHeading as="h1">
+              {{ $t('pages.cart.heading') }}
+            </AppHeading>
             <ClientOnly>
               <CartEmpty v-if="isCartEmpty" />
               <CartTable v-else-if="cart" :cart="cart" />
@@ -33,9 +37,16 @@ useSeoMeta({
           <div class="flex flex-col gap-y-8 sticky top-12">
             <div class="bg-white py-6">
               <ClientOnly>
-                <CartSummary v-if="!isCartEmpty" title="Summary" :cart="cart" />
+                <CartSummary
+                  v-if="!isCartEmpty"
+                  :title="$t('pages.cart.summary')"
+                  :cart="cart"
+                />
                 <template #fallback>
-                  <CartSummary title="Summary" :cart="undefined" />
+                  <CartSummary
+                    :title="$t('pages.cart.summary')"
+                    :cart="undefined"
+                  />
                 </template>
               </ClientOnly>
             </div>

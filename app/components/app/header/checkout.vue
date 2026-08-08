@@ -10,7 +10,7 @@ const { title } = useAppConfig()
       <AppLink to="/cart" class="-full flex-1 basis-0">
         <div class="flex items-center gap-2 uppercase text-xs font-medium">
           <UIcon name="i-lucide-chevron-left" class="size-4" />
-          <span>Back to shopping cart</span>
+          <span>{{ $t('app.header.backToCart') }}</span>
         </div>
       </AppLink>
       <AppLink

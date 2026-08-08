@@ -11,6 +11,7 @@ import type {
 const { data: cartResponse } = useNuxtData<StoreCartResponse>('cart')
 const cart = computed(() => cartResponse.value?.cart)
 const config = useRuntimeConfig()
+const { t } = useI18n()
 // const { country } = useCountry()
 
 const notReady = computed(() => {
@@ -104,7 +105,7 @@ onMounted(async () => {
     errorMessage.value =
       error instanceof Error
         ? error.message
-        : 'Failed to initialize payment form'
+        : t('checkout.review.initFormFailed')
   }
 })
 
@@ -165,9 +166,7 @@ const handlePlaceOrder = async () => {
   } catch (error) {
     processingState.value = 'error'
     errorMessage.value =
-      error instanceof Error
-        ? error.message
-        : 'An error occurred during payment processing. Please try again.'
+      error instanceof Error ? error.message : t('checkout.review.genericError')
     console.error('Payment error:', error)
   }
 }
@@ -205,11 +204,13 @@ const isButtonDisabled = computed(() => {
 <template>
   <div>
     <div class="mb-6 text-sm">
-      By clicking the Place Order button, you confirm that you have read,
-      understand and accept our
-      <strong>Terms of Use</strong>, <strong>Terms of Sale</strong> and
-      <strong>Returns Policy</strong> and acknowledge that you have read
-      <strong>Medusa Store's Privacy Policy</strong>.
+      {{ $t('checkout.review.termsIntro') }}
+      <strong>{{ $t('checkout.review.termsOfUse') }}</strong>,
+      <strong>{{ $t('checkout.review.termsOfSale') }}</strong>
+      {{ $t('auth.register.and') }}
+      <strong>{{ $t('checkout.review.returnsPolicy') }}</strong>
+      {{ $t('checkout.review.privacyPolicyAck') }}
+      <strong>{{ $t('checkout.review.privacyPolicy') }}</strong>.
     </div>
 
     <!-- <div class="mb-6 p-4 bg-neutral-50 rounded-lg border border-neutral-200">
@@ -232,7 +233,9 @@ const isButtonDisabled = computed(() => {
     </div> -->
 
     <div v-if="isStripePayment" class="mb-6">
-      <h3 class="text-sm font-medium mb-2">Credit Card Information</h3>
+      <h3 class="text-sm font-medium mb-2">
+        {{ $t('checkout.review.creditCardInfo') }}
+      </h3>
       <div
         id="stripe-card-element"
         class="p-4 border rounded-lg border-neutral-200 bg-white"
@@ -241,13 +244,13 @@ const isButtonDisabled = computed(() => {
         {{ cardError }}
       </p>
       <p v-else-if="cardComplete" class="mt-2 text-sm text-green-600">
-        Card information complete
+        {{ $t('checkout.review.cardComplete') }}
       </p>
     </div>
 
     <UAlert
       v-if="processingState === 'error'"
-      title="Payment Error"
+      :title="$t('checkout.review.paymentErrorTitle')"
       :description="errorMessage"
       color="error"
       variant="soft"
@@ -263,7 +266,7 @@ const isButtonDisabled = computed(() => {
       :loading="loading || processingState === 'processing'"
       @click="handlePlaceOrder"
     >
-      Place Order
+      {{ $t('checkout.review.placeOrder') }}
     </UButton>
   </div>
 </template>

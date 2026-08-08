@@ -24,7 +24,9 @@ const sameAsBilling = computed(() => {
   <div v-if="cart" class="flex items-start gap-x-8 text-sm">
     <div class="flex items-start gap-x-1 w-full">
       <div class="flex flex-col w-1/3">
-        <div class="font-semibold text-black mb-1">Shipping Address</div>
+        <div class="font-semibold text-black mb-1">
+          {{ $t('checkout.summary.shippingAddress') }}
+        </div>
         <div>
           {{ cart.shipping_address?.first_name }}
           {{ cart.shipping_address?.last_name }}
@@ -43,7 +45,9 @@ const sameAsBilling = computed(() => {
       </div>
 
       <div class="flex flex-col w-1/3">
-        <div class="font-semibold text-black mb-1">Contact</div>
+        <div class="font-semibold text-black mb-1">
+          {{ $t('checkout.summary.contact') }}
+        </div>
         <div>
           {{ cart.shipping_address?.phone }}
         </div>
@@ -53,10 +57,12 @@ const sameAsBilling = computed(() => {
       </div>
 
       <div class="flex flex-col w-1/3">
-        <div class="font-semibold text-black mb-1">Billing Address</div>
+        <div class="font-semibold text-black mb-1">
+          {{ $t('checkout.summary.billingAddress') }}
+        </div>
 
         <div v-if="sameAsBilling">
-          Billing- and delivery address are the same.
+          {{ $t('checkout.summary.billingSameNote') }}
         </div>
         <div v-else>
           <div>
@@ -78,5 +84,5 @@ const sameAsBilling = computed(() => {
       </div>
     </div>
   </div>
-  <div v-else>...loading</div>
+  <div v-else>{{ $t('pages.orderConfirmed.loading') }}</div>
 </template>

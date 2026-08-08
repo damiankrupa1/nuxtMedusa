@@ -11,7 +11,9 @@ const categories = computed(() =>
 
 <template>
   <div class="flex flex-col gap-y-4">
-    <div class="font-medium text-color-dimmed">Categories</div>
+    <div class="font-medium text-color-dimmed">
+      {{ $t('app.footer.categories') }}
+    </div>
     <ul class="grid grid-cols-1 gap-y-2">
       <li v-for="category in categories" :key="category.id">
         <AppLink :to="`/categories/${category.handle}`">

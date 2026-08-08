@@ -16,7 +16,7 @@ const { data: collection } = await useFetchCollectionByHandle(handle)
         {{ collection?.title }}
       </p>
       <AppLinkButton :to="`/collections/${collection?.handle}`" class="pl-0">
-        View all
+        {{ $t('collection.preview.viewAll') }}
       </AppLinkButton>
     </div>
     <CollectionPreviewProducts

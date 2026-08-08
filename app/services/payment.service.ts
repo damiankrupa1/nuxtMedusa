@@ -5,6 +5,8 @@ import type {
 } from '@medusajs/types'
 import { paymentRepository } from '../repository/payment.repository'
 
+// TODO: unused (composables call paymentRepository directly) — remove if no logic is added here
+
 export const usePaymentService = () => {
   const { listPaymentProviders, initiatePaymentSession } = paymentRepository()
 

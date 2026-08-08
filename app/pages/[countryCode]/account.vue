@@ -5,9 +5,11 @@ definePageMeta({
   layout: 'default',
 })
 
+const { t } = useI18n()
+
 useHead({
-  title: 'Account - Medusa Store',
-  meta: [{ name: 'description', content: 'Manage your Medusa Store account' }],
+  title: t('pages.account.title'),
+  meta: [{ name: 'description', content: t('pages.account.description') }],
 })
 
 const mode = ref<'signin' | 'register'>('signin')
@@ -25,18 +27,20 @@ const isAuthenticated = computed(() => !!customerData.value?.customer)
           name="i-heroicons-arrow-path"
           class="animate-spin h-8 w-8 mx-auto mb-4"
         />
-        <p>Loading your account information...</p>
+        <p>{{ $t('pages.account.loading') }}</p>
       </div>
 
       <div
         v-else-if="isAuthenticated && customerData?.customer"
         class="w-full max-w-md p-6 bg-white shadow-md rounded-lg"
       >
-        <h1 class="text-2xl font-semibold mb-6 text-center">My Account</h1>
+        <h1 class="text-2xl font-semibold mb-6 text-center">
+          {{ $t('pages.account.heading') }}
+        </h1>
 
         <div class="space-y-4">
           <div class="flex justify-between">
-            <span class="font-medium">Name:</span>
+            <span class="font-medium">{{ $t('pages.account.name') }}</span>
             <span
               >{{ customerData.customer.first_name }}
               {{ customerData.customer.last_name }}</span
@@ -44,18 +48,22 @@ const isAuthenticated = computed(() => !!customerData.value?.customer)
           </div>
 
           <div class="flex justify-between">
-            <span class="font-medium">Email:</span>
+            <span class="font-medium">{{ $t('pages.account.email') }}</span>
             <span>{{ customerData.customer.email }}</span>
           </div>
 
           <div class="flex justify-between">
-            <span class="font-medium">Phone:</span>
-            <span>{{ customerData.customer.phone || 'Not provided' }}</span>
+            <span class="font-medium">{{ $t('pages.account.phone') }}</span>
+            <span>{{
+              customerData.customer.phone || $t('pages.account.notProvided')
+            }}</span>
           </div>
         </div>
 
         <div class="mt-8 text-center">
-          <UButton color="primary" @click="logout"> Sign Out </UButton>
+          <UButton color="primary" @click="logout">
+            {{ $t('pages.account.signOut') }}
+          </UButton>
         </div>
       </div>
 

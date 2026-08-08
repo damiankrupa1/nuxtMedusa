@@ -29,7 +29,7 @@ const hasReducedPrice = computed(() =>
     :class="[displayInline ? 'flex-row items-center' : 'flex-col']"
   >
     <div v-if="hasReducedPrice" class="flex items-center gap-x-1">
-      <span v-if="extended">Original:</span>
+      <span v-if="extended">{{ $t('product.price.original') }}</span>
       <StoreLocalizedPrice
         :amount="originalPrice"
         :currency-code="currencyCode"
@@ -40,7 +40,7 @@ const hasReducedPrice = computed(() =>
       class="flex items-center gap-x-1"
       :class="{ 'text-primary-500': hasReducedPrice }"
     >
-      <span v-if="isCheapest">From</span>
+      <span v-if="isCheapest">{{ $t('product.price.from') }}</span>
       <StoreLocalizedPrice
         :amount="currentPrice"
         :currency-code="currencyCode"

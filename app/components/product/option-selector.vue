@@ -22,7 +22,7 @@ const optionValues = computed(() => {
 <template>
   <div class="flex flex-col gap-y-3">
     <div class="text-sm font-medium text-neutral-900">
-      Select {{ option.title }}
+      {{ $t('product.optionSelector.select', { option: option.title }) }}
     </div>
     <div class="flex flex-wrap justify-between gap-2">
       <div

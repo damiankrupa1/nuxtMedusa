@@ -2,7 +2,13 @@ import { prerenderRoutesHook } from './config/prerender-routes-hook'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxtjs/medusa', '@nuxt/ui', '@nuxt/image', '@nuxt/eslint'],
+  modules: [
+    '@nuxtjs/medusa',
+    '@nuxt/ui',
+    '@nuxt/image',
+    '@nuxt/eslint',
+    '@nuxtjs/i18n',
+  ],
 
   devtools: { enabled: true },
 
@@ -50,6 +56,18 @@ export default defineNuxtConfig({
     config: {
       stylistic: true,
     },
+  },
+
+  i18n: {
+    strategy: 'no_prefix',
+    defaultLocale: 'en',
+    locales: [
+      { code: 'en', name: 'English', file: 'en.json' },
+      { code: 'pl', name: 'Polski', file: 'pl.json' },
+    ],
+    restructureDir: 'i18n',
+    langDir: 'locales',
+    detectBrowserLanguage: false,
   },
 
   medusa: {

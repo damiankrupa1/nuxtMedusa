@@ -1,10 +1,12 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 useSeoMeta({
-  title: 'All products',
-  ogTitle: 'All products',
+  title: t('pages.store.title'),
+  ogTitle: t('pages.store.title'),
 })
 </script>
 
 <template>
-  <StoreCatalog title="All products" />
+  <StoreCatalog :title="$t('pages.store.title')" />
 </template>

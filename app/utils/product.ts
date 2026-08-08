@@ -3,9 +3,9 @@ import { SORT_OPTIONS, type SortOptionsType } from '~/types/filter'
 
 export function getCheapestVariant(product?: StoreProduct) {
   if (!product || !product.id) {
-    return
     throw new Error('No product provided')
   }
+
   return product.variants
     ?.filter((v) => !!v.calculated_price)
     .sort((a, b) => {

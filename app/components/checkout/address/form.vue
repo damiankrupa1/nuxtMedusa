@@ -13,49 +13,53 @@ const { data: cartResponse } = useNuxtData<StoreCartResponse>('cart')
 const cart = computed(() => cartResponse.value?.cart)
 const { mutate: updateCart, loading } = useUpdateCart()
 
-const schema = z.object({
-  shipping_address: z.object({
-    first_name: z
-      .string({ required_error: 'First name is required' })
-      .min(1, 'First name is required'),
-    last_name: z
-      .string({ required_error: 'Last name is required' })
-      .min(1, 'Last name is required'),
-    address_1: z
-      .string({ required_error: 'Address is required' })
-      .min(1, 'Address is required'),
-    address_2: z.string().optional(),
-    company: z.string().optional(),
-    postal_code: z
-      .string({ required_error: 'Postal code is required' })
-      .min(1, 'Postal code is required'),
-    city: z
-      .string({ required_error: 'City is required' })
-      .min(1, 'City is required'),
-    country_code: z
-      .string({ required_error: 'Country is required' })
-      .min(1, 'Country is required'),
-    province: z.string().optional(),
-    phone: z.string().optional(),
-  }),
-  email: z
-    .string({ required_error: 'Email is required' })
-    .email('Invalid email address'),
-  billing_address: z.object({
-    first_name: z.string().optional(),
-    last_name: z.string().optional(),
-    address_1: z.string().optional(),
-    address_2: z.string().optional(),
-    company: z.string().optional(),
-    postal_code: z.string().optional(),
-    city: z.string().optional(),
-    country_code: z.string().optional(),
-    province: z.string().optional(),
-    phone: z.string().optional(),
-  }),
-})
+const { t } = useI18n()
 
-type Schema = z.output<typeof schema>
+const buildSchema = () =>
+  z.object({
+    shipping_address: z.object({
+      first_name: z
+        .string({ required_error: t('validation.firstNameRequired') })
+        .min(1, t('validation.firstNameRequired')),
+      last_name: z
+        .string({ required_error: t('validation.lastNameRequired') })
+        .min(1, t('validation.lastNameRequired')),
+      address_1: z
+        .string({ required_error: t('validation.addressRequired') })
+        .min(1, t('validation.addressRequired')),
+      address_2: z.string().optional(),
+      company: z.string().optional(),
+      postal_code: z
+        .string({ required_error: t('validation.postalCodeRequired') })
+        .min(1, t('validation.postalCodeRequired')),
+      city: z
+        .string({ required_error: t('validation.cityRequired') })
+        .min(1, t('validation.cityRequired')),
+      country_code: z
+        .string({ required_error: t('validation.countryRequired') })
+        .min(1, t('validation.countryRequired')),
+      province: z.string().optional(),
+      phone: z.string().optional(),
+    }),
+    email: z
+      .string({ required_error: t('validation.emailRequired') })
+      .email(t('validation.emailInvalid')),
+    billing_address: z.object({
+      first_name: z.string().optional(),
+      last_name: z.string().optional(),
+      address_1: z.string().optional(),
+      address_2: z.string().optional(),
+      company: z.string().optional(),
+      postal_code: z.string().optional(),
+      city: z.string().optional(),
+      country_code: z.string().optional(),
+      province: z.string().optional(),
+      phone: z.string().optional(),
+    }),
+  })
+
+type Schema = z.infer<ReturnType<typeof buildSchema>>
+const schema = computed(buildSchema)
 
 interface PartialSchema {
   shipping_address: Partial<Schema['shipping_address']>
@@ -137,7 +141,7 @@ watch(state, (value) => {
           <AppInput
             v-model="state.shipping_address.first_name"
             name="shipping_address.first_name"
-            label="First name"
+            :label="$t('auth.fields.firstName')"
             required
             size="xl"
           />
@@ -152,7 +156,7 @@ watch(state, (value) => {
           <AppInput
             v-model="state.shipping_address.last_name"
             name="shipping_address.last_name"
-            label="Last name"
+            :label="$t('auth.fields.lastName')"
             required
             size="xl"
           />
@@ -167,7 +171,7 @@ watch(state, (value) => {
           <AppInput
             v-model="state.shipping_address.address_1"
             name="shipping_address.address_1"
-            label="Address"
+            :label="$t('checkout.address.fields.address')"
             required
             size="xl"
           />
@@ -181,7 +185,7 @@ watch(state, (value) => {
           <AppInput
             v-model="state.shipping_address.company"
             name="shipping_address.company"
-            label="Company"
+            :label="$t('checkout.address.fields.company')"
             size="xl"
           />
         </UFormField>
@@ -195,7 +199,7 @@ watch(state, (value) => {
           <AppInput
             v-model="state.shipping_address.postal_code"
             name="shipping_address.postal_code"
-            label="Postal code"
+            :label="$t('checkout.address.fields.postalCode')"
             required
             size="xl"
           />
@@ -210,7 +214,7 @@ watch(state, (value) => {
           <AppInput
             v-model="state.shipping_address.city"
             name="shipping_address.city"
-            label="City"
+            :label="$t('checkout.address.fields.city')"
             required
             size="xl"
           />
@@ -228,7 +232,7 @@ watch(state, (value) => {
           <AppInput
             v-model="state.shipping_address.province"
             name="shipping_address.province"
-            label="Province/State"
+            :label="$t('checkout.address.fields.provinceState')"
             size="xl"
           />
         </UFormField>
@@ -242,7 +246,7 @@ watch(state, (value) => {
             v-model="state.shipping_address.phone"
             name="shipping_address.phone"
             type="tel"
-            label="Phone"
+            :label="$t('auth.fields.phone')"
             size="xl"
           />
         </UFormField>
@@ -251,7 +255,7 @@ watch(state, (value) => {
         <UCheckbox
           v-model="sameAsBilling"
           color="neutral"
-          label="Billing address same as shipping address"
+          :label="$t('checkout.address.billingSameAsShipping')"
         />
       </div>
       <div class="grid grid-cols-2 gap-4 pb-8">
@@ -266,7 +270,7 @@ watch(state, (value) => {
             v-model="state.email"
             name="email"
             type="email"
-            label="Email"
+            :label="$t('auth.fields.email')"
             required
             size="xl"
           />
@@ -282,13 +286,15 @@ watch(state, (value) => {
             v-model="state.shipping_address.phone"
             name="shipping_address.phone"
             type="tel"
-            label="Phone"
+            :label="$t('auth.fields.phone')"
             size="xl"
           />
         </UFormField>
       </div>
       <div v-if="!sameAsBilling">
-        <AppHeading as="h2" class="mb-6"> Billing Address </AppHeading>
+        <AppHeading as="h2" class="mb-6">
+          {{ $t('checkout.address.billingAddressHeading') }}
+        </AppHeading>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-8">
           <UFormField
             required
@@ -300,7 +306,7 @@ watch(state, (value) => {
             <AppInput
               v-model="state.billing_address.first_name"
               name="billing_address.first_name"
-              label="First name"
+              :label="$t('auth.fields.firstName')"
               required
               size="xl"
             />
@@ -315,7 +321,7 @@ watch(state, (value) => {
             <AppInput
               v-model="state.billing_address.last_name"
               name="billing_address.last_name"
-              label="Last name"
+              :label="$t('auth.fields.lastName')"
               required
               size="xl"
             />
@@ -330,7 +336,7 @@ watch(state, (value) => {
             <AppInput
               v-model="state.billing_address.address_1"
               name="billing_address.address_1"
-              label="Address"
+              :label="$t('checkout.address.fields.address')"
               required
               size="xl"
             />
@@ -345,7 +351,7 @@ watch(state, (value) => {
             <AppInput
               v-model="state.billing_address.company"
               name="billing_address.company"
-              label="Company"
+              :label="$t('checkout.address.fields.company')"
               size="xl"
             />
           </UFormField>
@@ -359,7 +365,7 @@ watch(state, (value) => {
             <AppInput
               v-model="state.billing_address.postal_code"
               name="billing_address.postal_code"
-              label="Postal code"
+              :label="$t('checkout.address.fields.postalCode')"
               required
               size="xl"
             />
@@ -374,7 +380,7 @@ watch(state, (value) => {
             <AppInput
               v-model="state.billing_address.city"
               name="billing_address.city"
-              label="City"
+              :label="$t('checkout.address.fields.city')"
               required
               size="xl"
             />
@@ -397,7 +403,7 @@ watch(state, (value) => {
             <AppInput
               v-model="state.billing_address.province"
               name="billing_address.province"
-              label="Province/State"
+              :label="$t('checkout.address.fields.provinceState')"
               size="xl"
             />
           </UFormField>
@@ -412,7 +418,7 @@ watch(state, (value) => {
               v-model="state.billing_address.phone"
               name="billing_address.phone"
               type="tel"
-              label="Phone"
+              :label="$t('auth.fields.phone')"
               size="xl"
             />
           </UFormField>
@@ -425,7 +431,7 @@ watch(state, (value) => {
         type="submit"
         :loading="loading"
       >
-        Continue to delivery
+        {{ $t('checkout.address.continue') }}
       </UButton>
     </UForm>
   </div>

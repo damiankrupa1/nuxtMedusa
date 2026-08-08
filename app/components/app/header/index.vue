@@ -16,7 +16,7 @@ const isSideMenuOpen = ref(false)
           class="cursor-pointer h-full flex items-center flex-1 basis-0"
           @click="isSideMenuOpen = !isSideMenuOpen"
         >
-          Menu
+          {{ $t('app.header.menu') }}
         </div>
         <AppLink
           to="/"
@@ -25,12 +25,18 @@ const isSideMenuOpen = ref(false)
           {{ title }}
         </AppLink>
         <nav class="flex items-center space-x-6 flex-1 basis-0 justify-end">
-          <AppLink to="/store" class="hidden sm:flex"> Store </AppLink>
-          <AppLink to="/account" class="hidden sm:flex"> Account </AppLink>
+          <AppLink to="/store" class="hidden sm:flex">
+            {{ $t('app.header.store') }}
+          </AppLink>
+          <AppLink to="/account" class="hidden sm:flex">
+            {{ $t('app.header.account') }}
+          </AppLink>
           <ClientOnly>
             <LazyCartDropdown />
             <template #fallback>
-              <AppLink to="/cart" class="hidden sm:flex"> Cart </AppLink>
+              <AppLink to="/cart" class="hidden sm:flex">
+                {{ $t('app.header.cart') }}
+              </AppLink>
             </template>
           </ClientOnly>
         </nav>

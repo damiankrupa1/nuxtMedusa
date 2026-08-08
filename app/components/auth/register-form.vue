@@ -13,17 +13,19 @@ const {
   error: apiError,
 } = useRegisterCustomer()
 
-const formSchema = z.object({
-  first_name: z
-    .string()
-    .min(2, 'First name must contain at least 2 characters'),
-  last_name: z.string().min(2, 'Last name must contain at least 2 characters'),
-  email: z.email('Please enter a valid email address'),
-  phone: z.string().optional(),
-  password: z.string().min(6, 'Password must contain at least 6 characters'),
-})
+const { t } = useI18n()
 
-type FormType = z.infer<typeof formSchema>
+const buildSchema = () =>
+  z.object({
+    first_name: z.string().min(2, t('validation.firstNameMin')),
+    last_name: z.string().min(2, t('validation.lastNameMin')),
+    email: z.email(t('validation.emailInvalid')),
+    phone: z.string().optional(),
+    password: z.string().min(6, t('validation.passwordMin')),
+  })
+
+type FormType = z.infer<ReturnType<typeof buildSchema>>
+const formSchema = computed(buildSchema)
 
 const form = ref<FormType>({
   first_name: '',
@@ -51,8 +53,7 @@ const onSubmit = async (_event: FormSubmitEvent<FormType>) => {
     await refreshNuxtData('customer')
   } catch {
     if (!apiError.value) {
-      formError.value =
-        'An error occurred during registration. Please try again.'
+      formError.value = t('auth.register.genericError')
     }
   }
 }
@@ -67,8 +68,8 @@ const switchToSignin = () => {
 <template>
   <div class="w-full max-w-sm mx-auto">
     <AuthFormHeader
-      title="BECOME A MEDUSA STORE MEMBER"
-      description="Create your Medusa Store Member profile, and get access to an enhanced shopping experience."
+      :title="$t('auth.register.title')"
+      :description="$t('auth.register.description')"
     />
 
     <AppFormError :message="displayError" :show="!!displayError" class="mb-4" />
@@ -91,7 +92,7 @@ const switchToSignin = () => {
           name="first_name"
           autocomplete="given-name"
           required
-          label="First name"
+          :label="$t('auth.fields.firstName')"
           size="xl"
         />
       </UFormField>
@@ -108,7 +109,7 @@ const switchToSignin = () => {
           name="last_name"
           autocomplete="family-name"
           required
-          label="Last name"
+          :label="$t('auth.fields.lastName')"
           size="xl"
         />
       </UFormField>
@@ -126,7 +127,7 @@ const switchToSignin = () => {
           type="email"
           autocomplete="email"
           required
-          label="Email"
+          :label="$t('auth.fields.email')"
           size="xl"
         />
       </UFormField>
@@ -142,7 +143,7 @@ const switchToSignin = () => {
           name="phone"
           type="tel"
           autocomplete="tel"
-          label="Phone"
+          :label="$t('auth.fields.phone')"
           size="xl"
         />
       </UFormField>
@@ -159,30 +160,33 @@ const switchToSignin = () => {
           name="password"
           autocomplete="new-password"
           required
-          label="Password"
+          :label="$t('auth.fields.password')"
           size="xl"
         />
       </UFormField>
 
       <div class="text-xs py-6">
-        By creating an account, you agree to Medusa Store's
+        {{ $t('auth.register.agreement') }}
         <AppLink class="underline" to="/privacy-policy">
-          Privacy Policy
+          {{ $t('auth.register.privacyPolicy') }}
         </AppLink>
-        and
-        <AppLink class="underline" to="/terms-of-use"> Terms of Use </AppLink>.
+        {{ $t('auth.register.and') }}
+        <AppLink class="underline" to="/terms-of-use">
+          {{ $t('auth.register.termsOfUse') }}
+        </AppLink>
+        .
       </div>
 
       <AppButtonPrimary type="submit" block :loading="isRegistering">
-        Join
+        {{ $t('auth.register.submit') }}
       </AppButtonPrimary>
     </UForm>
 
     <div class="mt-6 text-center text-xs">
       <p>
-        Already a member?
+        {{ $t('auth.register.alreadyMember') }}
         <span class="underline cursor-pointer" @click="switchToSignin">
-          Sign in
+          {{ $t('auth.signin.submit') }}
         </span>
       </p>
     </div>
