@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm add *)",
+      "Bash(echo \"EXIT:$?\")",
+      "Read(//tmp/**)",
+      "Bash(grep -n \"Prerendering\\\\|Server Error\\\\|nitro\\\\]\" /tmp/build.log -A5 -B30 | head -150)",
+      "Bash(grep -a -n \"Prerendering\\\\|Server Error\\\\|nitro\\\\]\" /tmp/build.log | head -20)",
+      "Bash(sed -n '700,800p' /tmp/build.log | strings)",
+      "Bash(sed -n '700,800p' /tmp/build.log | tr -cd '[:print:]\\\\n')",
+      "Bash(taskkill //F //IM node.exe)"
+    ]
+  }
+}

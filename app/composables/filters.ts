@@ -3,12 +3,13 @@ import { SORT_OPTIONS, type SortOptionsType } from '~/types/filter'
 export const useFilters = () => {
   const route = useRoute()
   const router = useRouter()
+  const { t } = useI18n()
 
-  const sortOptions = [
-    { value: SORT_OPTIONS.CREATED_AT, label: 'Latest Arrivals' },
-    { value: SORT_OPTIONS.PRICE_ASC, label: 'Price: Low -> High' },
-    { value: SORT_OPTIONS.PRICE_DESC, label: 'Price: High -> Low' },
-  ]
+  const sortOptions = computed(() => [
+    { value: SORT_OPTIONS.CREATED_AT, label: t('store.sort.latest') },
+    { value: SORT_OPTIONS.PRICE_ASC, label: t('store.sort.priceAsc') },
+    { value: SORT_OPTIONS.PRICE_DESC, label: t('store.sort.priceDesc') },
+  ])
 
   const pageNumber = computed<number>({
     get: () => {

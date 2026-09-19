@@ -18,20 +18,26 @@ const paymentMethod = computed(() =>
 <template>
   <div v-if="paymentMethod" class="flex items-start gap-x-1 w-full">
     <div class="flex flex-col w-1/3">
-      <div class="font-semibold text-black mb-1">Payment method</div>
+      <div class="font-semibold text-black mb-1">
+        {{ $t('checkout.summary.paymentMethod') }}
+      </div>
       <div>
         {{ paymentMethod.label }}
       </div>
     </div>
     <div class="flex flex-col w-1/3">
-      <div class="font-semibold text-black mb-1">Payment details</div>
+      <div class="font-semibold text-black mb-1">
+        {{ $t('checkout.summary.paymentDetails') }}
+      </div>
       <div class="flex gap-2 text-medium items-center">
         <div
           class="flex items-center h-7 w-fit p-2 bg-neutral-50 rounded-lg border border-neutral-200"
         >
           <UIcon :name="paymentMethod.icon" class="size-5" />
         </div>
-        <div class="text-sm">Another step will appear</div>
+        <div class="text-sm">
+          {{ $t('checkout.summary.anotherStepWillAppear') }}
+        </div>
       </div>
     </div>
   </div>

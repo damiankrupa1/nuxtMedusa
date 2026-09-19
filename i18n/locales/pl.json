@@ -1,0 +1,249 @@
+{
+  "common": {
+    "loading": "Ładowanie...",
+    "close": "Zamknij",
+    "continue": "Dalej"
+  },
+  "app": {
+    "header": {
+      "menu": "Menu",
+      "home": "Strona główna",
+      "store": "Sklep",
+      "account": "Konto",
+      "cart": "Koszyk",
+      "backToCart": "Powrót do koszyka",
+      "shippingTo": "Wysyłka do:"
+    },
+    "sideMenu": {
+      "title": "Menu",
+      "description": "Menu nawigacyjne"
+    },
+    "footer": {
+      "categories": "Kategorie",
+      "collections": "Kolekcje",
+      "brandHeading": "Medusa",
+      "github": "Github",
+      "documentation": "Dokumentacja",
+      "poweredBy": "Obsługiwane przez",
+      "copyright": "© {year} {title}. Wszelkie prawa zastrzeżone."
+    }
+  },
+  "pages": {
+    "root": {
+      "placeholder": "Nie powinno cię tu być"
+    },
+    "home": {
+      "title": "Fashion"
+    },
+    "store": {
+      "title": "Wszystkie produkty"
+    },
+    "contact": {
+      "title": "Kontakt"
+    },
+    "checkout": {
+      "title": "Płatność",
+      "cartHeading": "W Twoim koszyku"
+    },
+    "cart": {
+      "title": "Koszyk",
+      "heading": "Koszyk",
+      "summary": "Podsumowanie"
+    },
+    "account": {
+      "title": "Konto - Medusa Store",
+      "description": "Zarządzaj swoim kontem Medusa Store",
+      "loading": "Ładowanie informacji o koncie...",
+      "heading": "Moje konto",
+      "name": "Imię i nazwisko:",
+      "email": "Email:",
+      "phone": "Telefon:",
+      "notProvided": "Nie podano",
+      "signOut": "Wyloguj się"
+    },
+    "orderConfirmed": {
+      "title": "Zamówienie potwierdzone",
+      "thankYou": "Dziękujemy!",
+      "orderPlaced": "Twoje zamówienie zostało złożone pomyślnie.",
+      "confirmationSentTo": "Wysłaliśmy szczegóły potwierdzenia zamówienia na",
+      "orderDate": "Data zamówienia:",
+      "orderNumber": "Numer zamówienia:",
+      "summary": "Podsumowanie",
+      "delivery": "Dostawa",
+      "shippingAddress": "Adres wysyłki",
+      "contact": "Kontakt",
+      "method": "Metoda",
+      "payment": "Płatność",
+      "paymentMethod": "Metoda płatności",
+      "paymentDetails": "Szczegóły płatności",
+      "paidAt": "opłacono",
+      "needHelp": "Potrzebujesz pomocy?",
+      "contactUs": "Skontaktuj się z nami",
+      "returnExchanges": "Zwroty i wymiany",
+      "loading": "...ładowanie"
+    }
+  },
+  "cart": {
+    "empty": {
+      "message": "Nie masz nic w koszyku. Zmieńmy to — skorzystaj z poniższego linku, aby zacząć przeglądać nasze produkty.",
+      "cta": "Przeglądaj produkty"
+    },
+    "table": {
+      "item": "Produkt",
+      "quantity": "Ilość",
+      "price": "Cena",
+      "total": "Razem",
+      "variant": "Wariant: {name}",
+      "remove": "Usuń"
+    },
+    "summary": {
+      "checkoutCta": "Przejdź do płatności"
+    },
+    "totals": {
+      "subtotal": "Suma częściowa (bez wysyłki i podatków)",
+      "discount": "Rabat",
+      "shipping": "Wysyłka",
+      "taxes": "Podatki",
+      "giftCard": "Karta podarunkowa"
+    },
+    "dropdown": {
+      "heading": "Koszyk",
+      "empty": "Twój koszyk jest pusty",
+      "subtotal": "Suma częściowa",
+      "subtotalNote": "(bez podatków)",
+      "cartCta": "Przejdź do koszyka"
+    }
+  },
+  "product": {
+    "optionSelector": {
+      "select": "Wybierz {option}"
+    },
+    "price": {
+      "original": "Cena regularna:",
+      "from": "Od"
+    },
+    "variantSelector": {
+      "selectVariant": "Wybierz wariant",
+      "outOfStock": "Brak w magazynie",
+      "addToCart": "Dodaj do koszyka"
+    }
+  },
+  "collection": {
+    "preview": {
+      "viewAll": "Zobacz wszystkie"
+    }
+  },
+  "store": {
+    "selectCountry": {
+      "placeholder": "Kraj*"
+    },
+    "catalog": {
+      "sortBy": "Sortuj według"
+    },
+    "hero": {
+      "imageAlt": "Nowa kolekcja",
+      "tagline": "Ruch, uproszczony.",
+      "cta": "Kup teraz"
+    },
+    "sort": {
+      "latest": "Najnowsze",
+      "priceAsc": "Cena: od najniższej",
+      "priceDesc": "Cena: od najwyższej"
+    }
+  },
+  "auth": {
+    "fields": {
+      "email": "Email",
+      "password": "Hasło",
+      "firstName": "Imię",
+      "lastName": "Nazwisko",
+      "phone": "Telefon"
+    },
+    "signin": {
+      "title": "ZALOGUJ SIĘ",
+      "description": "Zaloguj się na swoje konto, aby kontynuować.",
+      "submit": "Zaloguj się",
+      "notMember": "Nie masz jeszcze konta?",
+      "joinUs": "Dołącz do nas",
+      "genericError": "Wystąpił błąd podczas logowania. Spróbuj ponownie."
+    },
+    "register": {
+      "title": "ZOSTAŃ CZŁONKIEM MEDUSA STORE",
+      "description": "Utwórz profil członka Medusa Store i zyskaj dostęp do lepszych zakupów.",
+      "agreement": "Zakładając konto, akceptujesz",
+      "and": "oraz",
+      "privacyPolicy": "Politykę prywatności",
+      "termsOfUse": "Regulamin",
+      "submit": "Dołącz",
+      "alreadyMember": "Masz już konto?",
+      "genericError": "Wystąpił błąd podczas rejestracji. Spróbuj ponownie."
+    }
+  },
+  "validation": {
+    "emailInvalid": "Podaj prawidłowy adres email",
+    "passwordRequired": "Podaj swoje hasło",
+    "firstNameMin": "Imię musi zawierać co najmniej 2 znaki",
+    "lastNameMin": "Nazwisko musi zawierać co najmniej 2 znaki",
+    "passwordMin": "Hasło musi zawierać co najmniej 6 znaków",
+    "firstNameRequired": "Imię jest wymagane",
+    "lastNameRequired": "Nazwisko jest wymagane",
+    "addressRequired": "Adres jest wymagany",
+    "postalCodeRequired": "Kod pocztowy jest wymagany",
+    "cityRequired": "Miasto jest wymagane",
+    "countryRequired": "Kraj jest wymagany",
+    "emailRequired": "Email jest wymagany"
+  },
+  "checkout": {
+    "address": {
+      "fields": {
+        "address": "Adres",
+        "company": "Firma",
+        "postalCode": "Kod pocztowy",
+        "city": "Miasto",
+        "provinceState": "Województwo/Stan"
+      },
+      "billingSameAsShipping": "Adres rozliczeniowy taki sam jak adres wysyłki",
+      "billingAddressHeading": "Adres rozliczeniowy",
+      "continue": "Przejdź do dostawy"
+    },
+    "summary": {
+      "shippingAddress": "Adres wysyłki",
+      "contact": "Kontakt",
+      "billingAddress": "Adres rozliczeniowy",
+      "billingSameNote": "Adres rozliczeniowy i dostawy są takie same.",
+      "method": "Metoda",
+      "paymentMethod": "Metoda płatności",
+      "paymentDetails": "Szczegóły płatności",
+      "anotherStepWillAppear": "Pojawi się kolejny krok"
+    },
+    "delivery": {
+      "continue": "Przejdź do płatności"
+    },
+    "steps": {
+      "shippingAddress": "Adres wysyłki",
+      "edit": "Edytuj",
+      "deliveryOptions": "Opcje dostawy",
+      "payment": "Płatność",
+      "reviewOrder": "Podsumowanie zamówienia"
+    },
+    "payment": {
+      "selectMethod": "Wybierz metodę płatności",
+      "initFailed": "Nie udało się zainicjować płatności. Spróbuj ponownie.",
+      "continue": "Przejdź do podsumowania"
+    },
+    "review": {
+      "termsIntro": "Klikając przycisk Złóż zamówienie, potwierdzasz, że przeczytałeś/aś, rozumiesz i akceptujesz nasze",
+      "termsOfUse": "Warunki korzystania",
+      "termsOfSale": "Warunki sprzedaży",
+      "returnsPolicy": "Zasady zwrotów",
+      "privacyPolicyAck": "oraz potwierdzasz, że zapoznałeś/aś się z",
+      "privacyPolicy": "Polityką prywatności Medusa Store",
+      "creditCardInfo": "Dane karty kredytowej",
+      "cardComplete": "Dane karty są kompletne",
+      "paymentErrorTitle": "Błąd płatności",
+      "initFormFailed": "Nie udało się zainicjować formularza płatności",
+      "genericError": "Wystąpił błąd podczas przetwarzania płatności. Spróbuj ponownie.",
+      "placeOrder": "Złóż zamówienie"
+    }
+  }
+}

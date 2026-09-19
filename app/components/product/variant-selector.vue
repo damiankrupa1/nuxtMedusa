@@ -71,16 +71,18 @@ const inStock = computed(() => {
   return false
 })
 
+const { t } = useI18n()
+
 const buttonLabel = computed(() => {
   if (!selectedVariant.value && !selectedOptions.value) {
-    return 'Select variant'
+    return t('product.variantSelector.selectVariant')
   }
 
   if (!inStock.value || !isValidVariant.value) {
-    return 'Out of stock'
+    return t('product.variantSelector.outOfStock')
   }
 
-  return 'Add to cart'
+  return t('product.variantSelector.addToCart')
 })
 
 const disabled = computed(() => {

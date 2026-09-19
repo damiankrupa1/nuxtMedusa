@@ -10,7 +10,9 @@ const cart = computed(() => cartResponse.value?.cart)
     v-if="!!cart?.shipping_methods?.at(-1)?.shipping_option_id"
     class="flex flex-col w-1/3"
   >
-    <div class="font-semibold text-black mb-1">Method</div>
+    <div class="font-semibold text-black mb-1">
+      {{ $t('checkout.summary.method') }}
+    </div>
     <div>
       {{ cart.shipping_methods?.at(-1)?.name }}
       (<StoreLocalizedPrice

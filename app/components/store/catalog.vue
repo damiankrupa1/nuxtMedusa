@@ -31,7 +31,7 @@ const displayPagination = computed(() => count.value > defaultProductsPerPage)
     <div class="py-4 mb-8 sm:px-0 pl-6 sm:min-w-[250px]">
       <URadioGroup
         v-model="sortBy"
-        legend="Sort by"
+        :legend="$t('store.catalog.sortBy')"
         :items="sortOptions"
         color="neutral"
         :ui="{

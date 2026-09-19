@@ -14,12 +14,16 @@ const {
   error: apiError,
 } = useLoginCustomer()
 
-const formSchema = z.object({
-  email: z.string().email('Please enter a valid email address'),
-  password: z.string().min(1, 'Please enter your password'),
-})
+const { t } = useI18n()
 
-type FormType = z.infer<typeof formSchema>
+const buildSchema = () =>
+  z.object({
+    email: z.string().email(t('validation.emailInvalid')),
+    password: z.string().min(1, t('validation.passwordRequired')),
+  })
+
+type FormType = z.infer<ReturnType<typeof buildSchema>>
+const formSchema = computed(buildSchema)
 
 const form = ref<FormType>({
   email: '',
@@ -41,7 +45,7 @@ const onSubmit = async (_event: FormSubmitEvent<FormType>) => {
     await refreshNuxtData('customer')
   } catch {
     if (!apiError.value) {
-      formError.value = 'An error occurred during sign in. Please try again.'
+      formError.value = t('auth.signin.genericError')
     }
   }
 }
@@ -56,8 +60,8 @@ const switchToRegister = () => {
 <template>
   <div class="w-full max-w-sm mx-auto">
     <AuthFormHeader
-      title="SIGN IN"
-      description="Sign in to your account to continue."
+      :title="$t('auth.signin.title')"
+      :description="$t('auth.signin.description')"
     />
 
     <AppFormError :message="displayError" :show="!!displayError" class="mb-4" />
@@ -81,7 +85,7 @@ const switchToRegister = () => {
           type="email"
           autocomplete="email"
           required
-          label="Email"
+          :label="$t('auth.fields.email')"
           size="xl"
         />
       </UFormField>
@@ -98,21 +102,21 @@ const switchToRegister = () => {
           name="password"
           autocomplete="current-password"
           required
-          label="Password"
+          :label="$t('auth.fields.password')"
           size="xl"
         />
       </UFormField>
 
       <AppButtonPrimary type="submit" block :loading="isLoggingIn" class="mt-6">
-        Sign in
+        {{ $t('auth.signin.submit') }}
       </AppButtonPrimary>
     </UForm>
 
     <div class="mt-6 text-center text-xs">
       <p>
-        Not a member?
+        {{ $t('auth.signin.notMember') }}
         <span class="underline cursor-pointer" @click="switchToRegister">
-          Join us
+          {{ $t('auth.signin.joinUs') }}
         </span>
       </p>
     </div>

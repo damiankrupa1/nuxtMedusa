@@ -26,8 +26,10 @@ const paymentDate = computed(() => {
   return new Date(paymentMethod.value?.created_at).toDateString()
 })
 
+const { t } = useI18n()
+
 useSeoMeta({
-  title: 'Order confirmed',
+  title: t('pages.orderConfirmed.title'),
   robots: 'noindex',
 })
 </script>
@@ -41,25 +43,36 @@ useSeoMeta({
       class="flex flex-col gap-4 max-w-4xl h-full bg-white w-full py-10"
     >
       <AppHeading as="h1" class="flex flex-col gap-y-3">
-        <div>Thank you!</div>
-        <div>Your order was placed successfully.</div>
+        <div>{{ $t('pages.orderConfirmed.thankYou') }}</div>
+        <div>{{ $t('pages.orderConfirmed.orderPlaced') }}</div>
       </AppHeading>
       <div class="text-sm text-black flex flex-col gap-y-2">
         <p>
-          We have sent the order confirmation details to
+          {{ $t('pages.orderConfirmed.confirmationSentTo') }}
           <span class="font-semibold">{{ order?.email }}</span>
         </p>
-        <p>Order date: {{ new Date(order.created_at).toDateString() }}</p>
-        <p class="text-blue-500">Order number: {{ order.id }}</p>
+        <p>
+          {{ $t('pages.orderConfirmed.orderDate') }}
+          {{ new Date(order.created_at).toDateString() }}
+        </p>
+        <p class="text-blue-500">
+          {{ $t('pages.orderConfirmed.orderNumber') }} {{ order.id }}
+        </p>
       </div>
-      <AppHeading as="h2"> Summary </AppHeading>
+      <AppHeading as="h2">
+        {{ $t('pages.orderConfirmed.summary') }}
+      </AppHeading>
       <USeparator />
       <OrderTableWrapper :order="order" is-preview />
       <CartTotals :cart="order" />
-      <AppHeading as="h2"> Delivery </AppHeading>
+      <AppHeading as="h2">
+        {{ $t('pages.orderConfirmed.delivery') }}
+      </AppHeading>
       <div class="flex items-start gap-x-1 w-full text-sm">
         <div class="flex flex-col w-1/3">
-          <div class="font-semibold text-black mb-1">Shipping Address</div>
+          <div class="font-semibold text-black mb-1">
+            {{ $t('pages.orderConfirmed.shippingAddress') }}
+          </div>
           <div>
             {{ order.shipping_address?.first_name }}
             {{ order.shipping_address?.last_name }}
@@ -78,7 +91,9 @@ useSeoMeta({
         </div>
 
         <div class="flex flex-col w-1/3">
-          <div class="font-semibold text-black mb-1">Contact</div>
+          <div class="font-semibold text-black mb-1">
+            {{ $t('pages.orderConfirmed.contact') }}
+          </div>
           <div>
             {{ order.shipping_address?.phone }}
           </div>
@@ -88,7 +103,9 @@ useSeoMeta({
         </div>
 
         <div class="flex flex-col w-1/3">
-          <div class="font-semibold text-black mb-1">Method</div>
+          <div class="font-semibold text-black mb-1">
+            {{ $t('pages.orderConfirmed.method') }}
+          </div>
           <div>
             {{ order.shipping_methods?.at(-1)?.name }}
             (<StoreLocalizedPrice
@@ -99,16 +116,22 @@ useSeoMeta({
         </div>
       </div>
       <USeparator />
-      <AppHeading as="h2"> Payment </AppHeading>
+      <AppHeading as="h2">
+        {{ $t('pages.orderConfirmed.payment') }}
+      </AppHeading>
       <div class="flex items-start gap-x-1 w-full text-sm">
         <div class="flex flex-col w-1/3">
-          <div class="font-semibold text-black mb-1">Payment method</div>
+          <div class="font-semibold text-black mb-1">
+            {{ $t('pages.orderConfirmed.paymentMethod') }}
+          </div>
           <div>
             {{ paymentProvider?.label }}
           </div>
         </div>
         <div class="flex flex-col w-2/3">
-          <div class="font-semibold text-black mb-1">Payment details</div>
+          <div class="font-semibold text-black mb-1">
+            {{ $t('pages.orderConfirmed.paymentDetails') }}
+          </div>
           <div class="flex gap-2 items-center">
             <div
               class="flex items-center h-7 w-fit p-2 bg-neutral-50 rounded-lg border border-neutral-200"
@@ -123,7 +146,7 @@ useSeoMeta({
                 :amount="paymentMethod?.amount"
                 :currency-code="order?.currency_code"
               />
-              <span>paid at</span>
+              <span>{{ $t('pages.orderConfirmed.paidAt') }}</span>
               <span>{{ paymentDate }}</span>
             </div>
           </div>
@@ -131,21 +154,23 @@ useSeoMeta({
       </div>
       <USeparator />
       <div class="mt-6">
-        <div class="font-semibold text-sm text-black">Need help?</div>
+        <div class="font-semibold text-sm text-black">
+          {{ $t('pages.orderConfirmed.needHelp') }}
+        </div>
         <ul class="my-2 gap-y-2 flex flex-col">
           <li>
             <AppLink to="/contact" class="text-sm text-black">
-              Contact us
+              {{ $t('pages.orderConfirmed.contactUs') }}
             </AppLink>
           </li>
           <li>
             <AppLink to="/contact" class="text-sm text-black">
-              Return & Exchanges
+              {{ $t('pages.orderConfirmed.returnExchanges') }}
             </AppLink>
           </li>
         </ul>
       </div>
     </div>
-    <div v-else>...loading</div>
+    <div v-else>{{ $t('pages.orderConfirmed.loading') }}</div>
   </UContainer>
 </template>

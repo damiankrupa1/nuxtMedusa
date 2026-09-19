@@ -10,7 +10,7 @@ const value = defineModel<string>()
     value-key="iso_2"
     label-key="display_name"
     class="w-full"
-    placeholder="Country*"
+    :placeholder="$t('store.selectCountry.placeholder')"
     color="neutral"
     required
   />

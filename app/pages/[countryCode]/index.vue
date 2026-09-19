@@ -1,7 +1,9 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 useSeoMeta({
-  title: 'Fashion',
-  ogTitle: 'Fashion',
+  title: t('pages.home.title'),
+  ogTitle: t('pages.home.title'),
 })
 </script>
 

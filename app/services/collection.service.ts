@@ -1,6 +1,8 @@
 import type { StoreCollectionFilters } from '@medusajs/types'
 import { collectionRepository } from '../repository/collection.repository'
 
+// TODO: unused (composables call collectionRepository directly) — remove if no logic is added here
+
 export const useCollectionService = () => {
   const { listCollections, fetchCollectionByHandle } = collectionRepository()
 

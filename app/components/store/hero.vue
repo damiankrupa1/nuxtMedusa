@@ -6,7 +6,7 @@
   >
     <NuxtImg
       src="/images/hero/people.jpg"
-      alt="New collection"
+      :alt="$t('store.hero.imageAlt')"
       width="1920"
       height="1080"
       class="h-full w-full object-cover"
@@ -17,7 +17,7 @@
       class="absolute top-0 left-0 w-full h-full bg-black/50 flex flex-col justify-center items-center text-center gap-y-4 px-4"
     >
       <h1 class="text-3xl leading-10 tracking-tight text-white">
-        Movement, simplified.
+        {{ $t('store.hero.tagline') }}
       </h1>
     </div>
     <!-- TODO: Update link -->
@@ -27,7 +27,7 @@
       class="mt-30 absolute max-w-[500px] bg-transparent"
       variant="outline"
     >
-      Shop
+      {{ $t('store.hero.cta') }}
     </AppButtonPrimary>
   </div>
 </template>

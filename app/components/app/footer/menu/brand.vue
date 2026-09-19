@@ -1,11 +1,13 @@
 <script lang="ts" setup>
 const items = ref([
   {
-    title: 'Github',
+    key: 'github',
+    titleKey: 'app.footer.github',
     link: 'https://github.com/medusajs',
   },
   {
-    title: 'Documentation',
+    key: 'documentation',
+    titleKey: 'app.footer.documentation',
     link: 'https://github.com/medusajs',
   },
 ])
@@ -13,15 +15,17 @@ const items = ref([
 
 <template>
   <div class="flex flex-col gap-y-4">
-    <div class="font-medium text-color-dimmed">Medusa</div>
+    <div class="font-medium text-color-dimmed">
+      {{ $t('app.footer.brandHeading') }}
+    </div>
     <ul class="grid grid-cols-1 gap-y-2">
-      <li v-for="item in items" :key="item.title">
+      <li v-for="item in items" :key="item.key">
         <NuxtLink
           :href="item.link"
           target="_blank"
           class="hover:text-color-dimmed"
         >
-          {{ item.title }}
+          {{ $t(item.titleKey) }}
         </NuxtLink>
       </li>
     </ul>

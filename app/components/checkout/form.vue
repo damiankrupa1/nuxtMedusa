@@ -37,7 +37,7 @@ const isPaymentValid = computed(() => {
               : 'text-neutral-500',
           ]"
         >
-          Shipping Address
+          {{ $t('checkout.steps.shippingAddress') }}
           <UIcon
             v-if="isAddressValid"
             name="i-lucide-circle-check-big"
@@ -51,7 +51,7 @@ const isPaymentValid = computed(() => {
           color="primary"
           @click="goToStep('address')"
         >
-          Edit
+          {{ $t('checkout.steps.edit') }}
         </UButton>
       </div>
       <CheckoutAddressForm
@@ -73,7 +73,7 @@ const isPaymentValid = computed(() => {
               : 'text-neutral-500',
           ]"
         >
-          Delivery Options
+          {{ $t('checkout.steps.deliveryOptions') }}
           <UIcon
             v-if="isDeliveryValid"
             name="i-lucide-circle-check-big"
@@ -87,7 +87,7 @@ const isPaymentValid = computed(() => {
           color="primary"
           @click="goToStep('delivery')"
         >
-          Edit
+          {{ $t('checkout.steps.edit') }}
         </UButton>
       </div>
       <CheckoutDeliveryForm
@@ -109,7 +109,7 @@ const isPaymentValid = computed(() => {
               : 'text-neutral-500',
           ]"
         >
-          Payment
+          {{ $t('checkout.steps.payment') }}
           <UIcon
             v-if="isPaymentValid"
             name="i-lucide-circle-check-big"
@@ -123,7 +123,7 @@ const isPaymentValid = computed(() => {
           color="primary"
           @click="goToStep('payment')"
         >
-          Edit
+          {{ $t('checkout.steps.edit') }}
         </UButton>
       </div>
       <CheckoutPaymentForm
@@ -143,7 +143,7 @@ const isPaymentValid = computed(() => {
             currentStep === 'review' ? 'text-black' : 'text-neutral-500',
           ]"
         >
-          Review Order
+          {{ $t('checkout.steps.reviewOrder') }}
         </AppHeading>
       </div>
       <div v-if="currentStep === 'review'">

@@ -68,7 +68,7 @@ const validateDelivery = async () => {
       :disabled="!value"
       @click="validateDelivery"
     >
-      Continue to payment
+      {{ $t('checkout.delivery.continue') }}
     </UButton>
   </div>
 </template>

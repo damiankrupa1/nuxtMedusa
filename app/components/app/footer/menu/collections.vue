@@ -7,7 +7,9 @@ const collections = computed(() => data.value?.collections)
 
 <template>
   <div class="flex flex-col gap-y-4">
-    <div class="font-medium text-color-dimmed">Collections</div>
+    <div class="font-medium text-color-dimmed">
+      {{ $t('app.footer.collections') }}
+    </div>
     <ul class="grid grid-cols-1 gap-y-2">
       <li v-for="collection in collections" :key="collection.id">
         <AppLink :to="`/collections/${collection.handle}`">

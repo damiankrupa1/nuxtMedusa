@@ -37,22 +37,23 @@ watch(country, () => {
     :ui="{ content: 'w-[420px] rounded-none' }"
   >
     <AppLink to="/cart">
-      Cart <span v-if="cartItemsCount">({{ cartItemsCount }})</span>
+      {{ $t('app.header.cart') }}
+      <span v-if="cartItemsCount">({{ cartItemsCount }})</span>
     </AppLink>
     <template #content>
       <div class="p-4 flex items-center justify-center">
-        <h3 class="font-bold text-lg">Cart</h3>
+        <h3 class="font-bold text-lg">{{ $t('cart.dropdown.heading') }}</h3>
       </div>
       <div
         v-if="cart === null || cart?.items?.length === 0"
         class="p-4 flex flex-col gap-y-4 text-xs"
       >
         <div class="flex items-center justify-center">
-          <div>Your shopping cart is empty</div>
+          <div>{{ $t('cart.dropdown.empty') }}</div>
         </div>
         <div class="flex items-center justify-center pb-8">
           <UButton :to="`/${country?.iso_2}/store`" color="neutral">
-            Explore products
+            {{ $t('cart.empty.cta') }}
           </UButton>
         </div>
       </div>
@@ -71,8 +72,10 @@ watch(country, () => {
         >
           <div class="flex items-end justify-between">
             <span class="font-bold flex items-center gap-x-1">
-              Subtotal
-              <span class="font-normal">(excl. taxes)</span>
+              {{ $t('cart.dropdown.subtotal') }}
+              <span class="font-normal">{{
+                $t('cart.dropdown.subtotalNote')
+              }}</span>
             </span>
             <span class="font-bold text-lg">{{ subtotal }}</span>
           </div>
@@ -83,7 +86,7 @@ watch(country, () => {
             :block="true"
             class="w-full"
           >
-            Go to cart
+            {{ $t('cart.dropdown.cartCta') }}
           </UButton>
         </div>
       </div>

@@ -10,11 +10,12 @@ describe('product price component', () => {
       props: ['amount', 'currencyCode'],
     },
   }
+  const mocks = { $t: (key: string) => key }
 
   it('shows only the current price when there is no discount', () => {
     const wrapper = mount(ProductPrice, {
       props: { currentPrice: 100, currencyCode: 'usd' },
-      global: { stubs },
+      global: { stubs, mocks },
     })
 
     expect(wrapper.text()).toContain('100')
@@ -24,7 +25,7 @@ describe('product price component', () => {
   it('shows the original price struck through when discounted', () => {
     const wrapper = mount(ProductPrice, {
       props: { originalPrice: 100, currentPrice: 80, currencyCode: 'usd' },
-      global: { stubs },
+      global: { stubs, mocks },
     })
 
     expect(wrapper.find('.line-through').text()).toContain('100')
@@ -34,19 +35,19 @@ describe('product price component', () => {
   it('shows the percentage discount when extended', () => {
     const wrapper = mount(ProductPrice, {
       props: { originalPrice: 100, currentPrice: 80, currencyCode: 'usd', extended: true },
-      global: { stubs },
+      global: { stubs, mocks },
     })
 
     expect(wrapper.text()).toContain('-20%')
-    expect(wrapper.text()).toContain('Original:')
+    expect(wrapper.text()).toContain('product.price.original')
   })
 
   it('shows a "From" label when the price is the cheapest of a range', () => {
     const wrapper = mount(ProductPrice, {
       props: { currentPrice: 100, currencyCode: 'usd', isCheapest: true },
-      global: { stubs },
+      global: { stubs, mocks },
     })
 
-    expect(wrapper.text()).toContain('From')
+    expect(wrapper.text()).toContain('product.price.from')
   })
 })

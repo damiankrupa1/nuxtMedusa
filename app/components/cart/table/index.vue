@@ -8,24 +8,26 @@ const { cart, isPreview, isDropDown } = defineProps<{
   isDropDown?: boolean
 }>()
 
-const columns = [
+const { t } = useI18n()
+
+const columns = computed(() => [
   {
     accessorKey: 'item',
-    header: 'Item',
+    header: t('cart.table.item'),
   },
   {
     accessorKey: 'quantity',
-    header: 'Quantity',
+    header: t('cart.table.quantity'),
   },
   {
     accessorKey: 'price',
-    header: 'Price',
+    header: t('cart.table.price'),
   },
   {
     accessorKey: 'total',
-    header: () => h('div', { class: 'text-right' }, 'Total'),
+    header: () => h('div', { class: 'text-right' }, t('cart.table.total')),
   },
-]
+])
 
 const data = computed(() => {
   return [...(cart?.items ?? [])].sort((a, b) => {
@@ -86,13 +88,15 @@ const isCartUndefined = computed(() => cart === undefined)
             <div class="text-black mb-1 truncate">
               {{ row.original.product_title }}
             </div>
-            <div>Variant: {{ row.original.variant_title }}</div>
+            <div>
+              {{ $t('cart.table.variant', { name: row.original.variant_title }) }}
+            </div>
             <CartItemDeleteButton
               v-if="isDropDown"
               class="text-sm text-neutral-700 hover:text-neutral-900 mt-2"
               :item="row.original"
             >
-              Remove
+              {{ $t('cart.table.remove') }}
             </CartItemDeleteButton>
           </div>
         </div>
