@@ -48,6 +48,12 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2026-07-25',
 
+  nitro: {
+    rollupConfig: {
+      context: 'globalThis',
+    },
+  },
+
   hooks: {
     'prerender:routes': prerenderRoutesHook,
   },

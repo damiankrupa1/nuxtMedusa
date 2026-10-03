@@ -2,8 +2,12 @@ import type { StoreRegionListResponse } from '@medusajs/types'
 import { getCountriesFromRegions } from '../app/utils/country'
 
 export async function prerenderRoutesHook(ctx: { routes: Set<string> }) {
+  const baseUrl = (process.env.NUXT_PUBLIC_MEDUSA_BACKEND_URL || '').replace(
+    /\/+$/,
+    '',
+  )
   const response = await fetch(
-    `${process.env.NUXT_PUBLIC_MEDUSA_BACKEND_URL}/store/regions`,
+    `${baseUrl}/store/regions`,
     {
       credentials: 'include',
       headers: {

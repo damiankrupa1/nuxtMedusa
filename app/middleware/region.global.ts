@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  const newCountryCode = to.params.countryCode as string | undefined
+  const newCountryCode = to.path.split('/')[1] || undefined
   const { defaultCountry: defaultCountryCode } = useAppConfig()
   const { countryCode, country, setCountry } = useCountry()
   const { $i18n } = useNuxtApp()
@@ -8,23 +8,23 @@ export default defineNuxtRouteMiddleware(async (to) => {
     $i18n.setLocale(getLocaleFromCountryCode(c?.iso_2))
 
   const countries = await useCountries()
-  const defaultCountry = getCountryFromCountryCode(
-    countries.value,
-    defaultCountryCode,
-  )
+
+  const defaultCountry =
+    getCountryFromCountryCode(countries.value, defaultCountryCode) ??
+    countries.value?.[0]
   const newCountry = getCountryFromCountryCode(countries.value, newCountryCode)
 
-  // Handle User Country from cookie
-  if (countryCode.value && !country.value) {
-    const userCountry = getCountryFromCountryCode(
-      countries.value,
-      countryCode.value,
-    )
+  // Handle User Country from cookie (ignored if it no longer matches a region)
+  const userCountry =
+    countryCode.value && !country.value
+      ? getCountryFromCountryCode(countries.value, countryCode.value)
+      : undefined
 
-    if (userCountry?.iso_2 !== newCountryCode) {
+  if (userCountry) {
+    if (userCountry.iso_2 !== newCountryCode) {
       setCountry(userCountry)
       await syncLocale(userCountry)
-      return navigateTo(`/${userCountry?.iso_2}`)
+      return navigateTo(`/${userCountry.iso_2}`)
     }
     setCountry(newCountry)
     await syncLocale(newCountry)
@@ -38,7 +38,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return
   }
 
+  // No countries could be loaded (e.g. backend unreachable) — don't redirect
+  // to `/undefined/...`.
+  if (!defaultCountry) return
+
   setCountry(defaultCountry)
   await syncLocale(defaultCountry)
-  return navigateTo(`/${defaultCountry?.iso_2}${to.fullPath}`)
+  return navigateTo(`/${defaultCountry.iso_2}${to.fullPath}`)
 })
