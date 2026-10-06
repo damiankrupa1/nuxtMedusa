@@ -11,28 +11,29 @@
 }
 
 :root {
-  /* Changing the default Nuxt UI container component size */
   --ui-container: var(--container-8xl);
 }
 
 body {
-  /* Changing the antialiased font to subpixel-antialiased */
   @apply subpixel-antialiased;
 }
 
-/* Adding a custom utility class */
 @utility text-color-dimmed {
   color: var(--ui-text-dimmed);
 }
+
 @utility text-color-muted {
   color: var(--ui-text-muted);
 }
+
 @utility text-color-toned {
   color: var(--ui-text-toned);
 }
+
 @utility text-color-normal {
   color: var(--ui-text);
 }
+
 @utility text-color-highlighted {
   color: var(--ui-text-highlighted);
 }
@@ -40,6 +41,7 @@ body {
 @utility bg-color-muted {
   background-color: var(--ui-bg-muted);
 }
+
 @utility bg-color-elevated {
   background-color: var(--ui-bg-elevated);
 }
