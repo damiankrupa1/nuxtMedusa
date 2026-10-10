@@ -25,6 +25,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       stripeKey: process.env.NUXT_PUBLIC_STRIPE_KEY || '',
+      inpostGeowidgetToken:
+        process.env.NUXT_PUBLIC_INPOST_GEOWIDGET_TOKEN || '',
     },
   },
 
