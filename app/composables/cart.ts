@@ -1,7 +1,7 @@
 import type {
   StoreAddCartLineItem,
   StoreCart,
-  StoreCartShippingMethod,
+  StoreCartShippingOption,
   StoreOrder,
   StoreUpdateCart,
   StoreUpdateCartLineItem,
@@ -156,11 +156,14 @@ export const useSetShippingMethod = () => {
   const loading = ref(false)
   const data = ref<StoreCart>()
 
-  const mutate = async (shippingMethodId: StoreCartShippingMethod['id']) => {
+  const mutate = async (
+    optionId: StoreCartShippingOption['id'],
+    fulfillmentData?: Record<string, unknown>,
+  ) => {
     loading.value = true
 
     try {
-      data.value = await addShippingMethod(shippingMethodId)
+      data.value = await addShippingMethod(optionId, fulfillmentData)
     } catch (error) {
       console.error('Error setting shipping method:', error)
       throw error

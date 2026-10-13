@@ -2,7 +2,7 @@ import type {
   StoreAddCartLineItem,
   StoreCompleteCartResponse,
   StoreCart,
-  StoreCartShippingMethod,
+  StoreCartShippingOption,
   StoreUpdateCart,
   StoreUpdateCartLineItem,
 } from '@medusajs/types'
@@ -16,7 +16,7 @@ export function cartRepository() {
       return await request(
         client.store.cart.retrieve(cartId, {
           fields:
-            '*items,*region,*items.product,*items.variant,*items.thumbnail,*items.metadata,+items.total,*promotions,+shipping_methods.name',
+            '*items,*region,*items.product,*items.variant,*items.thumbnail,*items.metadata,+items.total,*promotions,+shipping_methods.name,+shipping_methods.data',
         }),
       )
     },
@@ -67,11 +67,13 @@ export function cartRepository() {
 
     async addShippingMethod(
       cartId: string,
-      shippingMethodId: StoreCartShippingMethod['id'],
+      optionId: StoreCartShippingOption['id'],
+      data?: Record<string, unknown>,
     ): Promise<StoreCart> {
       const cartResponse = await request(
         client.store.cart.addShippingMethod(cartId, {
-          option_id: shippingMethodId,
+          option_id: optionId,
+          data,
         }),
       )
       return cartResponse.cart

@@ -217,7 +217,18 @@
       "anotherStepWillAppear": "Another step will appear"
     },
     "delivery": {
-      "continue": "Continue to payment"
+      "continue": "Continue to payment",
+      "saveFailed": "Failed to save the delivery method. Please try again.",
+      "inpost": {
+        "modalTitle": "Choose an InPost Parcel Locker",
+        "modalDescription": "Pick the parcel locker on the map where we should deliver your order.",
+        "selectedPoint": "Parcel locker {name}",
+        "noPointSelected": "No parcel locker selected yet.",
+        "choosePoint": "Choose parcel locker",
+        "changePoint": "Change parcel locker",
+        "missingToken": "InPost Geowidget token is missing.",
+        "loadFailed": "Failed to load the InPost map."
+      }
     },
     "steps": {
       "shippingAddress": "Shipping Address",
