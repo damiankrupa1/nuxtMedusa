@@ -16,6 +16,7 @@ describe('inpost utils', () => {
 
   const point: InpostPoint = {
     name: 'KRA010',
+    address: { line1: 'Długa 12', line2: '30-001 Kraków' },
     address_details: {
       street: 'Długa',
       building_number: '12',
@@ -49,7 +50,7 @@ describe('inpost utils', () => {
     expect(formatInpostPointAddress({ name: 'KRA010' })).toBe('')
   })
 
-  it('stores only the displayed point fields in the shipping data', () => {
+  it('sends the point name as target_point with only the displayed details', () => {
     const geowidgetPoint = {
       ...point,
       image_url: 'https://example.com/point.jpg',
@@ -57,18 +58,37 @@ describe('inpost utils', () => {
     }
 
     expect(toInpostShippingData(geowidgetPoint)).toEqual({
-      inpost_point: point,
+      target_point: 'KRA010',
+      target_point_details: {
+        address: point.address,
+        address_details: point.address_details,
+      },
+    })
+  })
+
+  it('sends only target_point when an address line is missing', () => {
+    expect(
+      toInpostShippingData({ ...point, address: { line1: 'Długa 12' } }),
+    ).toEqual({ target_point: 'KRA010' })
+    expect(toInpostShippingData({ name: 'KRA010' })).toEqual({
+      target_point: 'KRA010',
     })
   })
 
   it('reads the point back from the shipping data', () => {
     expect(getInpostPoint(toInpostShippingData(point))).toEqual(point)
+    expect(getInpostPoint({ target_point: 'KRA010' })).toEqual({
+      name: 'KRA010',
+    })
   })
 
   it('returns null when the shipping data has no valid point', () => {
     expect(getInpostPoint(undefined)).toBeNull()
     expect(getInpostPoint(null)).toBeNull()
     expect(getInpostPoint({})).toBeNull()
-    expect(getInpostPoint({ inpost_point: { city: 'Kraków' } })).toBeNull()
+    expect(getInpostPoint({ target_point: 42 })).toBeNull()
+    expect(
+      getInpostPoint({ target_point_details: { address: point.address } }),
+    ).toBeNull()
   })
 })
