@@ -62,7 +62,9 @@ watch(country, () => {
         <div
           class="overflow-y-scroll max-h-[402px] px-4 grid grid-cols-1 gap-y-8 no-scrollbar p-px"
         >
-          <CartTable is-drop-down :cart="cart ?? undefined" />
+          <!-- Lazy, so the table library loads on the first open rather than
+          with the header on every page -->
+          <LazyCartTable is-drop-down :cart="cart ?? undefined" />
         </div>
         <div
           v-if="cartItemsCount && cartItemsCount > 0"
