@@ -217,7 +217,18 @@
       "anotherStepWillAppear": "Pojawi się kolejny krok"
     },
     "delivery": {
-      "continue": "Przejdź do płatności"
+      "continue": "Przejdź do płatności",
+      "saveFailed": "Nie udało się zapisać metody dostawy. Spróbuj ponownie.",
+      "inpost": {
+        "modalTitle": "Wybierz Paczkomat InPost",
+        "modalDescription": "Wskaż na mapie paczkomat, do którego dostarczymy zamówienie.",
+        "selectedPoint": "Paczkomat {name}",
+        "noPointSelected": "Nie wybrano jeszcze paczkomatu.",
+        "choosePoint": "Wybierz paczkomat",
+        "changePoint": "Zmień paczkomat",
+        "missingToken": "Brak tokenu Geowidget InPost.",
+        "loadFailed": "Nie udało się załadować mapy InPost."
+      }
     },
     "steps": {
       "shippingAddress": "Adres wysyłki",

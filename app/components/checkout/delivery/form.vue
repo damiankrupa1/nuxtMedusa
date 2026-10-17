@@ -1,10 +1,14 @@
 <script lang="ts" setup>
 import type { StoreCartResponse } from '@medusajs/types'
+import type { InpostPoint } from '~/utils/inpost'
 import { useFetchShippingOptions } from '~/composables/payment'
 
 const emit = defineEmits<{
   validate: [boolean]
 }>()
+
+const { t } = useI18n()
+
 const { data: cartResponse } = useNuxtData<StoreCartResponse>('cart')
 const cart = computed(() => cartResponse.value?.cart)
 
@@ -13,13 +17,38 @@ const { loading, mutate } = useSetShippingMethod()
 
 const shippingOptions = computed(() => data.value?.shipping_options)
 
-const value = ref(cart.value?.shipping_methods?.at(-1)?.shipping_option_id)
+const currentShippingMethod = cart.value?.shipping_methods?.at(-1)
+const value = ref(currentShippingMethod?.shipping_option_id)
+const inpostPoint = ref<InpostPoint | null>(
+  getInpostPoint(currentShippingMethod?.data),
+)
+const deliveryError = ref<string | null>(null)
+
+const isInpostSelected = computed(() => {
+  const option = shippingOptions.value?.find(({ id }) => id === value.value)
+  return !!option && isInpostShippingOption(option)
+})
+
+const canContinue = computed(
+  () => !!value.value && (!isInpostSelected.value || !!inpostPoint.value),
+)
 
 const validateDelivery = async () => {
-  if (value.value) {
-    await mutate(value.value)
+  if (!value.value || !canContinue.value) return
+
+  deliveryError.value = null
+
+  try {
+    await mutate(
+      value.value,
+      isInpostSelected.value && inpostPoint.value
+        ? toInpostShippingData(inpostPoint.value)
+        : undefined,
+    )
+    emit('validate', true)
+  } catch {
+    deliveryError.value = t('checkout.delivery.saveFailed')
   }
-  emit('validate', true)
 }
 </script>
 
@@ -60,12 +89,28 @@ const validateDelivery = async () => {
     <div v-else class="mb-6">
       <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin" />
     </div>
+
+    <CheckoutDeliveryInpost
+      v-if="isInpostSelected"
+      v-model="inpostPoint"
+      class="mb-6"
+    />
+
+    <UAlert
+      v-if="deliveryError"
+      color="error"
+      variant="soft"
+      icon="i-lucide-alert-circle"
+      class="mb-4"
+      :title="deliveryError"
+    />
+
     <UButton
       class="cursor-pointer"
       color="neutral"
       size="xl"
       :loading="loading"
-      :disabled="!value"
+      :disabled="!canContinue"
       @click="validateDelivery"
     >
       {{ $t('checkout.delivery.continue') }}

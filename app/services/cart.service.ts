@@ -1,6 +1,6 @@
 import type {
   StoreAddCartLineItem,
-  StoreCartShippingMethod,
+  StoreCartShippingOption,
   StoreUpdateCart,
   StoreUpdateCartLineItem,
 } from '@medusajs/types'
@@ -120,17 +120,15 @@ export const useCartService = () => {
   }
 
   const addShippingMethod = async (
-    shippingMethodId: StoreCartShippingMethod['id'],
+    optionId: StoreCartShippingOption['id'],
+    data?: Record<string, unknown>,
   ) => {
     if (!cartId.value)
       throw new Error(
         'No existing cart found, please create one before updating',
       )
 
-    const cart = await repositoryAddShippingMethod(
-      cartId.value,
-      shippingMethodId,
-    )
+    const cart = await repositoryAddShippingMethod(cartId.value, optionId, data)
     refreshNuxtData(`cart`)
     return cart
   }

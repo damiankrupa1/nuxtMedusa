@@ -28,6 +28,7 @@ Copy `.env.template` to `.env` and set:
 - `NUXT_PUBLIC_MEDUSA_BACKEND_URL` — Medusa backend base URL (default `http://localhost:9000`)
 - `NUXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY` — Medusa store publishable API key
 - `NUXT_PUBLIC_STRIPE_KEY` — Stripe publishable key
+- `NUXT_PUBLIC_INPOST_GEOWIDGET_TOKEN` — InPost Geowidget token for the parcel locker picker in the delivery step
 
 ### Git hooks (husky)
 
