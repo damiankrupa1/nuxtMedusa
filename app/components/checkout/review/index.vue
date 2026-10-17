@@ -39,23 +39,27 @@ const cardElement = ref<StripeCardElement | null>(null)
 const cardComplete = ref(false)
 const cardError = ref<string | undefined>(undefined)
 
-const stripeSession = computed(() => {
+// Only the plain Stripe provider (pp_stripe_<id>) is a card payment. Other Stripe
+// methods (pp_stripe-blik_<id>, pp_stripe-przelewy24_<id>, ...) also contain
+// "stripe" but must not get the card form.
+const stripeCardSession = computed(() => {
   return cart.value?.payment_collection?.payment_sessions?.find(
     (session) =>
-      session.status === 'pending' && session.provider_id.includes('stripe'),
+      session.status === 'pending' &&
+      session.provider_id.startsWith('pp_stripe_'),
   )
 })
 
 const clientSecret = computed(() => {
-  return stripeSession.value?.data?.client_secret as string | undefined
+  return stripeCardSession.value?.data?.client_secret as string | undefined
 })
 
-const isStripePayment = computed(() => {
-  return !!stripeSession.value && !!clientSecret.value
+const isCardPayment = computed(() => {
+  return !!stripeCardSession.value && !!clientSecret.value
 })
 
 onMounted(async () => {
-  if (!isStripePayment.value) return
+  if (!isCardPayment.value) return
 
   if (!config.public.stripeKey) {
     throw new Error('Stripe key is not set')
@@ -124,7 +128,7 @@ const handlePlaceOrder = async () => {
     processingState.value = 'processing'
     errorMessage.value = undefined
 
-    if (isStripePayment.value) {
+    if (isCardPayment.value) {
       if (
         !stripe.value ||
         !elements.value ||
@@ -176,7 +180,7 @@ const isButtonDisabled = computed(() => {
     loading.value ||
     processingState.value === 'processing' ||
     notReady.value ||
-    (isStripePayment.value && (!cardComplete.value || !!cardError.value))
+    (isCardPayment.value && (!cardComplete.value || !!cardError.value))
   )
 })
 
@@ -232,7 +236,7 @@ const isButtonDisabled = computed(() => {
       </div>
     </div> -->
 
-    <div v-if="isStripePayment" class="mb-6">
+    <div v-if="isCardPayment" class="mb-6">
       <h3 class="text-sm font-medium mb-2">
         {{ $t('checkout.review.creditCardInfo') }}
       </h3>
