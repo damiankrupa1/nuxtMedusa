@@ -4,7 +4,10 @@ const { t } = useI18n()
 const { data: cartResponse } = await useFetchCart()
 const cart = computed(() => cartResponse.value?.cart || undefined)
 
-const isCartEmpty = computed(() => cart.value?.items?.length === 0)
+// No cart yet means nothing was ever added
+const isCartEmpty = computed(
+  () => cartResponse.value?.cart === null || cart.value?.items?.length === 0,
+)
 
 useSeoMeta({
   title: t('pages.cart.title'),
