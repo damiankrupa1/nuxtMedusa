@@ -1,5 +1,3 @@
-import { prerenderRoutesHook } from './config/prerender-routes-hook'
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
@@ -54,10 +52,6 @@ export default defineNuxtConfig({
     rollupConfig: {
       context: 'globalThis',
     },
-  },
-
-  hooks: {
-    'prerender:routes': prerenderRoutesHook,
   },
 
   eslint: {
