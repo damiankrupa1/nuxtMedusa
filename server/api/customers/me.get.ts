@@ -5,7 +5,6 @@ export default defineWrappedResponseHandler(async (event) => {
   const medusa = serverMedusaClient(event)
 
   const token = getCookie(event, 'medusa_jwt')
-  console.log('medusa_jwt', token)
 
   try {
     // Retrieve current customer information
