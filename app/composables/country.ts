@@ -1,4 +1,3 @@
-import type { StoreRegionFilters } from '@medusajs/types'
 import { countryRepository } from '../repository/country.repository'
 import { getCountriesFromRegions } from '../utils/country'
 
@@ -24,13 +23,13 @@ export const useCountry = () => {
   }
 }
 
-export const useFetchCountries = (query?: StoreRegionFilters) => {
+export const useFetchCountries = () => {
   const { listCountries } = countryRepository()
 
   return useLazyAsyncData(
     'countries',
     async () => {
-      const response = await listCountries(query)
+      const response = await listCountries()
       return getCountriesFromRegions(response.regions)
     },
     {
