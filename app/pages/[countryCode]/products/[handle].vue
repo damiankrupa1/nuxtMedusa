@@ -6,7 +6,8 @@ definePageMeta({ cdnCache: true })
 const route = useRoute()
 
 const handle = computed(() => route.params.handle as string)
-const { data: product } = await useFetchProductByHandle(handle.value)
+const { data: product, status } = await useFetchProductByHandle(handle.value)
+useNotFoundWhenMissing(product, status, 'Product not found')
 
 useSeoMeta({
   title: () => product.value?.title,
