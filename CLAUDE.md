@@ -56,7 +56,7 @@ Every page lives under `app/pages/[countryCode]/...`; `app/pages/index.vue` is j
 - Calls `useCountry().setCountry(...)` to sync `useState('country')` + the cookie.
 - Redirects to `/${iso_2}/...` when the country in the URL doesn't match.
 
-`useCountry()`/`useCountries()` (`app/composables/country.ts`) are the source of truth for the current region; most data-fetching composables key off `country.value.region_id`. `nuxt.config.ts` also has a `prerender:routes` hook that fetches all regions from Medusa at build time to seed prerendered country routes.
+`useCountry()`/`useCountries()` (`app/composables/country.ts`) are the source of truth for the current region; most data-fetching composables key off `country.value.region_id`.
 
 ### Data-fetching conventions
 
@@ -72,6 +72,10 @@ Errors are reported once, where they come from an external system, through `capt
 ### `routeRules` / rendering
 
 `nuxt.config.ts` forces SSR (`{ ssr: true }`) for `/**/products/**`, `/**/collections/**`, `/**/categories/**`, `/**/account`, `/**/store`, `/**/cart`, `/**/checkout` — keep new commerce-critical routes consistent with this if they need SEO/SSR.
+
+Country home pages (`/[countryCode]`) are SSR'd on every request too — don't prerender them or put them behind a shared cache (`isr`/`swr`):
+- Prerendering froze their product data (`_payload.json`) at build time, so catalog changes in Medusa only showed up after a storefront redeploy.
+- A shared cache would also store responses that depend on the visitor's cookies — e.g. `region.global.ts` redirects to the `country_code` cookie's country during SSR, so one visitor's redirect would be served to everyone. Make SSR output cookie-independent before adding caching.
 
 ### Directory layout
 
