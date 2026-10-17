@@ -13,7 +13,9 @@ export const useCountry = () => {
   const setCountry = (newCountry?: BaseRegionCountryWithRegionId) => {
     if (!newCountry) return null
     country.value = newCountry
-    countryCodeFromCookie.value = newCountry.iso_2
+    // Saved by the browser only: a Set-Cookie would keep the server-rendered
+    // page out of the CDN cache
+    if (import.meta.client) countryCodeFromCookie.value = newCountry.iso_2
   }
 
   return {

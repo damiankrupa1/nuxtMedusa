@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useFetchCollectionByHandle } from '~/composables/collection'
 
+definePageMeta({ cdnCache: true })
+
 const route = useRoute()
 
 const handle = computed(() => route.params.handle as string)

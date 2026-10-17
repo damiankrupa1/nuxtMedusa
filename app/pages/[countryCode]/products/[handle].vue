@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useFetchProductByHandle } from '~/composables/product'
 
+definePageMeta({ cdnCache: true })
+
 const route = useRoute()
 
 const handle = computed(() => route.params.handle as string)

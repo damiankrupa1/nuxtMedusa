@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useFetchCategoryByHandle } from '~/composables/category'
 
+definePageMeta({ cdnCache: true })
+
 const route = useRoute()
 
 const handle = computed(() => route.params.handle as string)
