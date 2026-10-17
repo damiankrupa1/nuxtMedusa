@@ -1,5 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  // TODO(#11): SEO — sitemap with products per country, robots.txt rules
+  // (public/robots.txt is empty), canonical + hreflang between the country
+  // versions of a page, Product structured data. Use @nuxtjs/sitemap and
+  // nuxt-schema-org, or @nuxtjs/seo without nuxt-og-image (too heavy).
   modules: [
     '@nuxtjs/medusa',
     '@nuxt/ui',
@@ -70,6 +74,14 @@ export default defineNuxtConfig({
     restructureDir: 'i18n',
     langDir: 'locales',
     detectBrowserLanguage: false,
+  },
+
+  icon: {
+    // Only collections whose icons can't be found by scanning the source go
+    // into the server function: lucide for Nuxt UI's own icons and flag for
+    // the country flags picked at runtime. The rest is bundled per icon.
+    serverBundle: { collections: ['lucide', 'flag'] },
+    clientBundle: { scan: true },
   },
 
   medusa: {
