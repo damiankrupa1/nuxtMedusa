@@ -73,8 +73,7 @@ const validatePayment = async () => {
     try {
       await mutate(value.value)
       emit('validate', true)
-    } catch (error) {
-      console.error('Error initializing payment session:', error)
+    } catch {
       paymentError.value = t('checkout.payment.initFailed')
     }
   } finally {

@@ -54,9 +54,6 @@ export const useAddToCart = () => {
 
     try {
       data.value = await updateOrCreateLineItem(item)
-    } catch (error) {
-      console.error('Error updating cart:', error)
-      throw error
     } finally {
       loading.value = false
     }
@@ -80,9 +77,6 @@ export const useUpdateCart = () => {
 
     try {
       data.value = await updateCart(dataToUpdate)
-    } catch (error) {
-      console.error('Error updating cart:', error)
-      throw error
     } finally {
       loading.value = false
     }
@@ -109,9 +103,6 @@ export const useUpdateLineItem = () => {
 
     try {
       data.value = await updateLineItem(itemId, dataToUpdate)
-    } catch (error) {
-      console.error('Error updating line item:', error)
-      throw error
     } finally {
       loading.value = false
     }
@@ -135,9 +126,6 @@ export const useDeleteLineItem = () => {
 
     try {
       data.value = await deleteLineItem(itemId)
-    } catch (error) {
-      console.error('Error deleting line item:', error)
-      throw error
     } finally {
       loading.value = false
     }
@@ -164,9 +152,6 @@ export const useSetShippingMethod = () => {
 
     try {
       data.value = await addShippingMethod(optionId, fulfillmentData)
-    } catch (error) {
-      console.error('Error setting shipping method:', error)
-      throw error
     } finally {
       loading.value = false
     }
@@ -199,9 +184,13 @@ export const usePlaceOrder = () => {
         navigateTo(
           `/${country.value?.iso_2}/order/${orderResponse.order.id}/confirmed`,
         )
-      } else data.value = orderResponse.cart
-    } catch (error) {
-      console.error('Error placing order:', error)
+        return
+      }
+
+      data.value = orderResponse.cart
+      // Medusa answers with the cart when it couldn't authorize the payment
+      const error = new Error(orderResponse.error.message)
+      captureError(error, { source: 'medusa', type: orderResponse.error.type })
       throw error
     } finally {
       loading.value = false

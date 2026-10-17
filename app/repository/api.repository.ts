@@ -5,13 +5,9 @@ export function apiRepository() {
     try {
       return await promise
     } catch (error) {
-      handleError(error)
+      captureError(error, { source: 'medusa' })
       throw error
     }
-  }
-
-  function handleError(error: unknown) {
-    console.error('[API ERROR]', error) // TODO: Replace with proper error handling logic
   }
 
   return {

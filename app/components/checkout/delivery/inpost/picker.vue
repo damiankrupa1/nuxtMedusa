@@ -93,7 +93,7 @@ onMounted(async () => {
 
     mapContainer.value.appendChild(createGeowidget(token))
   } catch (cause) {
-    console.error('Error loading InPost Geowidget:', cause)
+    captureError(cause, { source: 'inpost' })
     error.value = t('checkout.delivery.inpost.loadFailed')
   } finally {
     loading.value = false
