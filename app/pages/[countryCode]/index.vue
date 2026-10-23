@@ -1,4 +1,6 @@
 <script setup lang="ts">
+definePageMeta({ cdnCache: true })
+
 const { t } = useI18n()
 
 useSeoMeta({

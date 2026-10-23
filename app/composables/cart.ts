@@ -37,10 +37,12 @@ export const useCartDropdown = () => {
   }
 }
 
+// `{ cart: null }` until the first add to cart creates one, so visitors who
+// only browse don't leave empty carts in Medusa
 export const useFetchCart = async () => {
-  const { retrieveOrCreateCart } = useCartService()
+  const { retrieveCart } = useCartService()
 
-  return useLazyAsyncData('cart', async () => await retrieveOrCreateCart())
+  return useLazyAsyncData('cart', async () => await retrieveCart())
 }
 
 export const useAddToCart = () => {

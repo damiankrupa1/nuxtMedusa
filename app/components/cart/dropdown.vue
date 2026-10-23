@@ -4,8 +4,9 @@ const { isCartDropdownOpen } = useCartDropdown()
 const { country } = useCountry()
 const { mutate: updateCart } = useUpdateCart()
 
-const { data: cartResponse, status } = await useFetchCart()
-const cart = computed(() => cartResponse.value?.cart || undefined)
+const { data: cartResponse } = await useFetchCart()
+// null once loaded without a cart, undefined while loading
+const cart = computed(() => cartResponse.value?.cart)
 
 const cartItemsCount = computed(() =>
   cart.value?.items?.reduce((acc, item) => acc + item.quantity, 0),
@@ -61,10 +62,9 @@ watch(country, () => {
         <div
           class="overflow-y-scroll max-h-[402px] px-4 grid grid-cols-1 gap-y-8 no-scrollbar p-px"
         >
-          <CartTable
-            is-drop-down
-            :cart="!cart && status === 'pending' ? undefined : cart"
-          />
+          <!-- Lazy, so the table library loads on the first open rather than
+          with the header on every page -->
+          <LazyCartTable is-drop-down :cart="cart ?? undefined" />
         </div>
         <div
           v-if="cartItemsCount && cartItemsCount > 0"

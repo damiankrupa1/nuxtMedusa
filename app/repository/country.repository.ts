@@ -1,18 +1,13 @@
-import type { StoreRegionFilters } from '@medusajs/types'
+import type { StoreRegionListResponse } from '@medusajs/types'
 import { apiRepository } from './api.repository'
 
 export function countryRepository() {
-  const { client, request } = apiRepository()
+  const { request } = apiRepository()
 
   return {
-    async listCountries(query?: StoreRegionFilters) {
-      return await request(
-        client.store.region.list({
-          fields:
-            'id,countries.iso_2,countries.name,countries.display_name,countries.region_id',
-          ...query,
-        }),
-      )
+    // Through server/api/regions, which caches Medusa's answer
+    async listCountries(): Promise<StoreRegionListResponse> {
+      return await request($fetch<StoreRegionListResponse>('/api/regions'))
     },
   }
 }

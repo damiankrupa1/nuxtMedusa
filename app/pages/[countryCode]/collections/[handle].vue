@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { useFetchCollectionByHandle } from '~/composables/collection'
 
+definePageMeta({ cdnCache: true })
+
 const route = useRoute()
 
 const handle = computed(() => route.params.handle as string)
-const { data: collection } = await useFetchCollectionByHandle(handle.value)
+const { data: collection, status } = await useFetchCollectionByHandle(
+  handle.value,
+)
+useNotFoundWhenMissing(collection, status, 'Collection not found')
 
 useSeoMeta({
   title: () => collection.value?.title,

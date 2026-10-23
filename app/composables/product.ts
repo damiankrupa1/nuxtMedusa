@@ -6,9 +6,11 @@ export const useFetchProducts = (
   prefetch?: boolean,
 ) => {
   const { country } = useCountry()
+  const { locale } = useI18n()
   const { listProducts } = productRepository()
 
   const queryRef = toRef(query)
+  const medusaLocale = computed(() => toMedusaLocale(locale.value))
 
   const queryParams = computed(() => ({
     region_id: country.value?.region_id,
@@ -17,14 +19,14 @@ export const useFetchProducts = (
 
   const key = computed(
     () =>
-      `products:${queryParams.value?.collection_id}:${queryParams.value?.category_id}:${queryParams.value?.limit}:${queryParams.value?.offset}:${country.value?.region_id}`,
+      `products:${queryParams.value?.collection_id}:${queryParams.value?.category_id}:${queryParams.value?.limit}:${queryParams.value?.offset}:${country.value?.region_id}:${medusaLocale.value}`,
   )
 
   return useLazyAsyncData(
     key.value,
-    async () => await listProducts(queryParams.value),
+    async () => await listProducts(queryParams.value, medusaLocale.value),
     {
-      watch: prefetch ? undefined : [queryParams],
+      watch: prefetch ? undefined : [queryParams, medusaLocale],
       immediate: !prefetch,
     },
   )
@@ -57,15 +59,19 @@ const findProductInPayload = (
 
 export const useFetchProductByHandle = (handle: string) => {
   const { country } = useCountry()
+  const { locale } = useI18n()
   const NuxtApp = useNuxtApp()
   const { fetchProductByHandle } = productRepository()
+  const medusaLocale = toMedusaLocale(locale.value)
 
   return useLazyAsyncData<StoreProduct | null>(
-    `product:${handle}:region:${country.value?.region_id}`,
+    `product:${handle}:region:${country.value?.region_id}:locale:${medusaLocale}`,
     async () => {
-      return await fetchProductByHandle(handle, {
-        region_id: country.value?.region_id,
-      })
+      return await fetchProductByHandle(
+        handle,
+        { region_id: country.value?.region_id },
+        medusaLocale,
+      )
     },
     {
       default: () => findProductInPayload(NuxtApp.payload.data, handle),

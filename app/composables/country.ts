@@ -1,4 +1,3 @@
-import type { StoreRegionFilters } from '@medusajs/types'
 import { countryRepository } from '../repository/country.repository'
 import { getCountriesFromRegions } from '../utils/country'
 
@@ -14,7 +13,9 @@ export const useCountry = () => {
   const setCountry = (newCountry?: BaseRegionCountryWithRegionId) => {
     if (!newCountry) return null
     country.value = newCountry
-    countryCodeFromCookie.value = newCountry.iso_2
+    // Saved by the browser only: a Set-Cookie would keep the server-rendered
+    // page out of the CDN cache
+    if (import.meta.client) countryCodeFromCookie.value = newCountry.iso_2
   }
 
   return {
@@ -24,13 +25,13 @@ export const useCountry = () => {
   }
 }
 
-export const useFetchCountries = (query?: StoreRegionFilters) => {
+export const useFetchCountries = () => {
   const { listCountries } = countryRepository()
 
   return useLazyAsyncData(
     'countries',
     async () => {
-      const response = await listCountries(query)
+      const response = await listCountries()
       return getCountriesFromRegions(response.regions)
     },
     {
