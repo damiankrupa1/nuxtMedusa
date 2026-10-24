@@ -1,20 +1,11 @@
 <script setup lang="ts">
 const { title } = useAppConfig()
 
-const { data: categoriesResponse } = await useFetchCategories()
-
-// "Dla niego" links to the second top-level department, mirroring the
-// header's AppHeaderDepartments — falls back to /store if unavailable.
-const secondaryDepartment = computed(
-  () =>
-    categoriesResponse.value?.product_categories.filter(
-      (category) => !category.parent_category,
-    )[1],
-)
+// "Dla niego" links to the men's department, same source as the header's
+// AppHeaderDepartments — falls back to /store if unavailable.
+const { men } = await useDepartmentCategories()
 const secondaryDepartmentLink = computed(() =>
-  secondaryDepartment.value
-    ? `/categories/${secondaryDepartment.value.handle}`
-    : '/store',
+  men.value ? `/categories/${men.value.handle}` : '/store',
 )
 </script>
 

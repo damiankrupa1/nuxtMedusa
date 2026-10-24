@@ -120,6 +120,15 @@
           "subtitle": "Przemyślane do ostatniego detalu.",
           "imageAlt": "Skórzane mokasyny i torebka ustawione na kamiennym murku"
         }
+      },
+      "newArrivals": {
+        "eyebrow": "ŚWIEŻE SPOJRZENIE NA CODZIENNOŚĆ",
+        "heading": "Nowe, ale na długo.",
+        "viewAll": "Zobacz wszystkie nowości",
+        "tabWomen": "Dla niej",
+        "tabMen": "Dla niego",
+        "tabStudio": "Fashion Studio",
+        "badge": "Nowość"
       }
     },
     "store": {

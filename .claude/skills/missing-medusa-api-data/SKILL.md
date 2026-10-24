@@ -46,3 +46,23 @@ Entries are added as each home page section is implemented. Each entry notes how
 - **Needs**: a photo per featured category tile.
 - **Mocked today**: `app/components/home/categories.vue` pairs each real category handle with a local downloaded image (`public/images/home/category-*.jpg`, real Figma artwork, not placeholders) via a static array in the component — `StoreProductCategory`/`BaseProductCategory` (`@medusajs/types`) has no image/thumbnail field, confirmed by `category.repository.ts`'s `fields: 'handle,name,*parent_category,*category_children'`.
 - **Real fix would need**: a `metadata.image` convention on categories (nobody currently reads `metadata` anywhere in this codebase) or a real image field added to the category model.
+
+## Home: "New arrivals" card badge, brand line and material/color text
+
+- **Needs**: Figma shows a per-product badge ("NOWOŚĆ"/"DOBRA BAZA", varies by item), a brand name line above the title, and a material/color text line below it.
+- **Verified live** (2026-10-24, against the connected backend): temporarily broadened `product.repository.ts`'s `listProducts` `fields` to `+material,+collection.title` and inspected 4 real products — `product.material` was `null` on every one (field exists on `StoreProduct` but isn't populated in this catalog), and Medusa has no brand/manufacturer field at all. `collection.title` *is* populated (e.g. "Wybór tygodnia", "Nowości") but isn't a brand and wasn't used. Change was reverted (not shipped) except for the separate, intentional `*options,*options.values` addition described below.
+- **Mocked today**: `app/components/home/new-arrivals.vue` passes one uniform `badge` (`pages.home.newArrivals.badge`, "Nowość") to every card in the section via `ProductCard`'s new `badge` prop — defensible since the whole section is sorted newest-first, but it can't reproduce Figma's per-item variety. Brand line and material/color line are omitted entirely (not faked) since the data is null/absent.
+- **Real fix would need**: real `material` values populated on products, and a brand/manufacturer concept added to the backend (new module or a `metadata` convention) before per-product brand attribution is possible anywhere in the storefront.
+
+## Home: "New arrivals" color swatches
+
+- **Needs**: color dots per product card.
+- **Verified live** (2026-10-24): same diagnostic as above — some products (not all) have a real Medusa "Color" product option with plain-text values (e.g. "Black", "White"); no hex/swatch data, confirmed by `@medusajs/types`' `StoreProductOptionValue` shape (just `value: string`).
+- **Shipped for real** (not mocked data, mocked *rendering* only): `product.repository.ts`'s `listProducts` now requests `*options,*options.values` — a genuine, permanent fields addition (not reverted), since this data is real and the plan anticipated it. `ProductCard` finds an option whose title matches `/colou?r|kolor/i` and renders a dot per value via `getSwatchColor()` (`app/utils/color.ts`), a small color-name → hex map, omitting the row entirely for products with no color option.
+- **Real fix would need**: nothing further for swatches to work generically — the name → hex map only needs to grow as new color option values show up in the catalog that aren't already covered.
+
+## Home: "New arrivals" — "Fashion Studio" tab
+
+- **Needs**: a third department tab alongside "Dla niej"/"Dla niego".
+- **Mocked today**: `app/components/home/new-arrivals.vue` has no category/collection mapping for this tab — falls back to `category_id: undefined`, i.e. the newest products overall, same as no filter.
+- **Real fix would need**: a "Fashion Studio" product line (category or collection) in the catalog — doesn't exist today (full category list verified live 2026-10-24: shirts, sweatshirts, pants, merch, dresses, jackets-coats, sportswear, accessories, women, men, t-shirts-tops, sweaters-cardigans, skirts).

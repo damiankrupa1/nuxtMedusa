@@ -120,6 +120,15 @@
           "subtitle": "Considered down to the last detail.",
           "imageAlt": "Leather loafers and a handbag styled on a stone ledge"
         }
+      },
+      "newArrivals": {
+        "eyebrow": "A FRESH TAKE ON EVERYDAY",
+        "heading": "New, but built to last.",
+        "viewAll": "See all new arrivals",
+        "tabWomen": "For her",
+        "tabMen": "For him",
+        "tabStudio": "Fashion Studio",
+        "badge": "New"
       }
     },
     "store": {

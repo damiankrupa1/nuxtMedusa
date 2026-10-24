@@ -1,12 +1,9 @@
 <script setup lang="ts">
 const route = useRoute()
-const { data: categoriesResponse } = await useFetchCategories()
+const { women, men } = await useDepartmentCategories()
 
-const departments = computed(
-  () =>
-    categoriesResponse.value?.product_categories
-      .filter((category) => !category.parent_category)
-      .slice(0, 2) || [],
+const departments = computed(() =>
+  [women.value, men.value].filter((department) => department !== undefined),
 )
 
 const isActive = (handle: string) => route.path.includes(`/categories/${handle}`)
