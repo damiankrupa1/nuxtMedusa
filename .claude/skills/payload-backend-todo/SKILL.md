@@ -39,6 +39,14 @@ Conventions used throughout:
 - **Type**: `CmsStudioStory` in `app/types/cms.ts`.
 - **Note**: all editorial copy here is final, localized text written by an editor — it does not need `{title}` brand-name interpolation the way the i18n fallback does, since Payload content is never a template.
 
+## `Brands` (Global) — implemented
+
+- **Slug**: `brands`
+- **Fields**: `eyebrow`, `viewAllLabel` — localized text; `viewAllUrl` — text (storefront-relative path); `otherBrands` — array of text, **not localized** (brand wordmarks are proper nouns).
+- **Consumed by**: `useFetchBrands()` → `app/components/home/brands.vue`.
+- **Type**: `CmsBrands` in `app/types/cms.ts`.
+- **Note**: the storefront's own name shown alongside `otherBrands` comes from this app's `useAppConfig().title`, not from Payload — don't add a field for it.
+
 ## Not yet implemented (see `missing-cms-content` for the product-side need)
 
 These home-page sections are still mocked with static i18n content in `app/components/home/*.vue`; no `cms.repository.ts` fetcher exists for them yet. Add the Payload Global/Collection and the matching entry above in the same change as the Nuxt fetcher, so this file never drifts from `cms.repository.ts`.
@@ -46,6 +54,5 @@ These home-page sections are still mocked with static i18n content in `app/compo
 - `CampaignSlides` (Collection) — home hero carousel (`home/campaign.vue`).
 - `CategoryTiles` (Collection) — curated "shop by category" grid (`home/categories.vue`); needs a `categoryHandle` field the Nuxt service layer resolves against Medusa — Payload never stores category data itself.
 - `ShopTheLook` (Collection) — editorial look (`home/shop-the-look.vue`); needs a `productHandles` (array of text) field the Nuxt service layer resolves against Medusa — Payload never stores product/price data itself.
-- `Brands` (Global or Collection) — stocked-brand row (`home/brands.vue`).
 - `JournalArticles` (Collection) — blog-style article cards (`home/journal.vue`).
 - `Pages` + `blocks` (Collection) — generic CMS pages for legal/about/FAQ content, following the `blocks`-union pattern seen in `simple-landing-page-nuxt`'s `payload-cms/src/collections/Pages.tsx`.

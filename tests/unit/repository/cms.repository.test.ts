@@ -54,6 +54,17 @@ describe('cms repository', () => {
     )
   })
 
+  it('fetches the brands global for the given locale', async () => {
+    fetchMock.mockResolvedValue({ otherBrands: [] })
+
+    await cmsRepository().fetchBrands('en')
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://cms.example.com/api/globals/brands',
+      { query: { locale: 'en', depth: 0 } },
+    )
+  })
+
   it('reports and swallows a Payload failure instead of breaking the page', async () => {
     const error = new Error('fetch failed')
     fetchMock.mockRejectedValue(error)

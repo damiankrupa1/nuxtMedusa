@@ -1,4 +1,5 @@
 import type {
+  CmsBrands,
   CmsFooterContent,
   CmsNavigation,
   CmsStudioStory,
@@ -37,6 +38,9 @@ export function cmsRepository() {
     },
     async fetchStudioStory(locale: string): Promise<CmsStudioStory | null> {
       return fetchGlobal<CmsStudioStory>('studio-story', locale)
+    },
+    async fetchBrands(locale: string): Promise<CmsBrands | null> {
+      return fetchGlobal<CmsBrands>('brands', locale)
     },
   }
 }

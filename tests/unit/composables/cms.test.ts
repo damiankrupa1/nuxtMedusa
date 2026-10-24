@@ -3,11 +3,13 @@ import { ref } from 'vue'
 
 import { cmsRepository } from '../../../app/repository/cms.repository'
 import {
+  useFetchBrands,
   useFetchFooterContent,
   useFetchNavigation,
   useFetchStudioStory,
 } from '../../../app/composables/cms'
 import type {
+  CmsBrands,
   CmsFooterContent,
   CmsNavigation,
   CmsStudioStory,
@@ -24,6 +26,7 @@ describe('cms composables', () => {
     jest.fn<(locale: string) => Promise<CmsFooterContent | null>>()
   const fetchStudioStory =
     jest.fn<(locale: string) => Promise<CmsStudioStory | null>>()
+  const fetchBrands = jest.fn<(locale: string) => Promise<CmsBrands | null>>()
   const useLazyAsyncData = jest.fn(
     (key: string, handler: () => Promise<unknown>) => ({ key, handler }),
   )
@@ -41,6 +44,7 @@ describe('cms composables', () => {
       fetchNavigation,
       fetchFooterContent,
       fetchStudioStory,
+      fetchBrands,
     })
   })
 
@@ -93,5 +97,20 @@ describe('cms composables', () => {
     const handler = useLazyAsyncData.mock.calls[0]![1]
     await handler()
     expect(fetchStudioStory).toHaveBeenCalledWith('pl')
+  })
+
+  it('keys the brands fetch by locale and delegates to the repository', async () => {
+    fetchBrands.mockResolvedValue(null)
+
+    useFetchBrands()
+
+    expect(useLazyAsyncData).toHaveBeenCalledWith(
+      'cms:brands:pl',
+      expect.any(Function),
+    )
+
+    const handler = useLazyAsyncData.mock.calls[0]![1]
+    await handler()
+    expect(fetchBrands).toHaveBeenCalledWith('pl')
   })
 })

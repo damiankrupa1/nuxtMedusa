@@ -45,8 +45,7 @@ Entries are added as each home page section is implemented.
 ## Home: "Selected brands" row
 
 - **Needs**: a row of stocked-brand wordmarks (the storefront's own name, plus SELECTED, Samsøe Samsøe, MARC O'POLO, BIRKENSTOCK), each presumably linking to a brand-filtered view.
-- **Mocked today**: `app/components/home/brands.vue` — a static `otherBrands` array of plain text, not linked individually (whole section just has one "view all" link to `/store`). No per-brand image/logo, just styled text, matching the Figma source (which is also plain styled text, not logo images).
-- **Real fix would need**: same brand/manufacturer concept gap noted elsewhere (per-product brand attribution, a brand directory page) — this row has no real data to drive it at all today.
+- **Now**: `app/components/home/brands.vue` reads `useFetchBrands()` (Payload `Brands` global, see `payload-backend-todo` skill) for the eyebrow/view-all copy and the `otherBrands` wordmark list, falling back to the previous static content when Payload has no data or is unreachable. The storefront's own name still comes from `useAppConfig()`, not Payload. Still no per-brand image/logo or individual brand links — same brand/manufacturer concept gap noted elsewhere (per-product brand attribution, a brand directory page).
 
 ## Home: "{title} Studio" story — wired to Payload
 

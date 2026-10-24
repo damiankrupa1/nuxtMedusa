@@ -30,6 +30,13 @@ export interface CmsImage {
   alt: string
 }
 
+export interface CmsBrands {
+  eyebrow: string
+  viewAllLabel: string
+  viewAllUrl: string
+  otherBrands: string[]
+}
+
 export interface CmsStudioStory {
   eyebrow: string
   headlineLine1: string

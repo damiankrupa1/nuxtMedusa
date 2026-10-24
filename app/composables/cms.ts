@@ -1,4 +1,5 @@
 import type {
+  CmsBrands,
   CmsFooterContent,
   CmsNavigation,
   CmsStudioStory,
@@ -32,5 +33,15 @@ export const useFetchStudioStory = () => {
   return useLazyAsyncData<CmsStudioStory | null>(
     `cms:studio-story:${locale.value}`,
     async () => await fetchStudioStory(locale.value),
+  )
+}
+
+export const useFetchBrands = () => {
+  const { locale } = useI18n()
+  const { fetchBrands } = cmsRepository()
+
+  return useLazyAsyncData<CmsBrands | null>(
+    `cms:brands:${locale.value}`,
+    async () => await fetchBrands(locale.value),
   )
 }
