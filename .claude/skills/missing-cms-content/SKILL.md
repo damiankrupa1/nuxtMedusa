@@ -48,11 +48,10 @@ Entries are added as each home page section is implemented.
 - **Mocked today**: `app/components/home/brands.vue` — a static `otherBrands` array of plain text, not linked individually (whole section just has one "view all" link to `/store`). No per-brand image/logo, just styled text, matching the Figma source (which is also plain styled text, not logo images).
 - **Real fix would need**: same brand/manufacturer concept gap noted elsewhere (per-product brand attribution, a brand directory page) — this row has no real data to drive it at all today.
 
-## Home: "{title} Studio" story
+## Home: "{title} Studio" story — wired to Payload
 
 - **Needs**: a brand-storytelling section about the storefront's own in-house line — editorial photo, philosophy copy, 3 value markers, link to a studio story page.
-- **Mocked today**: `app/components/home/studio-story.vue` — fully static i18n copy (`pages.home.studioStory.*`), real downloaded photo (`public/images/home/studio-craft.jpg`), "Discover the {title} Studio story" link points at `/store` (no studio/about page exists, same gap as the header nav entry).
-- **Real fix would need**: a real about/studio page and real philosophy copy from the user — this entire section describes a brand sub-line ("{title} Studio") that doesn't exist as a real product line in this catalog (no matching category/collection, see the "Fashion Studio" tab entry in missing-medusa-api-data).
+- **Now**: `app/components/home/studio-story.vue` reads `useFetchStudioStory()` (Payload `StudioStory` global, see `payload-backend-todo` skill) and falls back to the static i18n copy (`pages.home.studioStory.*`) and `public/images/home/studio-craft.jpg` when Payload has no data or is unreachable. The link target (`collectionUrl`, defaulting to `/store`) still has nowhere real to point — no studio/about page exists, same gap as the header nav entry — and this "{title} Studio" sub-line still doesn't exist as a real product line in the catalog (no matching category/collection, see the "Fashion Studio" tab entry in missing-medusa-api-data).
 
 ## Home: journal / editorial articles
 

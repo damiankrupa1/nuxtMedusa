@@ -24,3 +24,22 @@ export interface CmsFooterContent {
   contact: CmsFooterContact
   social: CmsFooterSocial
 }
+
+export interface CmsImage {
+  url: string
+  alt: string
+}
+
+export interface CmsStudioStory {
+  eyebrow: string
+  headlineLine1: string
+  headlineLine2: string
+  paragraph1: string
+  paragraph2: string
+  values: string[]
+  signatureLabel: string
+  signatureTagline: string
+  collectionLinkLabel: string
+  collectionUrl: string
+  image: CmsImage
+}

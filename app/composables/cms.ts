@@ -1,4 +1,8 @@
-import type { CmsFooterContent, CmsNavigation } from '../types/cms'
+import type {
+  CmsFooterContent,
+  CmsNavigation,
+  CmsStudioStory,
+} from '../types/cms'
 import { cmsRepository } from '../repository/cms.repository'
 
 export const useFetchNavigation = () => {
@@ -18,5 +22,15 @@ export const useFetchFooterContent = () => {
   return useLazyAsyncData<CmsFooterContent | null>(
     `cms:footer:${locale.value}`,
     async () => await fetchFooterContent(locale.value),
+  )
+}
+
+export const useFetchStudioStory = () => {
+  const { locale } = useI18n()
+  const { fetchStudioStory } = cmsRepository()
+
+  return useLazyAsyncData<CmsStudioStory | null>(
+    `cms:studio-story:${locale.value}`,
+    async () => await fetchStudioStory(locale.value),
   )
 }

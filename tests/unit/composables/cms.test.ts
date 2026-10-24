@@ -5,8 +5,13 @@ import { cmsRepository } from '../../../app/repository/cms.repository'
 import {
   useFetchFooterContent,
   useFetchNavigation,
+  useFetchStudioStory,
 } from '../../../app/composables/cms'
-import type { CmsFooterContent, CmsNavigation } from '../../../app/types/cms'
+import type {
+  CmsFooterContent,
+  CmsNavigation,
+  CmsStudioStory,
+} from '../../../app/types/cms'
 
 jest.mock('../../../app/repository/cms.repository', () => ({
   cmsRepository: jest.fn(),
@@ -17,6 +22,8 @@ describe('cms composables', () => {
     jest.fn<(locale: string) => Promise<CmsNavigation | null>>()
   const fetchFooterContent =
     jest.fn<(locale: string) => Promise<CmsFooterContent | null>>()
+  const fetchStudioStory =
+    jest.fn<(locale: string) => Promise<CmsStudioStory | null>>()
   const useLazyAsyncData = jest.fn(
     (key: string, handler: () => Promise<unknown>) => ({ key, handler }),
   )
@@ -33,6 +40,7 @@ describe('cms composables', () => {
     jest.mocked(cmsRepository).mockReturnValue({
       fetchNavigation,
       fetchFooterContent,
+      fetchStudioStory,
     })
   })
 
@@ -70,5 +78,20 @@ describe('cms composables', () => {
     const handler = useLazyAsyncData.mock.calls[0]![1]
     await handler()
     expect(fetchFooterContent).toHaveBeenCalledWith('pl')
+  })
+
+  it('keys the studio story fetch by locale and delegates to the repository', async () => {
+    fetchStudioStory.mockResolvedValue(null)
+
+    useFetchStudioStory()
+
+    expect(useLazyAsyncData).toHaveBeenCalledWith(
+      'cms:studio-story:pl',
+      expect.any(Function),
+    )
+
+    const handler = useLazyAsyncData.mock.calls[0]![1]
+    await handler()
+    expect(fetchStudioStory).toHaveBeenCalledWith('pl')
   })
 })

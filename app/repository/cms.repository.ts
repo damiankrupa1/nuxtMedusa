@@ -1,4 +1,8 @@
-import type { CmsFooterContent, CmsNavigation } from '../types/cms'
+import type {
+  CmsFooterContent,
+  CmsNavigation,
+  CmsStudioStory,
+} from '../types/cms'
 
 // Payload's REST API is public read-only today (see the Navigation/
 // FooterContent globals' `access.read`), so this fetches it directly. If that
@@ -30,6 +34,9 @@ export function cmsRepository() {
     },
     async fetchFooterContent(locale: string): Promise<CmsFooterContent | null> {
       return fetchGlobal<CmsFooterContent>('footer-content', locale)
+    },
+    async fetchStudioStory(locale: string): Promise<CmsStudioStory | null> {
+      return fetchGlobal<CmsStudioStory>('studio-story', locale)
     },
   }
 }
