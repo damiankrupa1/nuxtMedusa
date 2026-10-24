@@ -1,0 +1,14 @@
+# Normalize all text files to LF line endings in the repository, regardless
+# of core.autocrlf on the checkout machine — matches .editorconfig's
+# end_of_line = lf and prevents `pnpm format`/`pnpm lint:fix` (which write LF)
+# from showing the whole repo as modified on Windows checkouts.
+* text=auto eol=lf
+
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary

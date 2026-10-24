@@ -6,7 +6,16 @@
       "Bash(grep -n \"Prerendering\\\\|Server Error\\\\|nitro\\\\]\" /tmp/build.log -A5 -B30 | head -150)",
       "Bash(grep -a -n \"Prerendering\\\\|Server Error\\\\|nitro\\\\]\" /tmp/build.log | head -20)",
       "Bash(sed -n '700,800p' /tmp/build.log | strings)",
-      "Bash(sed -n '700,800p' /tmp/build.log | tr -cd '[:print:]\\\\n')"
+      "Bash(sed -n '700,800p' /tmp/build.log | tr -cd '[:print:]\\\\n')",
+      "Bash(pnpm lint)",
+      "Bash(git check-ignore *)",
+      "mcp__claude-vscode__getDiagnostics",
+      "Bash(pnpm test)",
+      "Bash(git fetch *)",
+      "mcp__plugin_figma_figma__get_design_context",
+      "Bash(docker info)",
+      "mcp__plugin_figma_figma__get_metadata",
+      "Bash(git merge-base *)"
     ]
   }
 }

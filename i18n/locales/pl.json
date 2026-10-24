@@ -224,6 +224,13 @@
     "store": {
       "title": "Wszystkie produkty"
     },
+    "search": {
+      "title": "Wyszukiwanie",
+      "heading": "Znajdź swoje na dłużej.",
+      "placeholder": "Czego szukasz?",
+      "submit": "Szukaj",
+      "clear": "Wyczyść zapytanie"
+    },
     "contact": {
       "title": "Kontakt"
     },
@@ -319,7 +326,19 @@
       "placeholder": "Kraj*"
     },
     "catalog": {
-      "sortBy": "Sortuj według"
+      "sortBy": "Sortuj:",
+      "filters": "Filtry",
+      "filterLabels": {
+        "forWhom": "Dla kogo",
+        "category": "Kategoria",
+        "size": "Rozmiar",
+        "color": "Kolor",
+        "material": "Materiał",
+        "price": "Cena",
+        "brand": "Marka"
+      },
+      "searchResultsFor": "Wyniki dla „{query}” ({count})",
+      "noResults": "Nie znaleziono żadnych produktów."
     },
     "sort": {
       "latest": "Najnowsze",
