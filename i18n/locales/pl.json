@@ -95,6 +95,31 @@
         "captionEyebrow": "NOWA DEFINICJA KLASYKI",
         "captionHeadline": "Rzeczy na więcej niż jeden sezon.",
         "imageAlt": "Modelka w wełnianym płaszczu na kamiennych schodach w jesiennej scenerii miejskiej"
+      },
+      "categories": {
+        "eyebrow": "TWOJA GARDEROBA",
+        "heading": "Dobra baza. Własny styl.",
+        "description": "Ponadczasowe fasony i nowe ulubione detale. Znajdź to, co pasuje do Twojej codzienności.",
+        "knitwear": {
+          "title": "Dzianiny",
+          "subtitle": "Miękkość, która zostaje.",
+          "imageAlt": "Modelka w beżowym swetrze z dzianiny"
+        },
+        "shirts": {
+          "title": "Koszule i T-shirty",
+          "subtitle": "Początek każdej stylizacji.",
+          "imageAlt": "Mężczyzna w białej koszuli lnianej"
+        },
+        "coats": {
+          "title": "Płaszcze i kurtki",
+          "subtitle": "Forma na chłodniejsze dni.",
+          "imageAlt": "Modelka idąca w długim płaszczu w kolorze camel"
+        },
+        "accessories": {
+          "title": "Buty i dodatki",
+          "subtitle": "Przemyślane do ostatniego detalu.",
+          "imageAlt": "Skórzane mokasyny i torebka ustawione na kamiennym murku"
+        }
       }
     },
     "store": {

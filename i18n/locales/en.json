@@ -95,6 +95,31 @@
         "captionEyebrow": "A NEW DEFINITION OF CLASSIC",
         "captionHeadline": "Pieces for more than one season.",
         "imageAlt": "A model in a wool coat standing on stone steps in an autumn city scene"
+      },
+      "categories": {
+        "eyebrow": "YOUR WARDROBE",
+        "heading": "A good base. Your own style.",
+        "description": "Timeless shapes and new favourite details. Find what fits your everyday.",
+        "knitwear": {
+          "title": "Knitwear",
+          "subtitle": "Softness that stays.",
+          "imageAlt": "A model wearing an oatmeal knit sweater"
+        },
+        "shirts": {
+          "title": "Shirts & T-shirts",
+          "subtitle": "The start of every outfit.",
+          "imageAlt": "A model in a white linen shirt"
+        },
+        "coats": {
+          "title": "Coats & jackets",
+          "subtitle": "Shape for colder days.",
+          "imageAlt": "A model walking in a long camel coat"
+        },
+        "accessories": {
+          "title": "Shoes & accessories",
+          "subtitle": "Considered down to the last detail.",
+          "imageAlt": "Leather loafers and a handbag styled on a stone ledge"
+        }
       }
     },
     "store": {

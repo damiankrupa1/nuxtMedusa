@@ -12,6 +12,7 @@ useSeoMeta({
 <template>
   <div>
     <HomeCampaign />
+    <HomeCategories />
     <LazyCollectionList />
   </div>
 </template>

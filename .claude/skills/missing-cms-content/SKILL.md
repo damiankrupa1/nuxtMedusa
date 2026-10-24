@@ -32,3 +32,9 @@ Entries are added as each home page section is implemented.
 - **Needs**: a rotating 3-slide campaign carousel (Figma shows "01 / 03" pagination) with per-slide season label, headline, description, CTA, photo and caption.
 - **Mocked today**: `app/components/home/campaign.vue` renders only slide 1 as static content (i18n `pages.home.campaign.*`), with non-interactive pagination UI (always shows 01 of 03, no slide-switching). The campaign photo itself is real downloaded artwork (`public/images/home/autumn-campaign.jpg`, from the Figma file) — not a placeholder, just hand-picked for this one slide.
 - **Real fix would need**: a real content source for campaign slides (2 more editorial copy sets + photos) and either a simple client-side carousel or a CMS-driven list to loop over, plus the "Dla niego"/secondary CTA label itself is static copy even though its link target is real (second top-level category).
+
+## Home: "Shop by category" curated grid
+
+- **Needs**: 4 editorial category tiles with curated titles/subtitles that don't map 1:1 to raw category names (e.g. Figma's "Koszule i T-shirty" spans two real categories, "Buty i dodatki" has no matching category at all in this catalog — this Medusa instance has no distinct "shoes" category).
+- **Mocked today**: `app/components/home/categories.vue` — static i18n copy per card (`pages.home.categories.*`), each linked to the closest real category handle (`sweaters-cardigans`, `shirts`, `jackets-coats`, `accessories`) rather than showing raw `category.name`.
+- **Real fix would need**: either editorial curation content (titles/photos chosen per campaign) from the user, a "shoes" category added to the catalog, or accepting that this grid shows curated groupings rather than a literal category listing.
