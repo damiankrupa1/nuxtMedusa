@@ -31,6 +31,7 @@ Copy `.env.template` to `.env` and set:
 - `NUXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY` — Medusa store publishable API key
 - `NUXT_PUBLIC_STRIPE_KEY` — Stripe publishable key
 - `NUXT_PUBLIC_INPOST_GEOWIDGET_TOKEN` — InPost Geowidget token for the parcel locker picker in the delivery step
+- `NUXT_PUBLIC_PAYLOAD_URL` — Payload CMS base URL (editorial/marketing content; see Payload CMS integration below). Optional — header nav and footer fall back to static i18n content when unset or unreachable.
 
 ### Git hooks (husky)
 
@@ -73,6 +74,14 @@ Every page lives under `app/pages/[countryCode]/...`; `app/pages/index.vue` is j
 
 Errors are reported once, where they come from an external system, through `captureError()` (`app/utils/capture-error.ts`): `apiRepository()`'s `request()`, `stripeRepository()`, the InPost Geowidget loader, and Medusa's `type: 'cart'` answer in `usePlaceOrder()`. It only logs to the console until error monitoring (Sentry) is plugged in there. Composables and components don't log errors; they only turn them into UI state. Don't name it `reportError` — that's a browser global.
 
+### Payload CMS integration
+
+Editorial/marketing content with no commerce meaning — today the header's `primaryNav` and the footer's help/world/legal links and contact/social details, see `.claude/skills/missing-cms-content/SKILL.md` for the rest still outstanding — is served by a separate Payload CMS instance via `app/repository/cms.repository.ts` → `app/composables/cms.ts` (`useFetchNavigation()`, `useFetchFooterContent()`), following the same repository → composable shape as the rest of the app (no service layer yet — there's no orchestration logic to put there). Medusa remains the only source of truth for products/prices/stock/cart/orders; Payload never duplicates that data, and any future CMS content that references the catalog (e.g. a curated category grid) would carry a handle/slug for the existing Medusa composables to resolve, not its own copy.
+
+- Payload's `Navigation`/`FooterContent` globals are public read-only today, so `cms.repository.ts`'s `fetchGlobal()` calls Payload's REST API directly via `$fetch` using `runtimeConfig.public.payloadUrl` (env `NUXT_PUBLIC_PAYLOAD_URL`) — no admin/API key involved. If Payload ever needs a key or a draft-preview secret, that must move server-side (a `server/api/cms/**` proxy, private runtimeConfig) instead of `public`; only `fetchGlobal()`'s request target would change, not its callers.
+- A Payload outage or an unconfigured URL must never break a page: `fetchGlobal()` catches, reports via `captureError({ source: 'payload', ... })`, and returns `null`. Components treat `null` as "render the static i18n fallback" (see `category-nav.vue`, `footer/menu/help.vue`, `footer/menu/world.vue`, `footer/menu/brand.vue`, `footer/copyright.vue`) rather than erroring or showing an empty section.
+- Cache keys follow the existing convention: `` `cms:navigation:${locale}` ``, `` `cms:footer:${locale}` ``.
+
 ### `routeRules` / rendering
 
 `nuxt.config.ts` forces SSR (`{ ssr: true }`) for `/**/products/**`, `/**/collections/**`, `/**/categories/**`, `/**/account`, `/**/store`, `/**/cart`, `/**/checkout` — keep new commerce-critical routes consistent with this if they need SEO/SSR.
@@ -86,9 +95,9 @@ Catalog pages (the `/[countryCode]` home, `store`, `products/[handle]`, `categor
 
 - `app/pages` — file-based routes, all nested under `[countryCode]`.
 - `app/components` — organized by domain (`cart`, `checkout`, `product`, `order`, `collection`, `store`, `auth`, `app`), with further subfolders for compound UI (e.g. `checkout/address`, `checkout/payment`, `cart/item`).
-- `app/composables` — one file per domain (`cart`, `category`, `checkout`, `collection`, `country`, `customer`, `filters`, `order`, `payment`, `product`), plus `not-found` shared by the by-handle pages. These call into `app/services` and/or `app/repository` rather than Medusa directly (see above).
+- `app/composables` — one file per domain (`cart`, `category`, `checkout`, `cms`, `collection`, `country`, `customer`, `filters`, `order`, `payment`, `product`), plus `not-found` shared by the by-handle pages. These call into `app/services` and/or `app/repository` rather than Medusa directly (see above).
 - `app/services` — `*.service.ts` business-logic layer between composables and repositories (cart, category, collection, customer, order, payment, product). See the repository → service → composable note above for which ones actually have callers.
-- `app/repository` — `*.repository.ts` data-access layer; `api.repository.ts` provides the shared `useMedusaClient()` + error-handling wrapper the other repositories (product, category, collection, country, order, payment, cart, customer) build on; `stripe.repository.ts` is the Stripe.js counterpart.
+- `app/repository` — `*.repository.ts` data-access layer; `api.repository.ts` provides the shared `useMedusaClient()` + error-handling wrapper the other repositories (product, category, collection, country, order, payment, cart, customer) build on; `stripe.repository.ts` is the Stripe.js counterpart; `cms.repository.ts` is the Payload counterpart (see Payload CMS integration above) — it calls Payload's REST API directly, not through `apiRepository()`, since that wrapper is Medusa-specific.
 - `app/utils` — pure helpers (`price`, `product`, `address`, `country`, `payment`, `percentage-diff`, `homepage`), auto-imported by Nuxt, plus `capture-error` (see Error reporting).
 - `server/api` — Nitro route handlers for `products`, `categories`, `collections`, `customers`, `regions`; only `customers/**` and `regions` are currently wired up to `app/` (see above).
 - `server/utils/handler.ts` / `server/types/medusa-error.ts` — shared error-wrapping for API routes.

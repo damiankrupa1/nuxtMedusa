@@ -9,29 +9,25 @@ Content the Figma home page design shows that is not commerce data at all — ed
 
 Entries are added as each home page section is implemented.
 
-## Header: primary nav routing
+## Header: primary nav routing — wired to Payload
 
 - **Needs**: the Figma header's category nav row ("Marki", "Fashion Studio", "Inspiracje") links to brand-directory, brand-story and editorial/inspiration content that has no backing page or model in this codebase.
-- **Mocked today**: `app/utils/navigation.ts` (`primaryNav`) points every entry at `/store` as a placeholder.
-- **Real fix would need**: dedicated pages/routes for a brand directory, a studio/about page, and an inspiration/editorial hub — none exist yet.
+- **Now**: `app/components/app/header/category-nav.vue` reads `useFetchNavigation()` (Payload `Navigation` global, via `app/composables/cms.ts`/`app/repository/cms.repository.ts`) and falls back to the static `app/utils/navigation.ts` (`primaryNav`, every entry at `/store`) when Payload has no data or is unreachable. The underlying pages (brand directory, studio/about, inspiration hub) still don't exist — Payload only supplies the link label/URL, not the destination pages themselves.
 
-## Footer: help, world and legal link columns
+## Footer: help, world and legal link columns — wired to Payload
 
 - **Needs**: Figma's footer has three static columns beyond the brand/contact block — "Help" (shipping & payments, returns, size guide, order tracking, FAQ), "The Fashion world" (about, studio, journal, materials & care, careers), and a legal links row (terms, privacy, cookies, accessibility).
-- **Mocked today**: `app/components/app/footer/menu/help.vue`, `app/components/app/footer/menu/world.vue` link every item at `/store`; `app/components/app/footer/copyright.vue` (`legalLinks`) does the same.
-- **Real fix would need**: actual support/FAQ, about/studio, journal and legal pages — none exist in this codebase today.
+- **Now**: `app/components/app/footer/menu/help.vue`, `menu/world.vue` and `copyright.vue` read `useFetchFooterContent()` (Payload `FooterContent` global) and fall back to the previous static `/store`-linked lists when Payload has no data or is unreachable. As with the header nav, the destination pages (support/FAQ, about/studio, journal, legal) still don't exist — Payload only supplies labels/URLs.
 
-## Footer: brand contact details and social handle
+## Footer: brand contact details and social handle — wired to Payload
 
 - **Needs**: a real support email/phone/hours and social handles.
-- **Mocked today**: `app/components/app/footer/menu/brand.vue` via `app.footer.contact.*` / `app.footer.social.handle` i18n keys with placeholder values.
-- **Real fix would need**: real store contact info and social accounts from the user.
+- **Now**: `app/components/app/footer/menu/brand.vue` reads `useFetchFooterContent()`'s `contact`/`social` fields and falls back to the `app.footer.contact.*` / `app.footer.social.handle` i18n placeholders when Payload has no data or is unreachable. Still waiting on real contact info/social accounts to be entered into Payload — the wiring is in place, the content isn't.
 
-## Home: autumn campaign hero
+## Home: autumn campaign hero — wired to Payload
 
 - **Needs**: a rotating 3-slide campaign carousel (Figma shows "01 / 03" pagination) with per-slide season label, headline, description, CTA, photo and caption.
-- **Mocked today**: `app/components/home/campaign.vue` renders only slide 1 as static content (i18n `pages.home.campaign.*`), with non-interactive pagination UI (always shows 01 of 03, no slide-switching). The campaign photo itself is real downloaded artwork (`public/images/home/autumn-campaign.jpg`, from the Figma file) — not a placeholder, just hand-picked for this one slide.
-- **Real fix would need**: a real content source for campaign slides (2 more editorial copy sets + photos) and either a simple client-side carousel or a CMS-driven list to loop over, plus the "Dla niego"/secondary CTA label itself is static copy even though its link target is real (second top-level category).
+- **Now**: `app/components/home/campaign.vue` reads `useFetchCampaignSlides()` (Payload `CampaignSlides` global, see `payload-backend-todo` skill) and renders a real, clickable slide-switching pagination over however many slides Payload has. Falls back to the single static slide (i18n `pages.home.campaign.*`, `public/images/home/autumn-campaign.jpg`) when Payload has no data or is unreachable. The "Dla niego"/secondary CTA's link target is still computed from real Medusa category data (`useDepartmentCategories()`) in both paths — Payload only ever supplies that CTA's label, never its URL, since the URL is live commerce routing, not editorial content.
 
 ## Home: "Shop by category" curated grid
 
@@ -48,17 +44,14 @@ Entries are added as each home page section is implemented.
 ## Home: "Selected brands" row
 
 - **Needs**: a row of stocked-brand wordmarks (the storefront's own name, plus SELECTED, Samsøe Samsøe, MARC O'POLO, BIRKENSTOCK), each presumably linking to a brand-filtered view.
-- **Mocked today**: `app/components/home/brands.vue` — a static `otherBrands` array of plain text, not linked individually (whole section just has one "view all" link to `/store`). No per-brand image/logo, just styled text, matching the Figma source (which is also plain styled text, not logo images).
-- **Real fix would need**: same brand/manufacturer concept gap noted elsewhere (per-product brand attribution, a brand directory page) — this row has no real data to drive it at all today.
+- **Now**: `app/components/home/brands.vue` reads `useFetchBrands()` (Payload `Brands` global, see `payload-backend-todo` skill) for the eyebrow/view-all copy and the `otherBrands` wordmark list, falling back to the previous static content when Payload has no data or is unreachable. The storefront's own name still comes from `useAppConfig()`, not Payload. Still no per-brand image/logo or individual brand links — same brand/manufacturer concept gap noted elsewhere (per-product brand attribution, a brand directory page).
 
-## Home: "{title} Studio" story
+## Home: "{title} Studio" story — wired to Payload
 
 - **Needs**: a brand-storytelling section about the storefront's own in-house line — editorial photo, philosophy copy, 3 value markers, link to a studio story page.
-- **Mocked today**: `app/components/home/studio-story.vue` — fully static i18n copy (`pages.home.studioStory.*`), real downloaded photo (`public/images/home/studio-craft.jpg`), "Discover the {title} Studio story" link points at `/store` (no studio/about page exists, same gap as the header nav entry).
-- **Real fix would need**: a real about/studio page and real philosophy copy from the user — this entire section describes a brand sub-line ("{title} Studio") that doesn't exist as a real product line in this catalog (no matching category/collection, see the "Fashion Studio" tab entry in missing-medusa-api-data).
+- **Now**: `app/components/home/studio-story.vue` reads `useFetchStudioStory()` (Payload `StudioStory` global, see `payload-backend-todo` skill) and falls back to the static i18n copy (`pages.home.studioStory.*`) and `public/images/home/studio-craft.jpg` when Payload has no data or is unreachable. The link target (`collectionUrl`, defaulting to `/store`) still has nowhere real to point — no studio/about page exists, same gap as the header nav entry — and this "{title} Studio" sub-line still doesn't exist as a real product line in the catalog (no matching category/collection, see the "Fashion Studio" tab entry in missing-medusa-api-data).
 
-## Home: journal / editorial articles
+## Home: journal / editorial articles — wired to Payload
 
 - **Needs**: 3 blog-style article cards (category, reading time, title, summary, photo) linking to full articles.
-- **Mocked today**: `app/components/home/journal.vue` — fully static i18n copy (`pages.home.journal.*`) and real downloaded photos, every card and the "more from the journal" link point at `/store` (no article pages exist). The section has `id="journal"` so the footer's "Dziennik"/"Journal" link (`app/components/app/footer/menu/world.vue`) scrolls to it.
-- **Real fix would need**: an actual blog/CMS with article content and routes — no blog concept exists anywhere in this codebase today.
+- **Now**: `app/components/home/journal.vue` reads `useFetchJournalSection()` (Payload `JournalSection` global — a fixed-size curated list, not a paginated blog collection; see `payload-backend-todo` skill) and falls back to the static i18n copy (`pages.home.journal.*`) and downloaded photos when Payload has no data or is unreachable. The section still has `id="journal"` so the footer's "Dziennik"/"Journal" link scrolls to it. Article `url`s still have nowhere real to point until actual article pages/routes exist — Payload only supplies the label/URL per card, same gap as the header nav and footer link columns.
