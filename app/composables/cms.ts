@@ -1,12 +1,15 @@
 import type {
   CmsBrands,
   CmsCampaignSlides,
+  CmsCategoryTiles,
   CmsFooterContent,
   CmsJournalSection,
   CmsNavigation,
   CmsStudioStory,
 } from '../types/cms'
 import { cmsRepository } from '../repository/cms.repository'
+import { useCmsService } from '../services/cms.service'
+import type { ResolvedShopTheLook } from '../services/cms.service'
 
 export const useFetchNavigation = () => {
   const { locale } = useI18n()
@@ -65,5 +68,33 @@ export const useFetchCampaignSlides = () => {
   return useLazyAsyncData<CmsCampaignSlides | null>(
     `cms:campaign-slides:${locale.value}`,
     async () => await fetchCampaignSlides(locale.value),
+  )
+}
+
+export const useFetchCategoryTiles = () => {
+  const { locale } = useI18n()
+  const medusaLocale = toMedusaLocale(locale.value)
+  const { getResolvedCategoryTiles } = useCmsService()
+
+  return useLazyAsyncData<CmsCategoryTiles | null>(
+    `cms:category-tiles:${locale.value}`,
+    async () => await getResolvedCategoryTiles(locale.value, medusaLocale),
+  )
+}
+
+export const useFetchShopTheLook = () => {
+  const { locale } = useI18n()
+  const { country } = useCountry()
+  const medusaLocale = toMedusaLocale(locale.value)
+  const { getResolvedShopTheLook } = useCmsService()
+
+  return useLazyAsyncData<ResolvedShopTheLook | null>(
+    `cms:shop-the-look:${locale.value}:region:${country.value?.region_id}`,
+    async () =>
+      await getResolvedShopTheLook(
+        locale.value,
+        { region_id: country.value?.region_id },
+        medusaLocale,
+      ),
   )
 }

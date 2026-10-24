@@ -29,17 +29,15 @@ Entries are added as each home page section is implemented.
 - **Needs**: a rotating 3-slide campaign carousel (Figma shows "01 / 03" pagination) with per-slide season label, headline, description, CTA, photo and caption.
 - **Now**: `app/components/home/campaign.vue` reads `useFetchCampaignSlides()` (Payload `CampaignSlides` global, see `payload-backend-todo` skill) and renders a real, clickable slide-switching pagination over however many slides Payload has. Falls back to the single static slide (i18n `pages.home.campaign.*`, `public/images/home/autumn-campaign.jpg`) when Payload has no data or is unreachable. The "Dla niego"/secondary CTA's link target is still computed from real Medusa category data (`useDepartmentCategories()`) in both paths — Payload only ever supplies that CTA's label, never its URL, since the URL is live commerce routing, not editorial content.
 
-## Home: "Shop by category" curated grid
+## Home: "Shop by category" curated grid — wired to Payload
 
 - **Needs**: 4 editorial category tiles with curated titles/subtitles that don't map 1:1 to raw category names (e.g. Figma's "Koszule i T-shirty" spans two real categories, "Buty i dodatki" has no matching category at all in this catalog — this Medusa instance has no distinct "shoes" category).
-- **Mocked today**: `app/components/home/categories.vue` — static i18n copy per card (`pages.home.categories.*`), each linked to the closest real category handle (`sweaters-cardigans`, `shirts`, `jackets-coats`, `accessories`) rather than showing raw `category.name`.
-- **Real fix would need**: either editorial curation content (titles/photos chosen per campaign) from the user, a "shoes" category added to the catalog, or accepting that this grid shows curated groupings rather than a literal category listing.
+- **Now**: `app/components/home/categories.vue` reads `useFetchCategoryTiles()` (Payload `CategoryTiles` global, resolved against real Medusa categories by `app/services/cms.service.ts`'s `getResolvedCategoryTiles()` — any card whose `categoryHandle` doesn't match a real category is dropped rather than linking to a 404; see `payload-backend-todo` skill) and falls back to the previous static i18n cards (`sweaters-cardigans`, `shirts`, `jackets-coats`, `accessories`) when Payload has no data, none of its handles resolve, or it's unreachable. A "shoes" category still doesn't exist in the catalog — a curated tile for it would need one added, or editorial acceptance that the grid skips it.
 
-## Home: "Shop the look"
+## Home: "Shop the look" — wired to Payload
 
 - **Needs**: an editorial "look" — 3 products a stylist picked to go together, with an editorial photo, caption and bottom tagline.
-- **Mocked today**: `app/components/home/shop-the-look.vue` resolves 3 real products via `app.config.ts`'s `shopTheLookProductHandles` (real catalog items, real prices via `useFetchProductByHandle`, real total computed from them) — only the *curation* (which 3 products belong together) and the editorial copy/photo are static. No brand line is shown per product (see the "New arrivals" brand/material entry in missing-medusa-api-data — same gap).
-- **Real fix would need**: a real "look"/outfit content model (a CMS entry linking N product handles to editorial copy and a photo) instead of a hardcoded array in `app.config.ts`.
+- **Now**: `app/components/home/shop-the-look.vue` reads `useFetchShopTheLook()` (Payload `ShopTheLook` global, resolved against real Medusa products by `app/services/cms.service.ts`'s `getResolvedShopTheLook()` — any `productHandles` entry that no longer matches a real product is dropped; see `payload-backend-todo` skill) and falls back to the hand-picked `app.config.ts` handles (`shopTheLookProductHandles`) when Payload has no data, none of its handles resolve, or it's unreachable. Prices/totals are always computed live from the resolved Medusa products either way. No brand line is shown per product (see the "New arrivals" brand/material entry in missing-medusa-api-data — same gap).
 
 ## Home: "Selected brands" row
 

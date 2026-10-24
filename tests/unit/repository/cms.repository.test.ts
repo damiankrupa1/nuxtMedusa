@@ -50,7 +50,7 @@ describe('cms repository', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       'https://cms.example.com/api/globals/studio-story',
-      { query: { locale: 'pl', depth: 0 } },
+      { query: { locale: 'pl', depth: 1 } },
     )
   })
 
@@ -72,7 +72,7 @@ describe('cms repository', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       'https://cms.example.com/api/globals/journal-section',
-      { query: { locale: 'pl', depth: 0 } },
+      { query: { locale: 'pl', depth: 1 } },
     )
   })
 
@@ -83,7 +83,29 @@ describe('cms repository', () => {
 
     expect(fetchMock).toHaveBeenCalledWith(
       'https://cms.example.com/api/globals/campaign-slides',
-      { query: { locale: 'pl', depth: 0 } },
+      { query: { locale: 'pl', depth: 1 } },
+    )
+  })
+
+  it('fetches the category tiles global for the given locale', async () => {
+    fetchMock.mockResolvedValue({ cards: [] })
+
+    await cmsRepository().fetchCategoryTiles('pl')
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://cms.example.com/api/globals/category-tiles',
+      { query: { locale: 'pl', depth: 1 } },
+    )
+  })
+
+  it('fetches the shop the look global for the given locale', async () => {
+    fetchMock.mockResolvedValue({ productHandles: [] })
+
+    await cmsRepository().fetchShopTheLook('en')
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://cms.example.com/api/globals/shop-the-look',
+      { query: { locale: 'en', depth: 1 } },
     )
   })
 

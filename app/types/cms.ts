@@ -85,3 +85,37 @@ export interface CmsStudioStory {
   collectionUrl: string
   image: CmsImage
 }
+
+// Card copy/image are editorial; categoryHandle is the only link to Medusa
+// and is validated by app/services/cms.service.ts before this card is shown.
+export interface CmsCategoryTile {
+  title: string
+  subtitle: string
+  categoryHandle: string
+  image: CmsImage
+}
+
+export interface CmsCategoryTiles {
+  eyebrow: string
+  heading: string
+  description: string
+  cards: CmsCategoryTile[]
+}
+
+// Editorial copy/image for the "shop the look" section; productHandles is
+// the only link to Medusa and is resolved (and validated) by
+// app/services/cms.service.ts, which attaches the matching StoreProduct to
+// each handle before this is shown.
+export interface CmsShopTheLook {
+  eyebrow: string
+  headlineLine1: string
+  headlineLine2: string
+  description: string
+  captionLabel: string
+  bottomTagline: string
+  shopSetCtaLabel: string
+  totalLabel: string
+  sizeHint: string
+  productHandles: string[]
+  image: CmsImage
+}
