@@ -20,6 +20,5 @@ useSeoMeta({
     <HomeJournal />
     <AppBenefitsBar />
     <HomeNewsletter />
-    <LazyCollectionList />
   </div>
 </template>

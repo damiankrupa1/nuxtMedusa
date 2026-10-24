@@ -314,22 +314,12 @@
       "addToCart": "Dodaj do koszyka"
     }
   },
-  "collection": {
-    "preview": {
-      "viewAll": "Zobacz wszystkie"
-    }
-  },
   "store": {
     "selectCountry": {
       "placeholder": "Kraj*"
     },
     "catalog": {
       "sortBy": "Sortuj według"
-    },
-    "hero": {
-      "imageAlt": "Nowa kolekcja",
-      "tagline": "Ruch, uproszczony.",
-      "cta": "Kup teraz"
     },
     "sort": {
       "latest": "Najnowsze",

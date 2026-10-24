@@ -314,22 +314,12 @@
       "addToCart": "Add to cart"
     }
   },
-  "collection": {
-    "preview": {
-      "viewAll": "View all"
-    }
-  },
   "store": {
     "selectCountry": {
       "placeholder": "Country*"
     },
     "catalog": {
       "sortBy": "Sort by"
-    },
-    "hero": {
-      "imageAlt": "New collection",
-      "tagline": "Movement, simplified.",
-      "cta": "Shop"
     },
     "sort": {
       "latest": "Latest Arrivals",
