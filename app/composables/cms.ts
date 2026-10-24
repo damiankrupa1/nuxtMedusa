@@ -1,5 +1,6 @@
 import type {
   CmsBrands,
+  CmsCampaignSlides,
   CmsFooterContent,
   CmsJournalSection,
   CmsNavigation,
@@ -54,5 +55,15 @@ export const useFetchJournalSection = () => {
   return useLazyAsyncData<CmsJournalSection | null>(
     `cms:journal-section:${locale.value}`,
     async () => await fetchJournalSection(locale.value),
+  )
+}
+
+export const useFetchCampaignSlides = () => {
+  const { locale } = useI18n()
+  const { fetchCampaignSlides } = cmsRepository()
+
+  return useLazyAsyncData<CmsCampaignSlides | null>(
+    `cms:campaign-slides:${locale.value}`,
+    async () => await fetchCampaignSlides(locale.value),
   )
 }

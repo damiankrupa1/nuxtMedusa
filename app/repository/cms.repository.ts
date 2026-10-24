@@ -1,5 +1,6 @@
 import type {
   CmsBrands,
+  CmsCampaignSlides,
   CmsFooterContent,
   CmsJournalSection,
   CmsNavigation,
@@ -45,6 +46,9 @@ export function cmsRepository() {
     },
     async fetchJournalSection(locale: string): Promise<CmsJournalSection | null> {
       return fetchGlobal<CmsJournalSection>('journal-section', locale)
+    },
+    async fetchCampaignSlides(locale: string): Promise<CmsCampaignSlides | null> {
+      return fetchGlobal<CmsCampaignSlides>('campaign-slides', locale)
     },
   }
 }

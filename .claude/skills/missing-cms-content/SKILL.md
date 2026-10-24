@@ -24,11 +24,10 @@ Entries are added as each home page section is implemented.
 - **Needs**: a real support email/phone/hours and social handles.
 - **Now**: `app/components/app/footer/menu/brand.vue` reads `useFetchFooterContent()`'s `contact`/`social` fields and falls back to the `app.footer.contact.*` / `app.footer.social.handle` i18n placeholders when Payload has no data or is unreachable. Still waiting on real contact info/social accounts to be entered into Payload — the wiring is in place, the content isn't.
 
-## Home: autumn campaign hero
+## Home: autumn campaign hero — wired to Payload
 
 - **Needs**: a rotating 3-slide campaign carousel (Figma shows "01 / 03" pagination) with per-slide season label, headline, description, CTA, photo and caption.
-- **Mocked today**: `app/components/home/campaign.vue` renders only slide 1 as static content (i18n `pages.home.campaign.*`), with non-interactive pagination UI (always shows 01 of 03, no slide-switching). The campaign photo itself is real downloaded artwork (`public/images/home/autumn-campaign.jpg`, from the Figma file) — not a placeholder, just hand-picked for this one slide.
-- **Real fix would need**: a real content source for campaign slides (2 more editorial copy sets + photos) and either a simple client-side carousel or a CMS-driven list to loop over, plus the "Dla niego"/secondary CTA label itself is static copy even though its link target is real (second top-level category).
+- **Now**: `app/components/home/campaign.vue` reads `useFetchCampaignSlides()` (Payload `CampaignSlides` global, see `payload-backend-todo` skill) and renders a real, clickable slide-switching pagination over however many slides Payload has. Falls back to the single static slide (i18n `pages.home.campaign.*`, `public/images/home/autumn-campaign.jpg`) when Payload has no data or is unreachable. The "Dla niego"/secondary CTA's link target is still computed from real Medusa category data (`useDepartmentCategories()`) in both paths — Payload only ever supplies that CTA's label, never its URL, since the URL is live commerce routing, not editorial content.
 
 ## Home: "Shop by category" curated grid
 

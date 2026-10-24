@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import { cmsRepository } from '../../../app/repository/cms.repository'
 import {
   useFetchBrands,
+  useFetchCampaignSlides,
   useFetchFooterContent,
   useFetchJournalSection,
   useFetchNavigation,
@@ -11,6 +12,7 @@ import {
 } from '../../../app/composables/cms'
 import type {
   CmsBrands,
+  CmsCampaignSlides,
   CmsFooterContent,
   CmsJournalSection,
   CmsNavigation,
@@ -31,6 +33,8 @@ describe('cms composables', () => {
   const fetchBrands = jest.fn<(locale: string) => Promise<CmsBrands | null>>()
   const fetchJournalSection =
     jest.fn<(locale: string) => Promise<CmsJournalSection | null>>()
+  const fetchCampaignSlides =
+    jest.fn<(locale: string) => Promise<CmsCampaignSlides | null>>()
   const useLazyAsyncData = jest.fn(
     (key: string, handler: () => Promise<unknown>) => ({ key, handler }),
   )
@@ -50,6 +54,7 @@ describe('cms composables', () => {
       fetchStudioStory,
       fetchBrands,
       fetchJournalSection,
+      fetchCampaignSlides,
     })
   })
 
@@ -132,5 +137,20 @@ describe('cms composables', () => {
     const handler = useLazyAsyncData.mock.calls[0]![1]
     await handler()
     expect(fetchJournalSection).toHaveBeenCalledWith('pl')
+  })
+
+  it('keys the campaign slides fetch by locale and delegates to the repository', async () => {
+    fetchCampaignSlides.mockResolvedValue(null)
+
+    useFetchCampaignSlides()
+
+    expect(useLazyAsyncData).toHaveBeenCalledWith(
+      'cms:campaign-slides:pl',
+      expect.any(Function),
+    )
+
+    const handler = useLazyAsyncData.mock.calls[0]![1]
+    await handler()
+    expect(fetchCampaignSlides).toHaveBeenCalledWith('pl')
   })
 })

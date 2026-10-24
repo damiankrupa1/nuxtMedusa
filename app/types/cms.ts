@@ -37,6 +37,24 @@ export interface CmsBrands {
   otherBrands: string[]
 }
 
+export interface CmsCampaignSlide {
+  seasonLabel: string
+  editionLabel: string
+  headlineLine1: string
+  headlineLine2: string
+  description: string
+  shopCtaLabel: string
+  secondaryCtaLabel: string
+  tagline: string
+  captionEyebrow: string
+  captionHeadline: string
+  image: CmsImage
+}
+
+export interface CmsCampaignSlides {
+  slides: CmsCampaignSlide[]
+}
+
 export interface CmsJournalArticle {
   category: string
   readingTime: string
