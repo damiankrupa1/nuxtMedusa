@@ -47,7 +47,7 @@ Entries are added as each home page section is implemented.
 
 ## Home: "Selected brands" row
 
-- **Needs**: a row of stocked-brand wordmarks ("RÓWNE" — now the storefront's own name, SELECTED, Samsøe Samsøe, MARC O'POLO, BIRKENSTOCK), each presumably linking to a brand-filtered view.
+- **Needs**: a row of stocked-brand wordmarks (the storefront's own name, plus SELECTED, Samsøe Samsøe, MARC O'POLO, BIRKENSTOCK), each presumably linking to a brand-filtered view.
 - **Mocked today**: `app/components/home/brands.vue` — a static `otherBrands` array of plain text, not linked individually (whole section just has one "view all" link to `/store`). No per-brand image/logo, just styled text, matching the Figma source (which is also plain styled text, not logo images).
 - **Real fix would need**: same brand/manufacturer concept gap noted elsewhere (per-product brand attribution, a brand directory page) — this row has no real data to drive it at all today.
 
