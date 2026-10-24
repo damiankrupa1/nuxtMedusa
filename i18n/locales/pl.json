@@ -82,7 +82,20 @@
       "placeholder": "Nie powinno cię tu być"
     },
     "home": {
-      "title": "Fashion"
+      "title": "Fashion",
+      "campaign": {
+        "seasonLabel": "JESIEŃ — ZIMA 2026",
+        "editionLabel": "THE EVERYDAY EDIT",
+        "headlineLine1": "Mniej rzeczy.",
+        "headlineLine2": "Więcej Ciebie.",
+        "description": "Wybrane marki. Szlachetne materiały. Ubrania, do których wracasz — niezależnie od sezonu.",
+        "shopCta": "Odkryj kolekcję",
+        "secondaryCta": "Dla niego",
+        "tagline": "Codzienność, w dobrym stylu.",
+        "captionEyebrow": "NOWA DEFINICJA KLASYKI",
+        "captionHeadline": "Rzeczy na więcej niż jeden sezon.",
+        "imageAlt": "Modelka w wełnianym płaszczu na kamiennych schodach w jesiennej scenerii miejskiej"
+      }
     },
     "store": {
       "title": "Wszystkie produkty"

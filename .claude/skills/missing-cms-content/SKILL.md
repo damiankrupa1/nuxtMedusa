@@ -26,3 +26,9 @@ Entries are added as each home page section is implemented.
 - **Needs**: a real support email/phone/hours and social handles.
 - **Mocked today**: `app/components/app/footer/menu/brand.vue` via `app.footer.contact.*` / `app.footer.social.handle` i18n keys with placeholder values.
 - **Real fix would need**: real store contact info and social accounts from the user.
+
+## Home: autumn campaign hero
+
+- **Needs**: a rotating 3-slide campaign carousel (Figma shows "01 / 03" pagination) with per-slide season label, headline, description, CTA, photo and caption.
+- **Mocked today**: `app/components/home/campaign.vue` renders only slide 1 as static content (i18n `pages.home.campaign.*`), with non-interactive pagination UI (always shows 01 of 03, no slide-switching). The campaign photo itself is real downloaded artwork (`public/images/home/autumn-campaign.jpg`, from the Figma file) — not a placeholder, just hand-picked for this one slide.
+- **Real fix would need**: a real content source for campaign slides (2 more editorial copy sets + photos) and either a simple client-side carousel or a CMS-driven list to loop over, plus the "Dla niego"/secondary CTA label itself is static copy even though its link target is real (second top-level category).

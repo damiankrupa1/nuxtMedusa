@@ -11,7 +11,7 @@ useSeoMeta({
 
 <template>
   <div>
-    <StoreHero />
+    <HomeCampaign />
     <LazyCollectionList />
   </div>
 </template>

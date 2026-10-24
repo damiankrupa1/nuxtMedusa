@@ -65,7 +65,15 @@ export default defineNuxtConfig({
   },
 
   fonts: {
-    families: [{ name: 'Inter', provider: 'google', weights: [400, 500, 600] }],
+    families: [
+      { name: 'Inter', provider: 'google', weights: [400, 500, 600] },
+      {
+        name: 'Cormorant Garamond',
+        provider: 'google',
+        weights: [400],
+        styles: ['normal', 'italic'],
+      },
+    ],
   },
 
   i18n: {

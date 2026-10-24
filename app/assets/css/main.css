@@ -12,8 +12,9 @@
   --color-paper: var(--color-paper);
   --color-line: var(--color-line);
   --color-accent: var(--color-accent);
+  --color-sand: var(--color-sand);
   --font-sans: 'Inter', sans-serif;
-  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
+  --font-serif: 'Cormorant Garamond', ui-serif, Georgia, Cambria, serif;
 }
 
 :root {
@@ -78,4 +79,8 @@ body {
 
 @utility border-color-line {
   border-color: var(--color-line);
+}
+
+@utility bg-color-sand {
+  background-color: var(--color-sand);
 }

@@ -82,7 +82,20 @@
       "placeholder": "You shall no be here"
     },
     "home": {
-      "title": "Fashion"
+      "title": "Fashion",
+      "campaign": {
+        "seasonLabel": "AUTUMN — WINTER 2026",
+        "editionLabel": "THE EVERYDAY EDIT",
+        "headlineLine1": "Fewer things.",
+        "headlineLine2": "More you.",
+        "description": "Selected brands. Noble materials. Clothes you return to — no matter the season.",
+        "shopCta": "Discover the collection",
+        "secondaryCta": "For him",
+        "tagline": "Everyday, done well.",
+        "captionEyebrow": "A NEW DEFINITION OF CLASSIC",
+        "captionHeadline": "Pieces for more than one season.",
+        "imageAlt": "A model in a wool coat standing on stone steps in an autumn city scene"
+      }
     },
     "store": {
       "title": "All products"
