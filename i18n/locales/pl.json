@@ -145,6 +145,20 @@
       "brands": {
         "eyebrow": "RÓŻNE MARKI. WSPÓLNE PODEJŚCIE DO JAKOŚCI.",
         "viewAll": "Poznaj wszystkie marki"
+      },
+      "studioStory": {
+        "imageAlt": "Dłonie krawcowej składającej dzianinowy produkt w pracowni",
+        "signatureLabel": "{title} STUDIO",
+        "signatureTagline": "Zaprojektowane i uszyte w Polsce.",
+        "eyebrow": "NASZA WŁASNA MARKA / {title} STUDIO",
+        "headlineLine1": "To, co ważne,",
+        "headlineLine2": "jest blisko.",
+        "paragraph1": "Wierzymy, że dobra garderoba nie potrzebuje pośpiechu. Dlatego obok wybranych marek tworzymy {title} Studio — autorskie ubrania szyte w Polsce, z uważnością na materiał, krój i każdy szew.",
+        "paragraph2": "Bez zbędnych dodatków. Bez sezonowej daty ważności. Z myślą o tym, jak naprawdę żyjesz.",
+        "valueMade": "Szyte w Polsce",
+        "valueMaterials": "Naturalne materiały",
+        "valueBatches": "Krótkie serie",
+        "collectionLink": "Poznaj historię {title} Studio"
       }
     },
     "store": {

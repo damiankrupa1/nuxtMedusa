@@ -145,6 +145,20 @@
       "brands": {
         "eyebrow": "DIFFERENT BRANDS. A SHARED APPROACH TO QUALITY.",
         "viewAll": "Discover all brands"
+      },
+      "studioStory": {
+        "imageAlt": "A tailor's hands folding a knit garment in a workshop",
+        "signatureLabel": "{title} STUDIO",
+        "signatureTagline": "Designed and made in Poland.",
+        "eyebrow": "OUR OWN LABEL / {title} STUDIO",
+        "headlineLine1": "What matters",
+        "headlineLine2": "stays close.",
+        "paragraph1": "We believe a good wardrobe doesn't need to rush. That's why, alongside selected brands, we create {title} Studio — original clothing made in Poland, with care for fabric, cut and every seam.",
+        "paragraph2": "No unnecessary extras. No seasonal expiry date. Made for how you actually live.",
+        "valueMade": "Made in Poland",
+        "valueMaterials": "Natural materials",
+        "valueBatches": "Short runs",
+        "collectionLink": "Discover the {title} Studio story"
       }
     },
     "store": {
