@@ -224,6 +224,13 @@
     "store": {
       "title": "All products"
     },
+    "search": {
+      "title": "Search",
+      "heading": "Find yours for the long run.",
+      "placeholder": "What are you looking for?",
+      "submit": "Search",
+      "clear": "Clear search"
+    },
     "contact": {
       "title": "Contact"
     },
@@ -319,7 +326,19 @@
       "placeholder": "Country*"
     },
     "catalog": {
-      "sortBy": "Sort by"
+      "sortBy": "Sort:",
+      "filters": "Filters",
+      "filterLabels": {
+        "forWhom": "For",
+        "category": "Category",
+        "size": "Size",
+        "color": "Color",
+        "material": "Material",
+        "price": "Price",
+        "brand": "Brand"
+      },
+      "searchResultsFor": "Results for \"{query}\" ({count})",
+      "noResults": "No products found."
     },
     "sort": {
       "latest": "Latest Arrivals",
