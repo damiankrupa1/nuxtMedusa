@@ -19,12 +19,12 @@
 Based on:
 https://github.com/OlivierBelaud/nuxt-starter-medusa
 
-Combine Medusa's modules for your commerce backend with the newest Nuxt v3, ready for v4, features for a performant storefront.
+Combine Medusa's modules for your commerce backend with Nuxt 3.16 in Nuxt 4 compatibility mode for a performant storefront.
 </p>
 
 # Fashion Store
 
-Modern headless e-commerce storefront built with Nuxt 4 and Medusa.js.
+Modern headless e-commerce storefront built with Nuxt 3.16 in Nuxt 4 compatibility mode and Medusa.js.
 
 ## ✨ Features
 
@@ -43,7 +43,7 @@ Modern headless e-commerce storefront built with Nuxt 4 and Medusa.js.
 
 ### Frontend
 
-- Nuxt 4
+- Nuxt 3.16 (Nuxt 4 compatibility mode)
 - Vue 3
 - TypeScript
 - Nuxt UI
@@ -79,10 +79,14 @@ pnpm test
 Run a single test file:
 
 ```bash
-pnpm exec jest tests/unit/product.test.ts --runInBand
+pnpm exec jest tests/unit/utils/product.test.ts --runInBand
 ```
 
-The test suite lives under the [tests](tests) folder and is organized into `unit` and `integration` directories.
+The unit test suite lives under the [tests/unit](tests/unit) directory.
+
+## Payment Integrations
+
+- [Stripe](https://stripe.com/)
 
 ## 🚀 Getting Started
 
@@ -94,16 +98,10 @@ The test suite lives under the [tests](tests) folder and is organized into `unit
 
 ### Installation
 
-Clone repository:
+Clone the repository:
 
 ```bash
-git clone https://github.com/user/fashion-store.git
-
-cd fashion-store
-
+git clone https://github.com/damiankrupa1/nuxtMedusa.git
+cd nuxtMedusa
 pnpm install
-
-## Payment Integrations
-
-- Stripe: https://stripe.com/
 ```
