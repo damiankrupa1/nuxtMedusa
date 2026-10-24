@@ -43,6 +43,15 @@ Gdy użytkownik chce rozpocząć równoległą pracę:
 
 Domyślnie twórz nowy branch na bazie aktualnego `HEAD` wskazanego przez użytkownika. Nie zakładaj, że niezacommitowane zmiany są dostępne w nowym worktree.
 
+**Skrypt pomocniczy**: `new-agent.ps1` w tym katalogu wykonuje kroki 1-3 i 6-7 w sposób przewidywalny (bez polegania na interpretacji promptu). Domyślnie działa w trybie dry-run (pokazuje plan, nic nie zmienia) — dopiero `-Apply` faktycznie tworzy branch i worktree. Sam nie uruchamia nowej sesji agenta, tylko wypisuje gotową komendę. Użycie:
+
+```powershell
+.\.claude\skills\worktree-manager\new-agent.ps1 -TaskName "nazwa-zadania"          # dry-run, pokaż plan
+.\.claude\skills\worktree-manager\new-agent.ps1 -TaskName "nazwa-zadania" -Apply   # po zgodzie użytkownika
+```
+
+Nawet przy użyciu skryptu, kroki 4-5 (propozycja planu i zgoda użytkownika) wykonaj przed odpaleniem go z `-Apply` — skrypt nie pyta interaktywnie o potwierdzenie.
+
 ### 2. Lista i diagnostyka
 
 Gdy użytkownik chce sprawdzić środowiska:
