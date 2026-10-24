@@ -56,3 +56,9 @@ Entries are added as each home page section is implemented.
 - **Needs**: a brand-storytelling section about the storefront's own in-house line — editorial photo, philosophy copy, 3 value markers, link to a studio story page.
 - **Mocked today**: `app/components/home/studio-story.vue` — fully static i18n copy (`pages.home.studioStory.*`), real downloaded photo (`public/images/home/studio-craft.jpg`), "Discover the {title} Studio story" link points at `/store` (no studio/about page exists, same gap as the header nav entry).
 - **Real fix would need**: a real about/studio page and real philosophy copy from the user — this entire section describes a brand sub-line ("{title} Studio") that doesn't exist as a real product line in this catalog (no matching category/collection, see the "Fashion Studio" tab entry in missing-medusa-api-data).
+
+## Home: journal / editorial articles
+
+- **Needs**: 3 blog-style article cards (category, reading time, title, summary, photo) linking to full articles.
+- **Mocked today**: `app/components/home/journal.vue` — fully static i18n copy (`pages.home.journal.*`) and real downloaded photos, every card and the "more from the journal" link point at `/store` (no article pages exist). The section has `id="journal"` so the footer's "Dziennik"/"Journal" link (`app/components/app/footer/menu/world.vue`) scrolls to it.
+- **Real fix would need**: an actual blog/CMS with article content and routes — no blog concept exists anywhere in this codebase today.

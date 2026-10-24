@@ -159,6 +159,32 @@
         "valueMaterials": "Naturalne materiały",
         "valueBatches": "Krótkie serie",
         "collectionLink": "Poznaj historię {title} Studio"
+      },
+      "journal": {
+        "eyebrow": "DZIENNIK {title}",
+        "heading": "Poza garderobą.",
+        "viewAll": "Więcej w dzienniku",
+        "capsuleWardrobe": {
+          "category": "GARDEROBA",
+          "readingTime": "5 min czytania",
+          "title": "Mniej, ale lepiej. Twoja szafa kapsułowa.",
+          "summary": "12 elementów, dziesiątki połączeń. Od czego zacząć?",
+          "imageAlt": "Wieszak z płaszczami, koszulami i spodniami przy nasłonecznionym oknie"
+        },
+        "merinoWool": {
+          "category": "MATERIAŁY",
+          "readingTime": "4 min czytania",
+          "title": "Wełna, którą poczujesz. Poznaj merino.",
+          "summary": "O naturalnej miękkości i jakości, która robi różnicę.",
+          "imageAlt": "Zbliżenie na złożony kremowy sweter z wełny merino"
+        },
+        "autumnWalk": {
+          "category": "INSPIRACJE",
+          "readingTime": "3 min czytania",
+          "title": "Miasto w swoim rytmie. Jesienny spacer.",
+          "summary": "Wygodne warstwy na dni bez wielkich planów.",
+          "imageAlt": "Mężczyzna idący brukowaną uliczką w mieście jesienią"
+        }
       }
     },
     "store": {
