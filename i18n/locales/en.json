@@ -129,6 +129,18 @@
         "tabMen": "For him",
         "tabStudio": "Fashion Studio",
         "badge": "New"
+      },
+      "shopTheLook": {
+        "captionLabel": "{title} SILHOUETTES / 01",
+        "imageAlt": "A woman in a camel coat standing in a sunlit apartment",
+        "bottomTagline": "MONDAY IN THE CITY. WEEKEND ANYWHERE.",
+        "eyebrow": "READY-MADE COMBINATIONS",
+        "headlineLine1": "One base.",
+        "headlineLine2": "Many possibilities.",
+        "description": "Soft knit, the right proportions, and a good coat. A set that fits your rhythm.",
+        "shopSetCta": "Shop this set",
+        "totalLabel": "Total",
+        "sizeHint": "Choose your size on each product's page."
       }
     },
     "store": {

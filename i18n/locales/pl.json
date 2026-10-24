@@ -129,6 +129,18 @@
         "tabMen": "Dla niego",
         "tabStudio": "Fashion Studio",
         "badge": "Nowość"
+      },
+      "shopTheLook": {
+        "captionLabel": "{title} SYLWETKI / 01",
+        "imageAlt": "Kobieta w płaszczu w kolorze camel stojąca w nasłonecznionym mieszkaniu",
+        "bottomTagline": "PONIEDZIAŁEK W MIEŚCIE. WEEKEND GDZIEKOLWIEK.",
+        "eyebrow": "GOTOWE POŁĄCZENIA",
+        "headlineLine1": "Jedna baza.",
+        "headlineLine2": "Wiele możliwości.",
+        "description": "Miękka dzianina, idealne proporcje i dobry płaszcz. Zestaw, który odnajdzie się w Twoim rytmie.",
+        "shopSetCta": "Kup ten zestaw",
+        "totalLabel": "Razem",
+        "sizeHint": "Wybierz swój rozmiar na stronie każdego produktu."
       }
     },
     "store": {

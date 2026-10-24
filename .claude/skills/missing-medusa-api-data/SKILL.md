@@ -66,3 +66,9 @@ Entries are added as each home page section is implemented. Each entry notes how
 - **Needs**: a third department tab alongside "Dla niej"/"Dla niego".
 - **Mocked today**: `app/components/home/new-arrivals.vue` has no category/collection mapping for this tab — falls back to `category_id: undefined`, i.e. the newest products overall, same as no filter.
 - **Real fix would need**: a "Fashion Studio" product line (category or collection) in the catalog — doesn't exist today (full category list verified live 2026-10-24: shirts, sweatshirts, pants, merch, dresses, jackets-coats, sportswear, accessories, women, men, t-shirts-tops, sweaters-cardigans, skirts).
+
+## Home: "Shop the look" — buy the whole set
+
+- **Needs**: a single "Shop this set" action that adds all 3 looked-up products (with a size per item) to the cart at once.
+- **Mocked today**: `app/components/home/shop-the-look.vue`'s CTA just links to the first product's page — no multi-item add-to-cart happens.
+- **Real fix would need**: `useAddToCart`/`cart.service.ts` only take one line item at a time; a "buy the set" action would need either a loop of individual add calls (still needs a size picked per item first, which the UI doesn't collect here) or a true bulk-add endpoint — plus a size-selection UI this component doesn't have.

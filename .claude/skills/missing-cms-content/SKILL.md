@@ -38,3 +38,9 @@ Entries are added as each home page section is implemented.
 - **Needs**: 4 editorial category tiles with curated titles/subtitles that don't map 1:1 to raw category names (e.g. Figma's "Koszule i T-shirty" spans two real categories, "Buty i dodatki" has no matching category at all in this catalog — this Medusa instance has no distinct "shoes" category).
 - **Mocked today**: `app/components/home/categories.vue` — static i18n copy per card (`pages.home.categories.*`), each linked to the closest real category handle (`sweaters-cardigans`, `shirts`, `jackets-coats`, `accessories`) rather than showing raw `category.name`.
 - **Real fix would need**: either editorial curation content (titles/photos chosen per campaign) from the user, a "shoes" category added to the catalog, or accepting that this grid shows curated groupings rather than a literal category listing.
+
+## Home: "Shop the look"
+
+- **Needs**: an editorial "look" — 3 products a stylist picked to go together, with an editorial photo, caption and bottom tagline.
+- **Mocked today**: `app/components/home/shop-the-look.vue` resolves 3 real products via `app.config.ts`'s `shopTheLookProductHandles` (real catalog items, real prices via `useFetchProductByHandle`, real total computed from them) — only the *curation* (which 3 products belong together) and the editorial copy/photo are static. No brand line is shown per product (see the "New arrivals" brand/material entry in missing-medusa-api-data — same gap).
+- **Real fix would need**: a real "look"/outfit content model (a CMS entry linking N product handles to editorial copy and a photo) instead of a hardcoded array in `app.config.ts`.
