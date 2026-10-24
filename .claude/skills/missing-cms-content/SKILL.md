@@ -9,23 +9,20 @@ Content the Figma home page design shows that is not commerce data at all — ed
 
 Entries are added as each home page section is implemented.
 
-## Header: primary nav routing
+## Header: primary nav routing — wired to Payload
 
 - **Needs**: the Figma header's category nav row ("Marki", "Fashion Studio", "Inspiracje") links to brand-directory, brand-story and editorial/inspiration content that has no backing page or model in this codebase.
-- **Mocked today**: `app/utils/navigation.ts` (`primaryNav`) points every entry at `/store` as a placeholder.
-- **Real fix would need**: dedicated pages/routes for a brand directory, a studio/about page, and an inspiration/editorial hub — none exist yet.
+- **Now**: `app/components/app/header/category-nav.vue` reads `useFetchNavigation()` (Payload `Navigation` global, via `app/composables/cms.ts`/`app/repository/cms.repository.ts`) and falls back to the static `app/utils/navigation.ts` (`primaryNav`, every entry at `/store`) when Payload has no data or is unreachable. The underlying pages (brand directory, studio/about, inspiration hub) still don't exist — Payload only supplies the link label/URL, not the destination pages themselves.
 
-## Footer: help, world and legal link columns
+## Footer: help, world and legal link columns — wired to Payload
 
 - **Needs**: Figma's footer has three static columns beyond the brand/contact block — "Help" (shipping & payments, returns, size guide, order tracking, FAQ), "The Fashion world" (about, studio, journal, materials & care, careers), and a legal links row (terms, privacy, cookies, accessibility).
-- **Mocked today**: `app/components/app/footer/menu/help.vue`, `app/components/app/footer/menu/world.vue` link every item at `/store`; `app/components/app/footer/copyright.vue` (`legalLinks`) does the same.
-- **Real fix would need**: actual support/FAQ, about/studio, journal and legal pages — none exist in this codebase today.
+- **Now**: `app/components/app/footer/menu/help.vue`, `menu/world.vue` and `copyright.vue` read `useFetchFooterContent()` (Payload `FooterContent` global) and fall back to the previous static `/store`-linked lists when Payload has no data or is unreachable. As with the header nav, the destination pages (support/FAQ, about/studio, journal, legal) still don't exist — Payload only supplies labels/URLs.
 
-## Footer: brand contact details and social handle
+## Footer: brand contact details and social handle — wired to Payload
 
 - **Needs**: a real support email/phone/hours and social handles.
-- **Mocked today**: `app/components/app/footer/menu/brand.vue` via `app.footer.contact.*` / `app.footer.social.handle` i18n keys with placeholder values.
-- **Real fix would need**: real store contact info and social accounts from the user.
+- **Now**: `app/components/app/footer/menu/brand.vue` reads `useFetchFooterContent()`'s `contact`/`social` fields and falls back to the `app.footer.contact.*` / `app.footer.social.handle` i18n placeholders when Payload has no data or is unreachable. Still waiting on real contact info/social accounts to be entered into Payload — the wiring is in place, the content isn't.
 
 ## Home: autumn campaign hero
 
