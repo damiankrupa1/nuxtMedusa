@@ -37,9 +37,9 @@ watch(country, () => {
     }"
     :ui="{ content: 'w-[420px] rounded-none' }"
   >
-    <AppLink to="/cart">
-      {{ $t('app.header.cart') }}
-      <span v-if="cartItemsCount">({{ cartItemsCount }})</span>
+    <AppLink to="/cart" class="flex items-center gap-x-[7px]">
+      <UIcon name="i-lucide-shopping-bag" class="size-[21px]" />
+      <span class="text-xs">({{ cartItemsCount || 0 }})</span>
     </AppLink>
     <template #content>
       <div class="p-4 flex items-center justify-center">

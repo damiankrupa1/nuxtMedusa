@@ -12,18 +12,85 @@
       "account": "Konto",
       "cart": "Koszyk",
       "backToCart": "Powrót do koszyka",
-      "shippingTo": "Wysyłka do:"
+      "shippingTo": "Wysyłka do:",
+      "search": "Szukaj",
+      "announcement": {
+        "promise": "DOBRZE WYBRANE. NA DŁUŻEJ.",
+        "shipping": "Darmowa dostawa od 399 zł · 30 dni na zwrot"
+      },
+      "nav": {
+        "newIn": "Nowości",
+        "clothing": "Odzież",
+        "shoes": "Buty",
+        "bagsAndAccessories": "Torby i akcesoria",
+        "brands": "Marki",
+        "studio": "Fashion Studio",
+        "inspiration": "Inspiracje",
+        "lastPieces": "Ostatnie sztuki"
+      }
     },
     "sideMenu": {
       "title": "Menu",
       "description": "Menu nawigacyjne"
     },
+    "benefits": {
+      "delivery": {
+        "title": "Dostawa po Twojemu",
+        "note": "Bezpłatnie od 399 zł. Kurier lub InPost."
+      },
+      "returns": {
+        "title": "Czas na decyzję",
+        "note": "Masz 30 dni na spokojny zwrot."
+      },
+      "origin": {
+        "title": "Pewne pochodzenie",
+        "note": "Tylko oryginalne, starannie wybrane marki."
+      },
+      "support": {
+        "title": "Jesteśmy blisko",
+        "note": "Pomożemy z rozmiarem i wyborem."
+      }
+    },
     "footer": {
-      "categories": "Kategorie",
-      "collections": "Kolekcje",
-      "brandHeading": "Medusa",
-      "github": "Github",
-      "documentation": "Dokumentacja",
+      "tagline": "Dobrze wybrane. Na dłużej.",
+      "contact": {
+        "email": "czesc{'@'}fashion.store",
+        "phone": "+48 22 104 20 20",
+        "hours": "Pon.–pt. 9:00–17:00"
+      },
+      "social": {
+        "handle": "{'@'}fashion.store"
+      },
+      "shopping": {
+        "heading": "ZAKUPY",
+        "newIn": "Nowości",
+        "allBrands": "Wszystkie marki",
+        "giftCards": "Karty podarunkowe"
+      },
+      "help": {
+        "heading": "JAK MOŻEMY POMÓC?",
+        "shippingAndPayments": "Dostawa i płatności",
+        "returns": "Zwroty i reklamacje",
+        "sizeGuide": "Tabela rozmiarów",
+        "trackOrder": "Śledź zamówienie",
+        "faq": "Najczęstsze pytania"
+      },
+      "world": {
+        "heading": "ŚWIAT FASHION",
+        "about": "O nas",
+        "studio": "Fashion Studio",
+        "journal": "Dziennik",
+        "materials": "Materiały i pielęgnacja",
+        "careers": "Dołącz do zespołu"
+      },
+      "legal": {
+        "terms": "Regulamin",
+        "privacy": "Polityka prywatności",
+        "cookies": "Ustawienia cookies",
+        "accessibility": "Dostępność"
+      },
+      "paymentLabel": "Bezpieczne płatności",
+      "deliveryLabel": "Twoja dostawa",
       "poweredBy": "Obsługiwane przez",
       "copyright": "© {year} {title}. Wszelkie prawa zastrzeżone."
     }
@@ -33,7 +100,126 @@
       "placeholder": "Nie powinno cię tu być"
     },
     "home": {
-      "title": "Fashion"
+      "title": "Fashion",
+      "campaign": {
+        "seasonLabel": "JESIEŃ — ZIMA 2026",
+        "editionLabel": "THE EVERYDAY EDIT",
+        "headlineLine1": "Mniej rzeczy.",
+        "headlineLine2": "Więcej Ciebie.",
+        "description": "Wybrane marki. Szlachetne materiały. Ubrania, do których wracasz — niezależnie od sezonu.",
+        "shopCta": "Odkryj kolekcję",
+        "secondaryCta": "Dla niego",
+        "tagline": "Codzienność, w dobrym stylu.",
+        "captionEyebrow": "NOWA DEFINICJA KLASYKI",
+        "captionHeadline": "Rzeczy na więcej niż jeden sezon.",
+        "imageAlt": "Modelka w wełnianym płaszczu na kamiennych schodach w jesiennej scenerii miejskiej"
+      },
+      "categories": {
+        "eyebrow": "TWOJA GARDEROBA",
+        "heading": "Dobra baza. Własny styl.",
+        "description": "Ponadczasowe fasony i nowe ulubione detale. Znajdź to, co pasuje do Twojej codzienności.",
+        "knitwear": {
+          "title": "Dzianiny",
+          "subtitle": "Miękkość, która zostaje.",
+          "imageAlt": "Modelka w beżowym swetrze z dzianiny"
+        },
+        "shirts": {
+          "title": "Koszule i T-shirty",
+          "subtitle": "Początek każdej stylizacji.",
+          "imageAlt": "Mężczyzna w białej koszuli lnianej"
+        },
+        "coats": {
+          "title": "Płaszcze i kurtki",
+          "subtitle": "Forma na chłodniejsze dni.",
+          "imageAlt": "Modelka idąca w długim płaszczu w kolorze camel"
+        },
+        "accessories": {
+          "title": "Buty i dodatki",
+          "subtitle": "Przemyślane do ostatniego detalu.",
+          "imageAlt": "Skórzane mokasyny i torebka ustawione na kamiennym murku"
+        }
+      },
+      "newArrivals": {
+        "eyebrow": "ŚWIEŻE SPOJRZENIE NA CODZIENNOŚĆ",
+        "heading": "Nowe, ale na długo.",
+        "viewAll": "Zobacz wszystkie nowości",
+        "tabWomen": "Dla niej",
+        "tabMen": "Dla niego",
+        "tabStudio": "Fashion Studio",
+        "badge": "Nowość"
+      },
+      "shopTheLook": {
+        "captionLabel": "{title} SYLWETKI / 01",
+        "imageAlt": "Kobieta w płaszczu w kolorze camel stojąca w nasłonecznionym mieszkaniu",
+        "bottomTagline": "PONIEDZIAŁEK W MIEŚCIE. WEEKEND GDZIEKOLWIEK.",
+        "eyebrow": "GOTOWE POŁĄCZENIA",
+        "headlineLine1": "Jedna baza.",
+        "headlineLine2": "Wiele możliwości.",
+        "description": "Miękka dzianina, idealne proporcje i dobry płaszcz. Zestaw, który odnajdzie się w Twoim rytmie.",
+        "shopSetCta": "Kup ten zestaw",
+        "totalLabel": "Razem",
+        "sizeHint": "Wybierz swój rozmiar na stronie każdego produktu."
+      },
+      "brands": {
+        "eyebrow": "RÓŻNE MARKI. WSPÓLNE PODEJŚCIE DO JAKOŚCI.",
+        "viewAll": "Poznaj wszystkie marki"
+      },
+      "studioStory": {
+        "imageAlt": "Dłonie krawcowej składającej dzianinowy produkt w pracowni",
+        "signatureLabel": "{title} STUDIO",
+        "signatureTagline": "Zaprojektowane i uszyte w Polsce.",
+        "eyebrow": "NASZA WŁASNA MARKA / {title} STUDIO",
+        "headlineLine1": "To, co ważne,",
+        "headlineLine2": "jest blisko.",
+        "paragraph1": "Wierzymy, że dobra garderoba nie potrzebuje pośpiechu. Dlatego obok wybranych marek tworzymy {title} Studio — autorskie ubrania szyte w Polsce, z uważnością na materiał, krój i każdy szew.",
+        "paragraph2": "Bez zbędnych dodatków. Bez sezonowej daty ważności. Z myślą o tym, jak naprawdę żyjesz.",
+        "valueMade": "Szyte w Polsce",
+        "valueMaterials": "Naturalne materiały",
+        "valueBatches": "Krótkie serie",
+        "collectionLink": "Poznaj historię {title} Studio"
+      },
+      "journal": {
+        "eyebrow": "DZIENNIK {title}",
+        "heading": "Poza garderobą.",
+        "viewAll": "Więcej w dzienniku",
+        "capsuleWardrobe": {
+          "category": "GARDEROBA",
+          "readingTime": "5 min czytania",
+          "title": "Mniej, ale lepiej. Twoja szafa kapsułowa.",
+          "summary": "12 elementów, dziesiątki połączeń. Od czego zacząć?",
+          "imageAlt": "Wieszak z płaszczami, koszulami i spodniami przy nasłonecznionym oknie"
+        },
+        "merinoWool": {
+          "category": "MATERIAŁY",
+          "readingTime": "4 min czytania",
+          "title": "Wełna, którą poczujesz. Poznaj merino.",
+          "summary": "O naturalnej miękkości i jakości, która robi różnicę.",
+          "imageAlt": "Zbliżenie na złożony kremowy sweter z wełny merino"
+        },
+        "autumnWalk": {
+          "category": "INSPIRACJE",
+          "readingTime": "3 min czytania",
+          "title": "Miasto w swoim rytmie. Jesienny spacer.",
+          "summary": "Wygodne warstwy na dni bez wielkich planów.",
+          "imageAlt": "Mężczyzna idący brukowaną uliczką w mieście jesienią"
+        }
+      },
+      "newsletter": {
+        "eyebrow": "LISTY OD {title}",
+        "heading": "Dobry styl zostaje w kontakcie.",
+        "description": "Odbierz 10% na pierwsze zakupy. Dołącz po nowe kolekcje, przemyślane inspiracje i pierwszeństwo w odkrywaniu nowości.",
+        "emailPlaceholder": "Twój adres e-mail",
+        "submit": "DOŁĄCZ",
+        "interestedLabel": "Interesuje mnie:",
+        "interestWomen": "Moda damska",
+        "interestMen": "Moda męska",
+        "consentPrefix": "Chcę otrzymywać newsletter {title} i akceptuję",
+        "privacyPolicy": "politykę prywatności",
+        "consentSuffix": ". Zgodę mogę wycofać w każdej chwili. Rabat nie łączy się z innymi promocjami.",
+        "errorEmail": "Podaj prawidłowy adres e-mail.",
+        "errorConsent": "Zaakceptuj politykę prywatności, aby się zapisać.",
+        "success": "Dziękujemy za zapis — sprawdź wkrótce swoją skrzynkę."
+      }
     },
     "store": {
       "title": "Wszystkie produkty"
@@ -128,22 +314,12 @@
       "addToCart": "Dodaj do koszyka"
     }
   },
-  "collection": {
-    "preview": {
-      "viewAll": "Zobacz wszystkie"
-    }
-  },
   "store": {
     "selectCountry": {
       "placeholder": "Kraj*"
     },
     "catalog": {
       "sortBy": "Sortuj według"
-    },
-    "hero": {
-      "imageAlt": "Nowa kolekcja",
-      "tagline": "Ruch, uproszczony.",
-      "cta": "Kup teraz"
     },
     "sort": {
       "latest": "Najnowsze",

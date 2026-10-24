@@ -1,18 +1,12 @@
-<script lang="ts" setup>
-const { title } = useAppConfig()
-</script>
+<script lang="ts" setup></script>
 
 <template>
-  <footer
-    class="flex flex-col gap-y-6 sm:flex-row items-start justify-between py-40 bg-brand"
-  >
-    <AppLink to="/" class="text-lg uppercase font-medium text-color-dimmed">
-      {{ title }}
-    </AppLink>
-    <div class="gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3 text-sm">
+  <div class="flex flex-col lg:flex-row gap-y-10 lg:gap-x-16 w-full">
+    <AppFooterMenuBrand />
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-10 flex-1">
       <AppFooterMenuCategories />
-      <AppFooterMenuCollections />
-      <AppFooterMenuBrand />
+      <AppFooterMenuHelp />
+      <AppFooterMenuWorld />
     </div>
-  </footer>
+  </div>
 </template>

@@ -15,15 +15,19 @@ description: 'Run or troubleshoot the Nuxt storefront locally. Use when starting
 
 ## Start the development server
 
-1. Run the existing `pnpm dev` script from the repository root.
-2. Keep the server process running while the user is using the app. Wait for Nuxt's ready message and report the exact local URL it prints; do not assume the port if Nuxt selects another one.
-3. If the port is already occupied, use the alternate port reported by Nuxt. Do not terminate other processes to free a port.
-4. If startup fails, report the relevant error and suggest a targeted next step. Do not hide failures, change dependencies, or edit environment files without the user's approval.
+1. Run the existing `pnpm dev` script from the repository root, but in a **new, visible OS terminal window** — never via the Bash/PowerShell tool's own background execution (`run_in_background`), since that output isn't visible to the user. On Windows, use the PowerShell tool to spawn a separate window that stays open after the command exits or errors:
+   ```powershell
+   Start-Process powershell -ArgumentList '-NoExit','-Command','pnpm dev' -WorkingDirectory '<repo root>'
+   ```
+   (`-NoExit` keeps the window open so the user can keep reading logs, including after a crash.)
+2. Because the server now runs in its own window outside Claude Code's process tree, its output is not captured automatically. Tell the user which window to watch, and ask them to read back Nuxt's ready message and the local URL (default `http://localhost:3000/`, but Nuxt may pick a different port if it's occupied) — do not assume the port or claim the app is running without that confirmation.
+3. If the port is already occupied, Nuxt will report the alternate port it picked in that window. Do not terminate other processes to free a port.
+4. If startup fails, ask the user to paste the error from the terminal window, then report the relevant cause and suggest a targeted next step. Do not hide failures, change dependencies, or edit environment files without the user's approval.
 
 ## Troubleshooting
 
 - For missing dependencies, run `pnpm install` and retry once.
 - For a missing or incomplete environment file, explain which variable names are required based on `.env.template`; never include their values in output.
 - For backend connection failures, verify the configured backend URL and whether the Medusa service is running. Do not invent endpoint paths or modify backend configuration.
-- Do not claim the app is running unless Nuxt reports that the server is ready.
-- Do not stop a running process unless it was started for this task and stopping it is necessary or the user asks.
+- Do not claim the app is running unless the user confirms Nuxt's ready message from the visible terminal window.
+- The dev server window is owned by the user, not by Claude Code's process tree — don't close it or kill its process yourself; ask the user to close the window or stop the process if that's needed.

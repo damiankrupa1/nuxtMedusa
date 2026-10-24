@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import type { StoreProduct } from '@medusajs/types'
 
-const { product } = defineProps<{
+const { product, badge, withSaveIcon } = defineProps<{
   product?: StoreProduct
+  // Uniform label for a curated section (e.g. "New") — Medusa products have
+  // no per-item badge/tag field, see missing-medusa-api-data skill.
+  badge?: string
+  // Decorative only — no wishlist/saved-products feature exists, see
+  // missing-medusa-api-data skill.
+  withSaveIcon?: boolean
 }>()
 
 const cheapestVariant = computed(() => getCheapestVariant(product))
@@ -15,6 +21,10 @@ const originalPrice = computed(
 )
 const currencyCode = computed(
   () => cheapestVariant.value?.calculated_price?.currency_code || undefined,
+)
+
+const colorOption = computed(() =>
+  product?.options?.find((option) => /colou?r|kolor/i.test(option.title)),
 )
 </script>
 
@@ -33,6 +43,17 @@ const currencyCode = computed(
         :alt="product?.title"
         sizes="50vw sm:33vw md:25vw"
         class="object-cover object-center w-full h-full"
+      />
+      <span
+        v-if="badge"
+        class="absolute left-3.5 top-3.5 bg-color-paper px-2.5 py-1.5 text-[10px] text-color-ink"
+      >
+        {{ badge }}
+      </span>
+      <UIcon
+        v-if="withSaveIcon"
+        name="i-lucide-heart"
+        class="absolute right-3 top-3 size-[21px] text-color-ink"
       />
     </div>
     <USkeleton
@@ -54,6 +75,14 @@ const currencyCode = computed(
         />
         <USkeleton v-else class="h-4 w-[60px]" />
       </div>
+    </div>
+    <div v-if="colorOption" class="flex gap-1.5 mt-1.5">
+      <span
+        v-for="value in colorOption.values"
+        :key="value.id"
+        class="size-[11px] rounded-full border border-color-line"
+        :style="{ backgroundColor: getSwatchColor(value.value) }"
+      />
     </div>
   </AppLink>
 </template>

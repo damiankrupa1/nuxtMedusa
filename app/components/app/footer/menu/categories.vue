@@ -1,35 +1,32 @@
 <script lang="ts" setup>
-import { useFetchCategories } from '~/composables/category'
+const { data: categoriesResponse } = await useFetchCategories()
 
-const { data } = await useFetchCategories()
-const categories = computed(() =>
-  data.value?.product_categories.filter(
-    (category) => !category.parent_category,
-  ),
+const departments = computed(
+  () =>
+    categoriesResponse.value?.product_categories
+      .filter((category) => !category.parent_category)
+      .slice(0, 2) || [],
 )
+
+// TODO: "Wszystkie marki" (brand directory) and "Karty podarunkowe" (gift
+// cards) have no backing route/feature yet — see missing-cms-content and
+// missing-medusa-api-data skills.
 </script>
 
 <template>
-  <div class="flex flex-col gap-y-4">
-    <div class="font-medium text-color-dimmed">
-      {{ $t('app.footer.categories') }}
-    </div>
-    <ul class="grid grid-cols-1 gap-y-2">
-      <li v-for="category in categories" :key="category.id">
-        <AppLink :to="`/categories/${category.handle}`">
-          {{ category.name }}
+  <div class="flex flex-col gap-y-5">
+    <p class="text-[10px] text-color-paper">
+      {{ $t('app.footer.shopping.heading') }}
+    </p>
+    <ul class="flex flex-col gap-y-5 text-xs text-[#dbddd3]">
+      <li v-for="department in departments" :key="department.id">
+        <AppLink :to="`/categories/${department.handle}`">
+          {{ department.name }}
         </AppLink>
-        <ul
-          v-if="category.category_children.length"
-          class="grid grid-cols-1 gap-y-2 pl-4 pt-2"
-        >
-          <li v-for="children in category.category_children" :key="children.id">
-            <AppLink :to="`/categories/${children.handle}`">
-              {{ children.name }}
-            </AppLink>
-          </li>
-        </ul>
       </li>
+      <li><AppLink to="/store">{{ $t('app.footer.shopping.newIn') }}</AppLink></li>
+      <li><AppLink to="/store">{{ $t('app.footer.shopping.allBrands') }}</AppLink></li>
+      <li><AppLink to="/store">{{ $t('app.footer.shopping.giftCards') }}</AppLink></li>
     </ul>
   </div>
 </template>

@@ -8,6 +8,13 @@
   --color-text: var(--color-text);
   --color-brand: var(--color-brand);
   --color-secondary: var(--color-secondary);
+  --color-ink: var(--color-ink);
+  --color-paper: var(--color-paper);
+  --color-line: var(--color-line);
+  --color-accent: var(--color-accent);
+  --color-sand: var(--color-sand);
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Cormorant Garamond', ui-serif, Georgia, Cambria, serif;
 }
 
 :root {
@@ -48,4 +55,32 @@ body {
 
 @utility border-color-muted {
   border-color: var(--ui-border-muted);
+}
+
+@utility text-color-ink {
+  color: var(--color-ink);
+}
+
+@utility text-color-accent {
+  color: var(--color-accent);
+}
+
+@utility text-color-paper {
+  color: var(--color-paper);
+}
+
+@utility bg-color-ink {
+  background-color: var(--color-ink);
+}
+
+@utility bg-color-paper {
+  background-color: var(--color-paper);
+}
+
+@utility border-color-line {
+  border-color: var(--color-line);
+}
+
+@utility bg-color-sand {
+  background-color: var(--color-sand);
 }

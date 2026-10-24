@@ -11,7 +11,7 @@ export function productRepository() {
         client.store.product.list(
           {
             fields:
-              '*variants,*variants.calculated_price,+variants.inventory_quantity',
+              '*variants,*variants.calculated_price,+variants.inventory_quantity,*options,*options.values',
             order: SORT_OPTIONS.CREATED_AT,
             ...query,
           },

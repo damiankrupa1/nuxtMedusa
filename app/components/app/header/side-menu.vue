@@ -17,16 +17,21 @@ const currentYear = new Date().getFullYear()
     <template #body>
       <div class="h-full min-h-48 flex flex-col justify-between">
         <div class="flex flex-col space-y-4">
-          <AppLink to="/" @click="isOpen = false">
-            {{ $t('app.header.home') }}
+          <AppLink
+            v-for="item in primaryNav"
+            :key="item.labelKey"
+            :to="item.to"
+            @click="isOpen = false"
+          >
+            {{ $t(item.labelKey) }}
           </AppLink>
-          <AppLink to="/store" @click="isOpen = false">
-            {{ $t('app.header.store') }}
-          </AppLink>
-          <AppLink to="/account" @click="isOpen = false">
+          <div class="h-px bg-color-line my-2" />
+          <AppLink to="/account" class="flex items-center gap-x-2" @click="isOpen = false">
+            <UIcon name="i-lucide-user-round" class="size-4" />
             {{ $t('app.header.account') }}
           </AppLink>
-          <AppLink to="/cart" @click="isOpen = false">
+          <AppLink to="/cart" class="flex items-center gap-x-2" @click="isOpen = false">
+            <UIcon name="i-lucide-shopping-bag" class="size-4" />
             {{ $t('app.header.cart') }}
           </AppLink>
         </div>

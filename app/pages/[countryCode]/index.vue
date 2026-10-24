@@ -11,7 +11,14 @@ useSeoMeta({
 
 <template>
   <div>
-    <StoreHero />
-    <LazyCollectionList />
+    <HomeCampaign />
+    <HomeCategories />
+    <HomeNewArrivals />
+    <HomeShopTheLook />
+    <HomeBrands />
+    <HomeStudioStory />
+    <HomeJournal />
+    <AppBenefitsBar />
+    <HomeNewsletter />
   </div>
 </template>
