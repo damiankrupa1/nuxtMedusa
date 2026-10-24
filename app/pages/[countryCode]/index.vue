@@ -18,6 +18,8 @@ useSeoMeta({
     <HomeBrands />
     <HomeStudioStory />
     <HomeJournal />
+    <AppBenefitsBar />
+    <HomeNewsletter />
     <LazyCollectionList />
   </div>
 </template>
