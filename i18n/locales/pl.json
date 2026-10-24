@@ -141,6 +141,10 @@
         "shopSetCta": "Kup ten zestaw",
         "totalLabel": "Razem",
         "sizeHint": "Wybierz swój rozmiar na stronie każdego produktu."
+      },
+      "brands": {
+        "eyebrow": "RÓŻNE MARKI. WSPÓLNE PODEJŚCIE DO JAKOŚCI.",
+        "viewAll": "Poznaj wszystkie marki"
       }
     },
     "store": {

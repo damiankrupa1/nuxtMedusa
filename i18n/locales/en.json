@@ -141,6 +141,10 @@
         "shopSetCta": "Shop this set",
         "totalLabel": "Total",
         "sizeHint": "Choose your size on each product's page."
+      },
+      "brands": {
+        "eyebrow": "DIFFERENT BRANDS. A SHARED APPROACH TO QUALITY.",
+        "viewAll": "Discover all brands"
       }
     },
     "store": {

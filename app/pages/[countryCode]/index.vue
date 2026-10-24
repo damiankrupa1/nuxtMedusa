@@ -15,6 +15,7 @@ useSeoMeta({
     <HomeCategories />
     <HomeNewArrivals />
     <HomeShopTheLook />
+    <HomeBrands />
     <LazyCollectionList />
   </div>
 </template>

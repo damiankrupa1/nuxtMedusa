@@ -44,3 +44,9 @@ Entries are added as each home page section is implemented.
 - **Needs**: an editorial "look" — 3 products a stylist picked to go together, with an editorial photo, caption and bottom tagline.
 - **Mocked today**: `app/components/home/shop-the-look.vue` resolves 3 real products via `app.config.ts`'s `shopTheLookProductHandles` (real catalog items, real prices via `useFetchProductByHandle`, real total computed from them) — only the *curation* (which 3 products belong together) and the editorial copy/photo are static. No brand line is shown per product (see the "New arrivals" brand/material entry in missing-medusa-api-data — same gap).
 - **Real fix would need**: a real "look"/outfit content model (a CMS entry linking N product handles to editorial copy and a photo) instead of a hardcoded array in `app.config.ts`.
+
+## Home: "Selected brands" row
+
+- **Needs**: a row of stocked-brand wordmarks ("RÓWNE" — now the storefront's own name, SELECTED, Samsøe Samsøe, MARC O'POLO, BIRKENSTOCK), each presumably linking to a brand-filtered view.
+- **Mocked today**: `app/components/home/brands.vue` — a static `otherBrands` array of plain text, not linked individually (whole section just has one "view all" link to `/store`). No per-brand image/logo, just styled text, matching the Figma source (which is also plain styled text, not logo images).
+- **Real fix would need**: same brand/manufacturer concept gap noted elsewhere (per-product brand attribution, a brand directory page) — this row has no real data to drive it at all today.
