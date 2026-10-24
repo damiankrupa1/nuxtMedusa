@@ -1,6 +1,7 @@
 import type {
   CmsBrands,
   CmsFooterContent,
+  CmsJournalSection,
   CmsNavigation,
   CmsStudioStory,
 } from '../types/cms'
@@ -43,5 +44,15 @@ export const useFetchBrands = () => {
   return useLazyAsyncData<CmsBrands | null>(
     `cms:brands:${locale.value}`,
     async () => await fetchBrands(locale.value),
+  )
+}
+
+export const useFetchJournalSection = () => {
+  const { locale } = useI18n()
+  const { fetchJournalSection } = cmsRepository()
+
+  return useLazyAsyncData<CmsJournalSection | null>(
+    `cms:journal-section:${locale.value}`,
+    async () => await fetchJournalSection(locale.value),
   )
 }

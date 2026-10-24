@@ -47,6 +47,14 @@ Conventions used throughout:
 - **Type**: `CmsBrands` in `app/types/cms.ts`.
 - **Note**: the storefront's own name shown alongside `otherBrands` comes from this app's `useAppConfig().title`, not from Payload — don't add a field for it.
 
+## `JournalSection` (Global) — implemented
+
+- **Slug**: `journal-section`
+- **Fields**: `eyebrow`, `heading`, `viewAllLabel` — localized text; `viewAllUrl` — text; `articles` — array (fixed at 3 today) of `{ category: text (localized), readingTime: text (localized), title: text (localized), summary: text (localized), image: upload relationship to Media, url: text }`.
+- **Consumed by**: `useFetchJournalSection()` → `app/components/home/journal.vue`.
+- **Type**: `CmsJournalSection` in `app/types/cms.ts`.
+- **Note**: deliberately a Global with an array field, not a `JournalArticles` Collection — the home page only ever shows a fixed curated set of cards, not a paginated/browsable blog. If a real article-per-page blog is wanted later, that's a bigger, separate feature (a true `Collection` with slugs and detail pages) and should replace this, not extend it.
+
 ## Not yet implemented (see `missing-cms-content` for the product-side need)
 
 These home-page sections are still mocked with static i18n content in `app/components/home/*.vue`; no `cms.repository.ts` fetcher exists for them yet. Add the Payload Global/Collection and the matching entry above in the same change as the Nuxt fetcher, so this file never drifts from `cms.repository.ts`.
@@ -54,5 +62,4 @@ These home-page sections are still mocked with static i18n content in `app/compo
 - `CampaignSlides` (Collection) — home hero carousel (`home/campaign.vue`).
 - `CategoryTiles` (Collection) — curated "shop by category" grid (`home/categories.vue`); needs a `categoryHandle` field the Nuxt service layer resolves against Medusa — Payload never stores category data itself.
 - `ShopTheLook` (Collection) — editorial look (`home/shop-the-look.vue`); needs a `productHandles` (array of text) field the Nuxt service layer resolves against Medusa — Payload never stores product/price data itself.
-- `JournalArticles` (Collection) — blog-style article cards (`home/journal.vue`).
 - `Pages` + `blocks` (Collection) — generic CMS pages for legal/about/FAQ content, following the `blocks`-union pattern seen in `simple-landing-page-nuxt`'s `payload-cms/src/collections/Pages.tsx`.

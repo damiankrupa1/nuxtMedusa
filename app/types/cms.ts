@@ -37,6 +37,23 @@ export interface CmsBrands {
   otherBrands: string[]
 }
 
+export interface CmsJournalArticle {
+  category: string
+  readingTime: string
+  title: string
+  summary: string
+  image: CmsImage
+  url: string
+}
+
+export interface CmsJournalSection {
+  eyebrow: string
+  heading: string
+  viewAllLabel: string
+  viewAllUrl: string
+  articles: CmsJournalArticle[]
+}
+
 export interface CmsStudioStory {
   eyebrow: string
   headlineLine1: string

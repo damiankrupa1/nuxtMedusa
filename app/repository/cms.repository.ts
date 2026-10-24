@@ -1,6 +1,7 @@
 import type {
   CmsBrands,
   CmsFooterContent,
+  CmsJournalSection,
   CmsNavigation,
   CmsStudioStory,
 } from '../types/cms'
@@ -41,6 +42,9 @@ export function cmsRepository() {
     },
     async fetchBrands(locale: string): Promise<CmsBrands | null> {
       return fetchGlobal<CmsBrands>('brands', locale)
+    },
+    async fetchJournalSection(locale: string): Promise<CmsJournalSection | null> {
+      return fetchGlobal<CmsJournalSection>('journal-section', locale)
     },
   }
 }

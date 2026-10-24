@@ -5,12 +5,14 @@ import { cmsRepository } from '../../../app/repository/cms.repository'
 import {
   useFetchBrands,
   useFetchFooterContent,
+  useFetchJournalSection,
   useFetchNavigation,
   useFetchStudioStory,
 } from '../../../app/composables/cms'
 import type {
   CmsBrands,
   CmsFooterContent,
+  CmsJournalSection,
   CmsNavigation,
   CmsStudioStory,
 } from '../../../app/types/cms'
@@ -27,6 +29,8 @@ describe('cms composables', () => {
   const fetchStudioStory =
     jest.fn<(locale: string) => Promise<CmsStudioStory | null>>()
   const fetchBrands = jest.fn<(locale: string) => Promise<CmsBrands | null>>()
+  const fetchJournalSection =
+    jest.fn<(locale: string) => Promise<CmsJournalSection | null>>()
   const useLazyAsyncData = jest.fn(
     (key: string, handler: () => Promise<unknown>) => ({ key, handler }),
   )
@@ -45,6 +49,7 @@ describe('cms composables', () => {
       fetchFooterContent,
       fetchStudioStory,
       fetchBrands,
+      fetchJournalSection,
     })
   })
 
@@ -112,5 +117,20 @@ describe('cms composables', () => {
     const handler = useLazyAsyncData.mock.calls[0]![1]
     await handler()
     expect(fetchBrands).toHaveBeenCalledWith('pl')
+  })
+
+  it('keys the journal section fetch by locale and delegates to the repository', async () => {
+    fetchJournalSection.mockResolvedValue(null)
+
+    useFetchJournalSection()
+
+    expect(useLazyAsyncData).toHaveBeenCalledWith(
+      'cms:journal-section:pl',
+      expect.any(Function),
+    )
+
+    const handler = useLazyAsyncData.mock.calls[0]![1]
+    await handler()
+    expect(fetchJournalSection).toHaveBeenCalledWith('pl')
   })
 })
