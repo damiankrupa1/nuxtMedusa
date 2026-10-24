@@ -4,7 +4,7 @@ const { title } = useAppConfig()
 
 <template>
   <header
-    class="h-16 mx-auto duration-200 bg-white border-b border-color-muted"
+    class="h-16 mx-auto duration-200 bg-color-paper border-b border-color-line"
   >
     <UContainer class="flex items-center justify-between w-full h-full text-xs">
       <AppLink to="/cart" class="-full flex-1 basis-0">

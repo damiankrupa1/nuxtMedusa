@@ -12,7 +12,22 @@
       "account": "Konto",
       "cart": "Koszyk",
       "backToCart": "Powrót do koszyka",
-      "shippingTo": "Wysyłka do:"
+      "shippingTo": "Wysyłka do:",
+      "search": "Szukaj",
+      "announcement": {
+        "promise": "DOBRZE WYBRANE. NA DŁUŻEJ.",
+        "shipping": "Darmowa dostawa od 399 zł · 30 dni na zwrot"
+      },
+      "nav": {
+        "newIn": "Nowości",
+        "clothing": "Odzież",
+        "shoes": "Buty",
+        "bagsAndAccessories": "Torby i akcesoria",
+        "brands": "Marki",
+        "studio": "Fashion Studio",
+        "inspiration": "Inspiracje",
+        "lastPieces": "Ostatnie sztuki"
+      }
     },
     "sideMenu": {
       "title": "Menu",

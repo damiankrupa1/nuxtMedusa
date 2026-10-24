@@ -12,7 +12,22 @@
       "account": "Account",
       "cart": "Cart",
       "backToCart": "Back to shopping cart",
-      "shippingTo": "Shipping to:"
+      "shippingTo": "Shipping to:",
+      "search": "Search",
+      "announcement": {
+        "promise": "WELL CHOSEN. FOR LONGER.",
+        "shipping": "Free shipping from 399 zł · 30-day returns"
+      },
+      "nav": {
+        "newIn": "New in",
+        "clothing": "Clothing",
+        "shoes": "Shoes",
+        "bagsAndAccessories": "Bags & accessories",
+        "brands": "Brands",
+        "studio": "Fashion Studio",
+        "inspiration": "Inspiration",
+        "lastPieces": "Last pieces"
+      }
     },
     "sideMenu": {
       "title": "Menu",
