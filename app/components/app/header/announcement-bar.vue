@@ -1,18 +1,7 @@
 <script setup lang="ts">
 const { country } = useCountry()
 
-// TODO: BaseRegionCountryWithRegionId carries no currency field — see
-// missing-medusa-api-data skill. Mocked from a small iso2 -> currency map
-// until the region's currency is exposed by useFetchCountries().
-const currencyByCountry: Record<string, string> = {
-  pl: 'PLN',
-  us: 'USD',
-  gb: 'GBP',
-}
-
-const currencyCode = computed(
-  () => currencyByCountry[country.value?.iso_2 || ''] || '',
-)
+const currencyCode = computed(() => getMockCurrencyCode(country.value?.iso_2))
 </script>
 
 <template>

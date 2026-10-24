@@ -13,6 +13,7 @@
   --color-line: var(--color-line);
   --color-accent: var(--color-accent);
   --font-sans: 'Inter', sans-serif;
+  --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
 }
 
 :root {

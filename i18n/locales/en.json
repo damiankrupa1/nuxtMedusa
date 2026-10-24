@@ -34,11 +34,45 @@
       "description": "Navigation menu"
     },
     "footer": {
-      "categories": "Categories",
-      "collections": "Collections",
-      "brandHeading": "Medusa",
-      "github": "Github",
-      "documentation": "Documentation",
+      "tagline": "Well chosen. For longer.",
+      "contact": {
+        "email": "hello{'@'}fashion.store",
+        "phone": "+48 22 104 20 20",
+        "hours": "Mon.–Fri. 9:00–17:00"
+      },
+      "social": {
+        "handle": "{'@'}fashion.store"
+      },
+      "shopping": {
+        "heading": "SHOPPING",
+        "newIn": "New in",
+        "allBrands": "All brands",
+        "giftCards": "Gift cards"
+      },
+      "help": {
+        "heading": "HOW CAN WE HELP?",
+        "shippingAndPayments": "Shipping & payments",
+        "returns": "Returns & complaints",
+        "sizeGuide": "Size guide",
+        "trackOrder": "Track your order",
+        "faq": "FAQ"
+      },
+      "world": {
+        "heading": "THE FASHION WORLD",
+        "about": "About us",
+        "studio": "Fashion Studio",
+        "journal": "Journal",
+        "materials": "Materials & care",
+        "careers": "Join the team"
+      },
+      "legal": {
+        "terms": "Terms",
+        "privacy": "Privacy policy",
+        "cookies": "Cookie settings",
+        "accessibility": "Accessibility"
+      },
+      "paymentLabel": "Secure payments",
+      "deliveryLabel": "Your delivery",
       "poweredBy": "Powered by",
       "copyright": "© {year} {title}. All rights reserved."
     }

@@ -34,11 +34,45 @@
       "description": "Menu nawigacyjne"
     },
     "footer": {
-      "categories": "Kategorie",
-      "collections": "Kolekcje",
-      "brandHeading": "Medusa",
-      "github": "Github",
-      "documentation": "Dokumentacja",
+      "tagline": "Dobrze wybrane. Na dłużej.",
+      "contact": {
+        "email": "czesc{'@'}fashion.store",
+        "phone": "+48 22 104 20 20",
+        "hours": "Pon.–pt. 9:00–17:00"
+      },
+      "social": {
+        "handle": "{'@'}fashion.store"
+      },
+      "shopping": {
+        "heading": "ZAKUPY",
+        "newIn": "Nowości",
+        "allBrands": "Wszystkie marki",
+        "giftCards": "Karty podarunkowe"
+      },
+      "help": {
+        "heading": "JAK MOŻEMY POMÓC?",
+        "shippingAndPayments": "Dostawa i płatności",
+        "returns": "Zwroty i reklamacje",
+        "sizeGuide": "Tabela rozmiarów",
+        "trackOrder": "Śledź zamówienie",
+        "faq": "Najczęstsze pytania"
+      },
+      "world": {
+        "heading": "ŚWIAT FASHION",
+        "about": "O nas",
+        "studio": "Fashion Studio",
+        "journal": "Dziennik",
+        "materials": "Materiały i pielęgnacja",
+        "careers": "Dołącz do zespołu"
+      },
+      "legal": {
+        "terms": "Regulamin",
+        "privacy": "Polityka prywatności",
+        "cookies": "Ustawienia cookies",
+        "accessibility": "Dostępność"
+      },
+      "paymentLabel": "Bezpieczne płatności",
+      "deliveryLabel": "Twoja dostawa",
       "poweredBy": "Obsługiwane przez",
       "copyright": "© {year} {title}. Wszelkie prawa zastrzeżone."
     }
