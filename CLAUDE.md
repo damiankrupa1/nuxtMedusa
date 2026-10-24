@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-A headless e-commerce storefront ("Fashion Store") built with Nuxt 4 (compat v4, `future.compatibilityVersion: 4`) against a Medusa.js commerce backend. It is based on https://github.com/OlivierBelaud/nuxt-starter-medusa. Requires Node.js >= 22 and pnpm >= 9, plus a running Medusa backend.
+A headless e-commerce storefront ("Fashion Store") built with Nuxt 3.16 in Nuxt 4 compatibility mode (`future.compatibilityVersion: 4`) against a Medusa.js commerce backend. It is based on https://github.com/OlivierBelaud/nuxt-starter-medusa. Requires Node.js >= 22 and pnpm >= 9, plus a running Medusa backend.
 
 ## Commands
 
@@ -18,13 +18,15 @@ pnpm lint          # eslint .
 pnpm lint:fix      # eslint . --fix
 pnpm format        # prettier --write .
 pnpm format:check  # prettier --check .
+pnpm test          # jest --runInBand
 ```
 
-There is no test suite/runner configured in this repo — CI (`.github/workflows/ci.yml`) only runs `pnpm lint` and `pnpm build` on push/PR to `main`.
+The Jest unit tests live under `tests/unit/` and are run by CI together with `pnpm lint` and `pnpm build` on pushes to `main` and pull requests. Run one test file with `pnpm exec jest tests/unit/utils/product.test.ts --runInBand`.
 
 ### Environment
 
 Copy `.env.template` to `.env` and set:
+
 - `NUXT_PUBLIC_MEDUSA_BACKEND_URL` — Medusa backend base URL (default `http://localhost:9000`)
 - `NUXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY` — Medusa store publishable API key
 - `NUXT_PUBLIC_STRIPE_KEY` — Stripe publishable key
@@ -52,6 +54,7 @@ When adding a new Medusa-backed feature: put the client call in a repository, pu
 ### Region/country routing
 
 Every page lives under `app/pages/[countryCode]/...`; `app/pages/index.vue` is just a redirect target. `app/middleware/region.global.ts` runs on every navigation (on the server, and in the browser during hydration and client-side navigation) and:
+
 - Takes the country from the `countryCode` route param when it's a known region. The URL alone decides, never the cookie, so a server-rendered page is the same for every visitor (see `routeRules` / rendering).
 - Otherwise redirects to `/${iso_2}${fullPath}`, using the `country_code` cookie's country if it's still a region, else `useAppConfig().defaultCountry`.
 - Calls `useCountry().setCountry(...)` to sync `useState('country')` and the i18n locale. The `country_code` cookie is only written in the browser, so SSR responses never carry `Set-Cookie`.
@@ -75,6 +78,7 @@ Errors are reported once, where they come from an external system, through `capt
 `nuxt.config.ts` forces SSR (`{ ssr: true }`) for `/**/products/**`, `/**/collections/**`, `/**/categories/**`, `/**/account`, `/**/store`, `/**/cart`, `/**/checkout` — keep new commerce-critical routes consistent with this if they need SEO/SSR.
 
 Catalog pages (the `/[countryCode]` home, `store`, `products/[handle]`, `categories/[handle]`, `collections/[handle]`) opt into the CDN cache with `definePageMeta({ cdnCache: true })`. `app/plugins/cdn-cache.server.ts` marks such requests and `server/plugins/cdn-cache.ts` adds `CDN-Cache-Control: max-age=60, stale-while-revalidate=300`, but only to `200` responses without `Set-Cookie`, so redirects, errors and personalised responses are never shared. A page that opts in must render the same for every visitor on the server: no cookie reads or writes during SSR, and anything per-visitor (cart, account state) stays client-only (`<ClientOnly>`). Don't opt in cart, checkout, account or order pages.
+
 - Don't prerender catalog pages instead: that froze product data (`_payload.json`) at build time, so catalog changes in Medusa only showed up after a storefront redeploy.
 - Don't use `isr`/`swr` route rules for them either: Nitro's Vercel ISR only handles literal path prefixes (ours start with a dynamic country code) and doesn't pass the query string (`page`, `sortBy`) to the render.
 
