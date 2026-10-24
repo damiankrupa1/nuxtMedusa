@@ -64,6 +64,10 @@ export default defineNuxtConfig({
     },
   },
 
+  fonts: {
+    families: [{ name: 'Inter', provider: 'google', weights: [400, 500, 600] }],
+  },
+
   i18n: {
     strategy: 'no_prefix',
     defaultLocale: 'en',
