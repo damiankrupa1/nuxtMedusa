@@ -45,6 +45,14 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 - i18n keys follow the component's placement: `app.<component>.*` for shared components, `pages.<page>.*` for page sections. Moving a component to `app/` means moving its keys too (`pages.home.newsletter.*` → `app.newsletter.*`), in every locale file.
 - Page-level sections (benefits bar, newsletter) are rendered by the page, not inside a content component like `StoreCatalog`. Content components can render conditionally (`search.vue` shows `StoreCatalog` only when there is a query), and the page-level sections must still appear.
 
+## Imports
+
+- Import project files through a root alias, never a relative path (`./`, `../`) — including a sibling in the same folder (`./api.repository` → `~/repository/api.repository`). An aliased path reads the same from every file, survives moving the importing file, and can be grepped.
+  - `~/` → `app/` (Nuxt `srcDir`): everything under `app/`, imported from `app/` or from `tests/` (Jest maps `~/` to `app/` as well).
+  - `~~/` → project root: code outside `app/`, e.g. `~~/server/types/medusa-error` inside `server/`. Nuxt generates `~~/*` in `.nuxt/tsconfig.server.json`, so Nitro resolves it.
+  - Module/virtual aliases (`#ui/types`, `#medusa/server`) stay as they are. Use `~/`, not `@/` — the repo uses `~/` only.
+- Tests follow the same rule: `import Heading from '~/components/app/heading.vue'`, not `'../../../app/components/app/heading.vue'`. Jest does not map `~~/` yet (only an unused `#/`), so add `'^~~/(.*)$': '<rootDir>/$1'` to `jest.config.cjs` before a test imports server code through it.
+
 ## Where types live
 
 - Every named `type`/`interface` lives in `app/types/<domain>.ts` and is imported with `import type { ... } from '~/types/<domain>'` — including types used by only one component. One simple rule beats a per-case judgment call. The only thing that stays inline is a component's own props/emits literal inside `defineProps<{ ... }>()` / `defineEmits<{ ... }>()`.
