@@ -2,6 +2,7 @@
 definePageMeta({ cdnCache: true, prefooter: true })
 
 const { t } = useI18n()
+useCountrySeoLinks()
 
 useSeoMeta({
   title: t('pages.home.title'),

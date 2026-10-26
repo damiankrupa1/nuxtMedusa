@@ -4,6 +4,8 @@ import { describe, expect, it } from '@jest/globals'
 import { SORT_OPTIONS } from '../../../app/types/filter'
 import {
   getCheapestVariant,
+  getVariantAvailability,
+  isVariantInStock,
   optionsAsKeyMap,
   sortProducts,
 } from '../../../app/utils/product'
@@ -73,6 +75,69 @@ describe('product utils', () => {
     expect(optionsAsKeyMap(options)).toEqual({
       size: 'M',
       color: 'blue',
+    })
+  })
+
+  describe('variant availability', () => {
+    it('is in stock when the inventory is not managed', () => {
+      const variant = {
+        manage_inventory: false,
+        allow_backorder: false,
+        inventory_quantity: 0,
+      }
+
+      expect(getVariantAvailability(variant)).toBe('InStock')
+      expect(isVariantInStock(variant)).toBe(true)
+    })
+
+    it('treats an unset manage_inventory as not managed', () => {
+      expect(
+        getVariantAvailability({
+          manage_inventory: null,
+          allow_backorder: null,
+        }),
+      ).toBe('InStock')
+    })
+
+    it('is in stock when managed inventory has units left', () => {
+      expect(
+        getVariantAvailability({
+          manage_inventory: true,
+          allow_backorder: false,
+          inventory_quantity: 3,
+        }),
+      ).toBe('InStock')
+    })
+
+    it('is a backorder when sold out but backorders are allowed', () => {
+      const variant = {
+        manage_inventory: true,
+        allow_backorder: true,
+        inventory_quantity: 0,
+      }
+
+      expect(getVariantAvailability(variant)).toBe('BackOrder')
+      expect(isVariantInStock(variant)).toBe(true)
+    })
+
+    it('is out of stock when sold out without backorders', () => {
+      const variant = {
+        manage_inventory: true,
+        allow_backorder: false,
+        inventory_quantity: 0,
+      }
+
+      expect(getVariantAvailability(variant)).toBe('OutOfStock')
+      expect(isVariantInStock(variant)).toBe(false)
+    })
+
+    it('is out of stock when the managed quantity was not returned', () => {
+      expect(
+        getVariantAvailability({
+          manage_inventory: true,
+          allow_backorder: false,
+        }),
+      ).toBe('OutOfStock')
     })
   })
 })

@@ -9,7 +9,10 @@ const { t } = useI18n()
 
 useHead({
   title: t('pages.account.title'),
-  meta: [{ name: 'description', content: t('pages.account.description') }],
+  meta: [
+    { name: 'description', content: t('pages.account.description') },
+    { name: 'robots', content: 'noindex' },
+  ],
 })
 
 const mode = ref<'signin' | 'register'>('signin')

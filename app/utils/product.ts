@@ -1,5 +1,10 @@
-import type { StoreProduct, StoreProductOptionValue } from '@medusajs/types'
+import type {
+  StoreProduct,
+  StoreProductOptionValue,
+  StoreProductVariant,
+} from '@medusajs/types'
 import { SORT_OPTIONS, type SortOptionsType } from '~/types/filter'
+import type { SchemaAvailability } from '~/types/seo'
 
 export function getCheapestVariant(product?: StoreProduct) {
   if (!product || !product.id) {
@@ -58,4 +63,25 @@ export function optionsAsKeyMap(
     },
     {},
   )
+}
+
+// Whether a variant can be bought, in schema.org terms. A variant without
+// managed inventory is always available; one that is out of stock but allows
+// backorders can still be ordered.
+export function getVariantAvailability(
+  variant: Pick<
+    StoreProductVariant,
+    'manage_inventory' | 'allow_backorder' | 'inventory_quantity'
+  >,
+): SchemaAvailability {
+  if (!variant.manage_inventory) return 'InStock'
+  if ((variant.inventory_quantity ?? 0) > 0) return 'InStock'
+  if (variant.allow_backorder) return 'BackOrder'
+  return 'OutOfStock'
+}
+
+export function isVariantInStock(
+  variant: Parameters<typeof getVariantAvailability>[0],
+) {
+  return getVariantAvailability(variant) !== 'OutOfStock'
 }

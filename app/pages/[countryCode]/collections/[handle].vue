@@ -10,6 +10,7 @@ const { data: collection, status } = await useFetchCollectionByHandle(
   handle.value,
 )
 useNotFoundWhenMissing(collection, status, 'Collection not found')
+useCountrySeoLinks(() => !!collection.value)
 
 useSeoMeta({
   title: () => collection.value?.title,
