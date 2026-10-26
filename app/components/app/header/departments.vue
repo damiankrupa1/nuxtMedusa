@@ -3,7 +3,7 @@ const route = useRoute()
 const { women, men } = await useDepartmentCategories()
 
 const departments = computed(() =>
-  [women.value, men.value].filter((department) => department !== undefined),
+  [women.value, men.value].filter((department) => department !== null),
 )
 
 const isActive = (handle: string) => route.path.includes(`/categories/${handle}`)

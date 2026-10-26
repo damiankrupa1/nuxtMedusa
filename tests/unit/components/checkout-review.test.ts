@@ -128,6 +128,30 @@ describe('checkout review component', () => {
     expect(placeOrder).toHaveBeenCalledTimes(1)
   })
 
+  it('blocks paying while the card details are invalid', async () => {
+    const wrapper = await mountReview('pp_stripe_stripe')
+    const onCardChange = card.on.mock.calls[0]?.[1] as (event: {
+      complete: boolean
+      error?: { message: string }
+    }) => void
+
+    onCardChange({
+      complete: false,
+      error: { message: 'Numer karty jest nieprawidłowy' },
+    })
+    await nextTick()
+    expect(wrapper.find('p.text-red-600').text()).toBe(
+      'Numer karty jest nieprawidłowy',
+    )
+    expect(wrapper.find('button').attributes('disabled')).toBeDefined()
+
+    onCardChange({ complete: true })
+    await nextTick()
+    expect(wrapper.find('p.text-red-600').exists()).toBe(false)
+    expect(wrapper.text()).toContain('checkout.review.cardComplete')
+    expect(wrapper.find('button').attributes('disabled')).toBeUndefined()
+  })
+
   it('asks for a 6-digit BLIK code instead of a card', async () => {
     const wrapper = await mountReview('pp_stripe-blik_stripe')
 
@@ -195,6 +219,24 @@ describe('checkout review component', () => {
 
     expect(stripe.confirmBlikPayment).toHaveBeenCalledTimes(1)
     expect(placeOrder).toHaveBeenCalledTimes(2)
+  })
+
+  it('takes the payment for a session whose PaymentIntent has no id', async () => {
+    stripe.confirmBlikPayment.mockResolvedValue({
+      paymentIntent: { status: 'succeeded' },
+    })
+    const wrapper = await mountReview('pp_stripe-blik_stripe', {
+      data: { client_secret: 'pi_1_secret' },
+    })
+
+    expect(wrapper.find('button').attributes('disabled')).toBeDefined()
+
+    await wrapper.find('input.blik-code').setValue('123456')
+    await wrapper.find('button').trigger('click')
+    await flushPromises()
+
+    expect(stripe.confirmBlikPayment).toHaveBeenCalledTimes(1)
+    expect(placeOrder).toHaveBeenCalledTimes(1)
   })
 
   it('redirects to Przelewy24 instead of placing the order', async () => {
