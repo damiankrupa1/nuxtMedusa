@@ -34,12 +34,24 @@ const {
         ref="cardContainer"
         class="p-4 border rounded-lg border-neutral-200 bg-white"
       />
-      <p v-if="cardError" class="mt-2 text-sm text-red-600">
-        {{ cardError }}
-      </p>
-      <p v-else-if="cardComplete" class="mt-2 text-sm text-green-600">
-        {{ $t('checkout.review.cardComplete') }}
-      </p>
+      <!--
+        Inline field feedback, so plain text like UFormField's error rather
+        than AppStatusMessage. The regions stay mounted so they announce;
+        600/700 shades keep 4.5:1 contrast, which --ui-error/--ui-success don't.
+      -->
+      <div role="alert">
+        <p v-if="cardError" class="mt-2 text-sm text-error-600">
+          {{ cardError }}
+        </p>
+      </div>
+      <div role="status">
+        <p
+          v-if="!cardError && cardComplete"
+          class="mt-2 text-sm text-success-700"
+        >
+          {{ $t('checkout.review.cardComplete') }}
+        </p>
+      </div>
     </div>
 
     <div v-else-if="stripeMethod === 'blik'" class="mb-6 max-w-xs">
@@ -66,13 +78,10 @@ const {
       {{ $t('checkout.review.p24Redirect') }}
     </p>
 
-    <UAlert
-      v-if="error"
-      :title="$t('checkout.review.paymentErrorTitle')"
+    <AppStatusMessage
+      type="error"
+      :message="error ? $t('checkout.review.paymentErrorTitle') : null"
       :description="error"
-      color="error"
-      variant="soft"
-      icon="i-lucide-alert-circle"
       class="mb-6"
     />
 

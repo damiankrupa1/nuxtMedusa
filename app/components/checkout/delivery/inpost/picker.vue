@@ -22,7 +22,7 @@ const { t, locale } = useI18n()
 
 const mapContainer = ref<HTMLDivElement | null>(null)
 const loading = ref(true)
-const error = ref('')
+const error = ref<string | null>(null)
 
 function appendGeowidgetScript(): HTMLScriptElement {
   const script = document.createElement('script')
@@ -96,20 +96,17 @@ onMounted(async () => {
 </script>
 
 <template>
-  <UAlert
-    v-if="error"
-    color="error"
-    variant="soft"
-    icon="i-lucide-alert-circle"
-    :title="error"
-  />
-  <div v-else class="relative">
-    <div ref="mapContainer" class="inpost-map" />
-    <div
-      v-if="loading"
-      class="absolute inset-0 flex items-center justify-center"
-    >
-      <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin" />
+  <div>
+    <!-- Outside the v-if: the live region must exist before the error lands. -->
+    <AppStatusMessage type="error" :message="error" />
+    <div v-if="!error" class="relative">
+      <div ref="mapContainer" class="inpost-map" />
+      <div
+        v-if="loading"
+        class="absolute inset-0 flex items-center justify-center"
+      >
+        <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin" />
+      </div>
     </div>
   </div>
 </template>

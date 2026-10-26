@@ -110,15 +110,7 @@ const validatePayment = async () => {
       <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin" />
     </div>
 
-    <UAlert
-      v-if="paymentError"
-      color="error"
-      variant="soft"
-      icon="i-lucide-alert-circle"
-      class="mb-4"
-    >
-      {{ paymentError }}
-    </UAlert>
+    <AppStatusMessage type="error" :message="paymentError" class="mb-4" />
 
     <UButton
       class="cursor-pointer"

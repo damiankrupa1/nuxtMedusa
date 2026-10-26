@@ -4,6 +4,7 @@ import { loadStripe } from '@stripe/stripe-js'
 import type { Stripe } from '@stripe/stripe-js'
 import { nextTick, ref } from 'vue'
 
+import AppStatusMessage from '~/components/app/status-message.vue'
 import CheckoutReview from '~/components/checkout/review/index.vue'
 import { useCartPayment } from '~/composables/payment'
 
@@ -58,6 +59,7 @@ describe('checkout review component', () => {
     },
   }
   const mocks = { $t: (key: string) => key }
+  const components = { AppStatusMessage }
 
   const stripeData = { id: 'pi_1', client_secret: 'pi_1_secret' }
   const p24Return = {
@@ -91,7 +93,9 @@ describe('checkout review component', () => {
     }
     route.query = query
 
-    const wrapper = mount(CheckoutReview, { global: { stubs, mocks } })
+    const wrapper = mount(CheckoutReview, {
+      global: { stubs, mocks, components },
+    })
     await flushPromises()
     return wrapper
   }
@@ -128,27 +132,30 @@ describe('checkout review component', () => {
     expect(placeOrder).toHaveBeenCalledTimes(1)
   })
 
-  it('blocks paying while the card details are invalid', async () => {
+  it('announces card field errors and completion, keeping the button in step', async () => {
     const wrapper = await mountReview('pp_stripe_stripe')
     const onCardChange = card.on.mock.calls[0]?.[1] as (event: {
       complete: boolean
       error?: { message: string }
     }) => void
+    const status = wrapper.find('[role="status"]')
+    const alerts = () => wrapper.findAll('[role="alert"]').map((r) => r.text())
 
+    expect(status.text()).toBe('')
+    expect(alerts()).toContain('')
     onCardChange({
       complete: false,
       error: { message: 'Numer karty jest nieprawidłowy' },
     })
     await nextTick()
-    expect(wrapper.find('p.text-red-600').text()).toBe(
-      'Numer karty jest nieprawidłowy',
-    )
+    expect(alerts()).toContain('Numer karty jest nieprawidłowy')
     expect(wrapper.find('button').attributes('disabled')).toBeDefined()
 
     onCardChange({ complete: true })
     await nextTick()
-    expect(wrapper.find('p.text-red-600').exists()).toBe(false)
-    expect(wrapper.text()).toContain('checkout.review.cardComplete')
+    expect(wrapper.find('[role="status"]').element).toBe(status.element)
+    expect(status.text()).toBe('checkout.review.cardComplete')
+    expect(alerts()).not.toContain('Numer karty jest nieprawidłowy')
     expect(wrapper.find('button').attributes('disabled')).toBeUndefined()
   })
 
@@ -196,7 +203,7 @@ describe('checkout review component', () => {
     await flushPromises()
 
     expect(placeOrder).not.toHaveBeenCalled()
-    expect(wrapper.find('.alert').text()).toBe('Kod BLIK wygasł')
+    expect(wrapper.find('[role="alert"] .alert').text()).toBe('Kod BLIK wygasł')
     expect(
       (wrapper.find('input.blik-code').element as HTMLInputElement).value,
     ).toBe('')
