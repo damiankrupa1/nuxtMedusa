@@ -54,7 +54,7 @@ useSeoMeta({
             v-model="inputValue"
             type="search"
             :placeholder="$t('pages.search.placeholder')"
-            class="flex-1 bg-transparent text-base text-color-ink placeholder:text-color-dimmed focus:outline-none"
+            class="flex-1 bg-transparent text-base text-color-ink placeholder:text-color-dimmed focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ink)"
           />
           <AppIconButton
             v-if="inputValue"
