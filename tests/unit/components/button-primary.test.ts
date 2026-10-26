@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals'
 import { mount } from '@vue/test-utils'
 
-import ButtonPrimary from '../../../app/components/app/button-primary.vue'
+import ButtonPrimary from '~/components/app/button-primary.vue'
 
 describe('button-primary component', () => {
   it('renders a neutral solid button by default', () => {

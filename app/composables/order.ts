@@ -1,5 +1,5 @@
 import type { StoreOrder } from '@medusajs/types'
-import { orderRepository } from '../repository/order.repository'
+import { orderRepository } from '~/repository/order.repository'
 
 export const useFetchOrder = (orderId: string) => {
   const { retrieveOrder } = orderRepository()

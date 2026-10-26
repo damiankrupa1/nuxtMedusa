@@ -1,5 +1,5 @@
 import type { StoreRegionListResponse } from '@medusajs/types'
-import { apiRepository } from './api.repository'
+import { apiRepository } from '~/repository/api.repository'
 
 export function countryRepository() {
   const { request } = apiRepository()
