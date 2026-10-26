@@ -56,15 +56,14 @@ useSeoMeta({
             :placeholder="$t('pages.search.placeholder')"
             class="flex-1 bg-transparent text-base text-color-ink placeholder:text-color-dimmed focus:outline-none"
           />
-          <button
+          <AppIconButton
             v-if="inputValue"
-            type="button"
-            :aria-label="$t('pages.search.clear')"
+            icon="i-lucide-x"
+            :label="$t('pages.search.clear')"
+            size="xs"
             class="shrink-0"
             @click="clearSearch"
-          >
-            <UIcon name="i-lucide-x" class="size-4 text-color-dimmed" />
-          </button>
+          />
           <button
             type="submit"
             class="flex h-11 shrink-0 items-center gap-[22px] bg-color-ink px-6 text-xs text-color-paper"

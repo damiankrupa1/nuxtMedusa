@@ -33,6 +33,11 @@
       "title": "Menu",
       "description": "Navigation menu"
     },
+    "input": {
+      "password": {
+        "toggleVisibility": "Toggle password visibility"
+      }
+    },
     "benefits": {
       "delivery": {
         "title": "Delivery your way",

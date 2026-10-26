@@ -33,6 +33,11 @@
       "title": "Menu",
       "description": "Menu nawigacyjne"
     },
+    "input": {
+      "password": {
+        "toggleVisibility": "Przełącz widoczność hasła"
+      }
+    },
     "benefits": {
       "delivery": {
         "title": "Dostawa po Twojemu",
