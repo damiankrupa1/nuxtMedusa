@@ -19,9 +19,14 @@ const clearSearch = () => {
   searchQuery.value = ''
 }
 
+// Internal search results are thin, near-duplicate pages with an endless
+// ?q= URL space: kept out of the index (and the sitemap, and without
+// canonical/hreflang), but crawlable so the noindex is seen and the product
+// links are followed — so not disallowed in robots.txt either.
 useSeoMeta({
   title: t('pages.search.title'),
   ogTitle: t('pages.search.title'),
+  robots: 'noindex, follow',
 })
 </script>
 

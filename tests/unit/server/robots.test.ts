@@ -41,6 +41,8 @@ describe('buildRobotsTxt', () => {
     '/pl/products/cartoon-tee',
     '/pl/categories/accounting-gifts',
     '/pl/collections/summer?page=2',
+    // noindex, so crawlers must still be able to read it
+    '/pl/search?q=shorts',
   ])('lets crawlers into %s', (url) => {
     expect(isDisallowed(robotsTxt, url)).toBe(false)
   })
