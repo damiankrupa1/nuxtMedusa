@@ -1,6 +1,9 @@
-export const getPercentageDiff = (original?: number, calculated?: number) => {
-  if (!original || !calculated) {
-    return
+export const getPercentageDiff = (
+  original?: number | null,
+  calculated?: number | null,
+) => {
+  if (original == null || calculated == null || original === 0) {
+    return null
   }
   const diff = original - calculated
   const percentageDiff = (diff / original) * 100

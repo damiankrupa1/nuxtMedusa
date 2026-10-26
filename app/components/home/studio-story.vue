@@ -47,23 +47,24 @@ const cms = computed(() => studioStory.value ?? null)
     </div>
 
     <div class="flex flex-1 flex-col gap-7">
+      <AppSectionIntro
+        :eyebrow="cms?.eyebrow ?? $t('pages.home.studioStory.eyebrow', { title })"
+        size="lg"
+      >
+        <template #heading>
+          <span class="block">{{
+            cms?.headlineLine1 ?? $t('pages.home.studioStory.headlineLine1')
+          }}</span>
+          <span class="block">{{
+            cms?.headlineLine2 ?? $t('pages.home.studioStory.headlineLine2')
+          }}</span>
+        </template>
+      </AppSectionIntro>
       <template v-if="cms">
-        <p class="text-[10px] text-color-muted">{{ cms.eyebrow }}</p>
-        <h2 class="font-serif text-4xl leading-none text-color-ink md:text-[56px]">
-          <span class="block">{{ cms.headlineLine1 }}</span>
-          <span class="block">{{ cms.headlineLine2 }}</span>
-        </h2>
         <p class="text-sm leading-[1.8] text-color-muted">{{ cms.paragraph1 }}</p>
         <p class="text-sm leading-[1.8] text-color-muted">{{ cms.paragraph2 }}</p>
       </template>
       <template v-else>
-        <p class="text-[10px] text-color-muted">
-          {{ $t('pages.home.studioStory.eyebrow', { title }) }}
-        </p>
-        <h2 class="font-serif text-4xl leading-none text-color-ink md:text-[56px]">
-          <span class="block">{{ $t('pages.home.studioStory.headlineLine1') }}</span>
-          <span class="block">{{ $t('pages.home.studioStory.headlineLine2') }}</span>
-        </h2>
         <p class="text-sm leading-[1.8] text-color-muted">
           {{ $t('pages.home.studioStory.paragraph1', { title }) }}
         </p>
@@ -87,13 +88,9 @@ const cms = computed(() => studioStory.value ?? null)
         </template>
       </div>
 
-      <AppLink
-        :to="cms?.collectionUrl ?? '/store'"
-        class="flex items-center gap-4 self-start border-b border-color-ink pb-2 text-[13px] text-color-ink"
-      >
+      <AppLinkButton :to="cms?.collectionUrl ?? '/store'" class="self-start">
         {{ cms?.collectionLinkLabel ?? $t('pages.home.studioStory.collectionLink', { title }) }}
-        <UIcon name="i-lucide-arrow-up-right" class="size-4" />
-      </AppLink>
+      </AppLinkButton>
     </div>
   </section>
 </template>

@@ -35,7 +35,7 @@ export const useRegisterCustomer = () => {
 
   const loading = ref(false)
   const error = ref<string | null>(null)
-  const data = ref<CustomerResponse>()
+  const data = ref<CustomerResponse | null>(null)
 
   const mutate = async (registerData: RegisterCustomerData) => {
     loading.value = true
@@ -68,7 +68,7 @@ export const useLoginCustomer = () => {
 
   const loading = ref(false)
   const error = ref<string | null>(null)
-  const data = ref<CustomerResponse>()
+  const data = ref<CustomerResponse | null>(null)
 
   const mutate = async (loginData: LoginCustomerData) => {
     loading.value = true
@@ -121,7 +121,7 @@ export const useUpdateCustomer = () => {
 
   const loading = ref(false)
   const error = ref<string | null>(null)
-  const data = ref<CustomerResponse>()
+  const data = ref<CustomerResponse | null>(null)
 
   const mutate = async (updateData: UpdateCustomerData) => {
     loading.value = true

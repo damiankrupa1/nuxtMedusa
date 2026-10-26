@@ -36,8 +36,8 @@ Copy `.env.template` to `.env` and set:
 
 ### Git hooks (husky)
 
-- `pre-commit` runs `pnpm lint` and blocks the commit on failure; `lint-staged` also runs `eslint --fix`/`prettier --write` on staged `*.{js,ts,vue}` and `prettier --write` on `*.{json,css,scss,md}`.
-- `commit-msg` runs commitlint (`@commitlint/config-conventional` + `commitlint.config.js`). Commit subjects must use `type: description` with `type` restricted to `feat|fix|refactor|docs|style|test|build`, a non-empty subject, max 72 chars.
+- `pre-commit` runs `pnpm lint` (`eslint .` on the whole project, not only staged files) and blocks the commit on failure. That is all it does: `package.json` has a `lint-staged` config (`eslint --fix` + `prettier --write` on `*.{js,ts,vue}`, `prettier --write` on `*.{json,css,scss,md}`), but no hook calls it, so nothing formats or auto-fixes staged files. Run `pnpm format:check` / `prettier --write <files>` yourself.
+- `commit-msg` runs commitlint (`@commitlint/config-conventional` + `commitlint.config.js`). Commit subjects must use `type: description` with `type` restricted to `feat|fix|refactor|docs|style|test|build`, a non-empty subject, max 72 chars. The hook prints commitlint's errors but does not block the commit (the script ends without `exit 1`, so it always exits 0), so check its output yourself.
 
 ## Architecture
 
@@ -62,6 +62,15 @@ Every page lives under `app/pages/[countryCode]/...`; `app/pages/index.vue` is j
 - Calls `useCountry().setCountry(...)` to sync `useState('country')` and the i18n locale. The `country_code` cookie is only written in the browser, so SSR responses never carry `Set-Cookie`.
 
 `useCountry()`/`useCountries()` (`app/composables/country.ts`) are the source of truth for the current region; most data-fetching composables key off `country.value.region_id`.
+
+### Internal links
+
+Links inside the store never hard-code the country prefix; `AppLink`/`AppLinkButton` (and, outside them, `useCountryLink()` for a `UButton :to`, or `toCountryLink()` for `navigateTo`) add it from `useCountry()`. Their `to` takes two forms (`AppLinkTarget`, `app/types/link.ts`):
+
+- **A route with params → named route** without `countryCode`: `:to="{ name: 'countryCode-products-handle', params: { handle } }"`. `experimental.typedPages` generates the route names, so a misspelled name or a missing param is a type error, and pages read their params through `useRoute('countryCode-products-handle')`. Guard an optional param (`product.collection?.handle ? { ... } : undefined`); a named route with an empty param resolves to no link instead of throwing.
+- **A static page or a CMS/fallback URL → path string** relative to the country: `to="/store"`, `:to="link.url"`. Payload hands out arbitrary URLs, and the static fallback lists share their `to: string` shape.
+
+Type a named route with `AppRoute` from `~/types/link`, never `RouteLocationRaw` imported from `'vue-router'`: the root `vue-router` dependency isn't the copy the generated route types extend, so that type accepts any name.
 
 ### Data-fetching conventions
 
@@ -110,7 +119,7 @@ Catalog pages (the `/[countryCode]` home, `store`, `products/[handle]`, `categor
 - `app/composables` — one file per domain (`cart`, `category`, `checkout`, `cms`, `collection`, `country`, `customer`, `filters`, `order`, `payment`, `product`), plus `not-found` shared by the by-handle pages and `seo` (canonical/hreflang, product JSON-LD). These call into `app/services` and/or `app/repository` rather than Medusa directly (see above).
 - `app/services` — `*.service.ts` business-logic layer between composables and repositories (cart, category, cms, collection, customer, order, payment, product). See the repository → service → composable note above for which ones actually have callers.
 - `app/repository` — `*.repository.ts` data-access layer; `api.repository.ts` provides the shared `useMedusaClient()` + error-handling wrapper the other repositories (product, category, collection, country, order, payment, cart, customer) build on; `stripe.repository.ts` is the Stripe.js counterpart; `cms.repository.ts` is the Payload counterpart (see Payload CMS integration above) — it calls Payload's REST API directly, not through `apiRepository()`, since that wrapper is Medusa-specific.
-- `app/utils` — pure helpers (`price`, `product`, `address`, `country`, `payment`, `percentage-diff`, `homepage`, `seo`, `structured-data`), auto-imported by Nuxt, plus `capture-error` (see Error reporting). `seo.ts` is also imported by the sitemap source in `server/`, so it imports its own dependencies explicitly.
+- `app/utils` — pure helpers (`price`, `product`, `address`, `country`, `link`, `payment`, `percentage-diff`, `homepage`, `seo`, `structured-data`), auto-imported by Nuxt, plus `capture-error` (see Error reporting). `seo.ts` is also imported by the sitemap source in `server/`, so it imports its own dependencies explicitly.
 - `server/api` — Nitro route handlers for `products`, `categories`, `collections`, `customers`, `regions`; only `customers/**` and `regions` are currently wired up to `app/` (see above). `__sitemap__/urls` feeds `/sitemap.xml` (see SEO).
 - `server/routes/robots.txt.ts` — `/robots.txt` (see SEO).
 - `server/utils/handler.ts` / `server/types/medusa-error.ts` — shared error-wrapping for API routes.

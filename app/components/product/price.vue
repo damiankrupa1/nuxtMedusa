@@ -7,9 +7,9 @@ const {
   isCheapest,
   extended,
 } = defineProps<{
-  originalPrice?: number
-  currentPrice?: number
-  currencyCode?: string
+  originalPrice?: number | null
+  currentPrice?: number | null
+  currencyCode?: string | null
   displayInline?: boolean
   isCheapest?: boolean
   extended?: boolean
@@ -19,7 +19,9 @@ const percentageDiff = computed(() =>
   getPercentageDiff(originalPrice, currentPrice),
 )
 const hasReducedPrice = computed(() =>
-  currentPrice && originalPrice ? currentPrice < originalPrice : false,
+  currentPrice != null && originalPrice != null
+    ? currentPrice < originalPrice
+    : false,
 )
 </script>
 

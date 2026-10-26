@@ -2,15 +2,11 @@ import type { StoreProduct, StoreProductListParams } from '@medusajs/types'
 import type {
   CmsCategoryTile,
   CmsCategoryTiles,
-  CmsShopTheLook,
+  ResolvedShopTheLook,
 } from '~/types/cms'
 import { cmsRepository } from '~/repository/cms.repository'
 import { categoryRepository } from '~/repository/category.repository'
 import { productRepository } from '~/repository/product.repository'
-
-export interface ResolvedShopTheLook extends CmsShopTheLook {
-  products: StoreProduct[]
-}
 
 export const useCmsService = () => {
   const { fetchCategoryTiles, fetchShopTheLook } = cmsRepository()

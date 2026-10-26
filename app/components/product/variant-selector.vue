@@ -8,7 +8,7 @@ const { product } = defineProps<{
   product?: StoreProduct
 }>()
 
-const selectedOptions = ref<Record<string, string | undefined>>()
+const selectedOptions = ref<Record<string, string> | null>(null)
 
 const cheapestVariant = computed(() => getCheapestVariant(product))
 const hasMoreThanOneVariant = computed(
@@ -34,18 +34,22 @@ const selectedVariant = computed(() => {
     !product?.variants ||
     product.variants.length === 0
   )
-    return
-  return product.variants.find((variant) => {
-    const variantOptions = optionsAsKeyMap(variant.options)
-    return isEqual(variantOptions, selectedOptions.value)
-  })
+    return null
+  return (
+    product.variants.find((variant) => {
+      const variantOptions = optionsAsKeyMap(variant.options)
+      return isEqual(variantOptions, selectedOptions.value)
+    }) ?? null
+  )
 })
 
 const isValidVariant = computed(() => {
-  return product?.variants?.some((variant) => {
-    const variantOptions = optionsAsKeyMap(variant.options)
-    return isEqual(variantOptions, selectedOptions.value)
-  })
+  return (
+    product?.variants?.some((variant) => {
+      const variantOptions = optionsAsKeyMap(variant.options)
+      return isEqual(variantOptions, selectedOptions.value)
+    }) ?? false
+  )
 })
 
 const inStock = computed(
@@ -101,13 +105,13 @@ const variantForPrice = computed(
 )
 
 const currentPrice = computed(
-  () => variantForPrice.value?.calculated_price?.calculated_amount || undefined,
+  () => variantForPrice.value?.calculated_price?.calculated_amount ?? null,
 )
 const originalPrice = computed(
-  () => variantForPrice.value?.calculated_price?.original_amount || undefined,
+  () => variantForPrice.value?.calculated_price?.original_amount ?? null,
 )
 const currencyCode = computed(
-  () => variantForPrice.value?.calculated_price?.currency_code || undefined,
+  () => variantForPrice.value?.calculated_price?.currency_code ?? null,
 )
 </script>
 

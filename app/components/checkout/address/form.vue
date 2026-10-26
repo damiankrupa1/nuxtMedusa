@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import * as z from 'zod'
 import type { StoreCartResponse } from '@medusajs/types'
 import type { FormSubmitEvent } from '#ui/types'
+import { buildAddressSchema, type AddressFormState } from '~/types/checkout'
 
 const emit = defineEmits<{
   validate: [boolean]
@@ -15,59 +15,9 @@ const { mutate: updateCart, loading } = useUpdateCart()
 
 const { t } = useI18n()
 
-const buildSchema = () =>
-  z.object({
-    shipping_address: z.object({
-      first_name: z
-        .string({ required_error: t('validation.firstNameRequired') })
-        .min(1, t('validation.firstNameRequired')),
-      last_name: z
-        .string({ required_error: t('validation.lastNameRequired') })
-        .min(1, t('validation.lastNameRequired')),
-      address_1: z
-        .string({ required_error: t('validation.addressRequired') })
-        .min(1, t('validation.addressRequired')),
-      address_2: z.string().optional(),
-      company: z.string().optional(),
-      postal_code: z
-        .string({ required_error: t('validation.postalCodeRequired') })
-        .min(1, t('validation.postalCodeRequired')),
-      city: z
-        .string({ required_error: t('validation.cityRequired') })
-        .min(1, t('validation.cityRequired')),
-      country_code: z
-        .string({ required_error: t('validation.countryRequired') })
-        .min(1, t('validation.countryRequired')),
-      province: z.string().optional(),
-      phone: z.string().optional(),
-    }),
-    email: z
-      .string({ required_error: t('validation.emailRequired') })
-      .email(t('validation.emailInvalid')),
-    billing_address: z.object({
-      first_name: z.string().optional(),
-      last_name: z.string().optional(),
-      address_1: z.string().optional(),
-      address_2: z.string().optional(),
-      company: z.string().optional(),
-      postal_code: z.string().optional(),
-      city: z.string().optional(),
-      country_code: z.string().optional(),
-      province: z.string().optional(),
-      phone: z.string().optional(),
-    }),
-  })
+const schema = computed(() => buildAddressSchema(t))
 
-type Schema = z.infer<ReturnType<typeof buildSchema>>
-const schema = computed(buildSchema)
-
-interface PartialSchema {
-  shipping_address: Partial<Schema['shipping_address']>
-  email?: Schema['email']
-  billing_address: Partial<Schema['billing_address']>
-}
-
-const state = reactive<PartialSchema>({
+const state = reactive<AddressFormState>({
   shipping_address: {
     first_name: cart.value?.shipping_address?.first_name || undefined,
     last_name: cart.value?.shipping_address?.last_name || undefined,
@@ -99,7 +49,7 @@ const sameAsBilling = ref(
   compareAddresses(cart.value?.shipping_address, cart.value?.billing_address),
 )
 
-async function onSubmit(event: FormSubmitEvent<PartialSchema>) {
+async function onSubmit(event: FormSubmitEvent<AddressFormState>) {
   if (sameAsBilling.value)
     event.data.billing_address = event.data.shipping_address
 
@@ -121,8 +71,15 @@ watch(
 
 // Redirect to the right store if shipping address changes - Not applicable for billing address
 watch(state, (value) => {
-  if (value.shipping_address?.country_code !== country.value?.iso_2) {
-    navigateTo(`/${value.shipping_address?.country_code}/checkout?step=address`)
+  const countryCode = value.shipping_address?.country_code
+  // An empty country (select cleared) has no store to switch to
+  if (countryCode && countryCode !== country.value?.iso_2) {
+    navigateTo(
+      toCountryLink(
+        { name: 'countryCode-checkout', query: { step: 'address' } },
+        countryCode,
+      ),
+    )
   }
 })
 </script>

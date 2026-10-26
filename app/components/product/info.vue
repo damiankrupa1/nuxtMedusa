@@ -10,7 +10,14 @@ defineProps<{
   <div class="flex flex-col gap-y-4 lg:max-w-[500px] mx-auto">
     <AppLink
       v-if="product"
-      :to="`/collections/${product?.collection?.handle}`"
+      :to="
+        product.collection?.handle
+          ? {
+              name: 'countryCode-collections-handle',
+              params: { handle: product.collection.handle },
+            }
+          : undefined
+      "
       class=""
     >
       {{ product?.collection?.title }}

@@ -2,7 +2,7 @@
 import type { StoreCart, StoreOrder } from '@medusajs/types'
 
 const { cart } = defineProps<{
-  cart?: StoreCart | StoreOrder
+  cart?: StoreCart | StoreOrder | null
 }>()
 
 const hasCartItems = computed(() => cart?.items && cart.items.length > 0)

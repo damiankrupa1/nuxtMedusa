@@ -39,6 +39,12 @@ describe('product utils', () => {
     ).toBe(50)
   })
 
+  it('returns null when no variants have prices', () => {
+    const product = makeProduct('product-1', '2024-01-01T00:00:00.000Z', [])
+
+    expect(getCheapestVariant(product)).toBeNull()
+  })
+
   it('sorts products by price ascending', () => {
     const products = [
       makeProduct('product-1', '2024-01-01T00:00:00.000Z', [100, 80]),

@@ -3,9 +3,9 @@ import { useFetchCollectionByHandle } from '~/composables/collection'
 
 definePageMeta({ cdnCache: true, prefooter: true })
 
-const route = useRoute()
+const route = useRoute('countryCode-collections-handle')
 
-const handle = computed(() => route.params.handle as string)
+const handle = computed(() => route.params.handle)
 const { data: collection, status } = await useFetchCollectionByHandle(
   handle.value,
 )

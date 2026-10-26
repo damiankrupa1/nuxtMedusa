@@ -28,21 +28,13 @@ const cms = computed(() => journalSection.value ?? null)
     class="flex flex-col gap-9 bg-color-sand px-6 pb-20 pt-16 md:px-16 md:pt-[72px]"
   >
     <div class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
-      <div class="flex flex-col gap-3">
-        <p class="text-[10px] text-color-muted">
-          {{ cms?.eyebrow ?? $t('pages.home.journal.eyebrow', { title }) }}
-        </p>
-        <h2 class="font-serif text-4xl leading-[1.05] text-color-ink md:text-[48px]">
-          {{ cms?.heading ?? $t('pages.home.journal.heading') }}
-        </h2>
-      </div>
-      <AppLink
-        :to="cms?.viewAllUrl ?? '/store'"
-        class="flex items-center gap-4 border-b border-color-ink pb-2 text-[13px] text-color-ink"
-      >
+      <AppSectionIntro
+        :eyebrow="cms?.eyebrow ?? $t('pages.home.journal.eyebrow', { title })"
+        :heading="cms?.heading ?? $t('pages.home.journal.heading')"
+      />
+      <AppLinkButton :to="cms?.viewAllUrl ?? '/store'">
         {{ cms?.viewAllLabel ?? $t('pages.home.journal.viewAll') }}
-        <UIcon name="i-lucide-arrow-up-right" class="size-4" />
-      </AppLink>
+      </AppLinkButton>
     </div>
 
     <div v-if="cms" class="grid grid-cols-1 gap-7 sm:grid-cols-3">

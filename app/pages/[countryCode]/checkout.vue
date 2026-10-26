@@ -6,7 +6,7 @@ definePageMeta({
 const { t } = useI18n()
 
 const { data: cartResponse } = await useFetchCart()
-const cart = computed(() => cartResponse.value?.cart || undefined)
+const cart = computed(() => cartResponse.value?.cart)
 
 useSeoMeta({
   title: t('pages.checkout.title'),

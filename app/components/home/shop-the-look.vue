@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { AppLinkTarget } from '~/types/link'
+
 const { title, shopTheLookProductHandles } = useAppConfig()
 
 // Hand-picked handles resolved to real products — see app.config.ts and the
@@ -23,21 +25,25 @@ const products = computed(() => cms.value?.products ?? fallbackProducts.value)
 
 const total = computed(() =>
   products.value.reduce(
-    (sum, product) => sum + (getCheapestVariantPriceAmount(product) || 0),
+    (sum, product) => sum + (getCheapestVariantPriceAmount(product) ?? 0),
     0,
   ),
 )
 const currencyCode = computed(
   () =>
-    products.value[0] &&
-    getCheapestVariant(products.value[0])?.calculated_price?.currency_code,
+    (products.value[0] &&
+      getCheapestVariant(products.value[0])?.calculated_price?.currency_code) ??
+    null,
 )
 
 // No "buy the whole look" bulk-add-to-cart action exists — see
 // missing-medusa-api-data skill. Links to the first piece's page instead.
-const shopSetLink = computed(() =>
+const shopSetLink = computed<AppLinkTarget>(() =>
   products.value[0]?.handle
-    ? `/products/${products.value[0].handle}`
+    ? {
+        name: 'countryCode-products-handle',
+        params: { handle: products.value[0].handle },
+      }
     : '/store',
 )
 </script>
@@ -84,28 +90,30 @@ const shopSetLink = computed(() =>
     <div
       class="flex flex-1 flex-col gap-6 bg-color-accent px-6 py-10 lg:gap-[25px] lg:px-16 lg:py-[52px]"
     >
-      <p class="text-[10px] text-color-sage">
-        {{ cms?.eyebrow ?? $t('pages.home.shopTheLook.eyebrow') }}
-      </p>
-      <h2
-        class="font-serif text-4xl leading-[0.98] text-color-paper lg:text-[56px]"
+      <AppSectionIntro
+        :eyebrow="cms?.eyebrow ?? $t('pages.home.shopTheLook.eyebrow')"
+        size="lg"
+        tone="dark"
       >
-        <span class="block">{{
-          cms?.headlineLine1 ?? $t('pages.home.shopTheLook.headlineLine1')
-        }}</span>
-        <span class="block">{{
-          cms?.headlineLine2 ?? $t('pages.home.shopTheLook.headlineLine2')
-        }}</span>
-      </h2>
-      <p class="text-[13px] leading-[1.7] text-color-sage">
+        <template #heading>
+          <span class="block">{{
+            cms?.headlineLine1 ?? $t('pages.home.shopTheLook.headlineLine1')
+          }}</span>
+          <span class="block">{{
+            cms?.headlineLine2 ?? $t('pages.home.shopTheLook.headlineLine2')
+          }}</span>
+        </template>
         {{ cms?.description ?? $t('pages.home.shopTheLook.description') }}
-      </p>
+      </AppSectionIntro>
 
       <div class="flex flex-col">
         <AppLink
           v-for="(product, index) in products"
           :key="product.id"
-          :to="`/products/${product.handle}`"
+          :to="{
+            name: 'countryCode-products-handle',
+            params: { handle: product.handle },
+          }"
           class="flex items-center gap-[18px] border-t border-[rgba(250,248,244,0.24)] py-[18px]"
         >
           <p class="font-serif text-2xl text-color-sage lg:text-[26px]">
@@ -127,13 +135,13 @@ const shopSetLink = computed(() =>
       </div>
 
       <div class="flex items-center justify-between">
-        <AppLink
+        <AppButtonPrimary
           :to="shopSetLink"
-          class="flex h-12 items-center gap-7 bg-color-paper px-6 text-xs font-medium text-color-ink"
+          inverted
+          trailing-icon="i-lucide-arrow-right"
         >
           {{ cms?.shopSetCtaLabel ?? $t('pages.home.shopTheLook.shopSetCta') }}
-          <UIcon name="i-lucide-arrow-right" class="size-[18px]" />
-        </AppLink>
+        </AppButtonPrimary>
         <div class="flex flex-col items-end gap-1 text-right">
           <p class="text-[10px] text-color-sage">
             {{ cms?.totalLabel ?? $t('pages.home.shopTheLook.totalLabel') }}

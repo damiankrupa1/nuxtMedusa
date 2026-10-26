@@ -40,7 +40,7 @@ export const useInitiatePaymentSession = () => {
   const { data: cartResponse } = useNuxtData<StoreCartResponse>('cart')
 
   const loading = ref(false)
-  const data = ref<StorePaymentCollection>()
+  const data = ref<StorePaymentCollection | null>(null)
 
   const mutate = async (provider_id: string) => {
     loading.value = true
@@ -85,17 +85,12 @@ export const useCartPayment = () => {
   const error = ref<string | null>(null)
   const cardContainer = ref<HTMLElement | null>(null)
   const cardComplete = ref(false)
-  // TODO: cardError/paidPaymentIntentId/cardElement/stripeMethod use
-  // `undefined` for "no value yet" right next to error/cardContainer above
-  // using `null` for the same thing — normalize on `null` here (see the
-  // null-vs-undefined convention in the nuxt-vue-architecture skill and
-  // https://github.com/damiankrupa1/nuxtMedusa/issues/21).
-  const cardError = ref<string>()
+  const cardError = ref<string | null>(null)
   const blikCode = ref('')
   // Set once Stripe took the payment, so retrying an order that failed
   // afterwards places it without paying again
-  const paidPaymentIntentId = ref<string>()
-  let cardElement: StripeCardElement | undefined
+  const paidPaymentIntentId = ref<string | null>(null)
+  let cardElement: StripeCardElement | null = null
 
   const cart = computed(() => cartResponse.value?.cart)
   const session = computed(() =>
@@ -107,7 +102,7 @@ export const useCartPayment = () => {
   const stripeMethod = computed(() => {
     const data = session.value?.data
     if (!data?.client_secret || data.id === paidPaymentIntentId.value) {
-      return undefined
+      return null
     }
     return getStripePaymentMethod(session.value?.provider_id)
   })
@@ -175,7 +170,7 @@ export const useCartPayment = () => {
       const card = await createCardElement(session.value)
       card.on('change', (event) => {
         cardComplete.value = event.complete
-        cardError.value = event.error?.message
+        cardError.value = event.error?.message ?? null
       })
       if (cardContainer.value) {
         card.mount(cardContainer.value)

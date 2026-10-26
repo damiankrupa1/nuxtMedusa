@@ -26,13 +26,15 @@ export const useDepartmentCategories = async () => {
 
   const women = computed(
     () =>
-      topLevel.value.find((category) => category.handle === 'women') ||
-      topLevel.value[0],
+      topLevel.value.find((category) => category.handle === 'women') ??
+      topLevel.value[0] ??
+      null,
   )
   const men = computed(
     () =>
-      topLevel.value.find((category) => category.handle === 'men') ||
-      topLevel.value[1],
+      topLevel.value.find((category) => category.handle === 'men') ??
+      topLevel.value[1] ??
+      null,
   )
 
   return { women, men }

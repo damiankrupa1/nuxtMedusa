@@ -46,11 +46,7 @@ const filterFacets = computed(() => [
   <UContainer class="py-6">
     <div class="flex flex-col gap-[22px]">
       <div class="flex items-center justify-between gap-4">
-        <AppHeading
-          v-if="(title || q) && products"
-          as="h1"
-          class="text-lg font-medium"
-        >
+        <AppHeading v-if="(title || q) && products" as="h1" size="sm">
           <template v-if="q">
             {{ $t('store.catalog.searchResultsFor', { query: q, count }) }}
           </template>

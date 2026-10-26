@@ -35,7 +35,7 @@ export const useFetchProducts = (
 const findProductInPayload = (
   payload: Record<string, unknown>,
   handle: string,
-) => {
+): StoreProduct | null => {
   let foundProduct: StoreProduct | null = null
 
   Object.values(payload).forEach((entry) => {
