@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// The redesign's underlined "text ↗" link.
 const { country } = useCountry()
 
 const { to, countryCode } = defineProps<{
@@ -15,17 +16,15 @@ const link = computed(() => {
   <UButton
     :to="link"
     prefetch
-    color="primary"
+    color="neutral"
     variant="link"
-    :trailing="true"
-    class="group"
+    trailing-icon="i-lucide-arrow-up-right"
+    class="group gap-4 rounded-none border-b border-color-ink p-0 pb-2 text-[13px] font-normal text-color-ink hover:text-color-ink"
+    :ui="{
+      trailingIcon:
+        'size-4 transition-transform duration-150 ease-in-out group-hover:rotate-45 motion-reduce:transition-none',
+    }"
   >
     <slot />
-    <template #trailing>
-      <UIcon
-        name="i-lucide-arrow-up-right"
-        class="group-hover:rotate-45 ease-in-out duration-150 size-5"
-      />
-    </template>
   </UButton>
 </template>
