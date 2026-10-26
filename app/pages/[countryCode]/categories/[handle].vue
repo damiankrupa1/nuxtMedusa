@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useFetchCategoryByHandle } from '~/composables/category'
 
-definePageMeta({ cdnCache: true })
+definePageMeta({ cdnCache: true, prefooter: true })
 
 const route = useRoute()
 
@@ -18,9 +18,5 @@ useSeoMeta({
 </script>
 
 <template>
-  <div>
-    <StoreCatalog :title="category?.name" :category-id="category?.id" />
-    <AppBenefitsBar />
-    <AppNewsletter />
-  </div>
+  <StoreCatalog :title="category?.name" :category-id="category?.id" />
 </template>

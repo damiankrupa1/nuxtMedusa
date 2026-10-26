@@ -1,18 +1,17 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
-import { buildNewsletterSchema, type NewsletterForm } from '~/types/newsletter'
+import {
+  buildNewsletterSchema,
+  createNewsletterForm,
+  type NewsletterForm,
+} from '~/types/newsletter'
 
 const { title } = useAppConfig()
 const { t } = useI18n()
 
 const schema = computed(() => buildNewsletterSchema(t))
 
-const state = reactive<NewsletterForm>({
-  email: '',
-  consent: false,
-})
-const interestedWomen = ref(false)
-const interestedMen = ref(false)
+const state = reactive(createNewsletterForm())
 const submitted = ref(false)
 
 // No newsletter backend/composable exists in this codebase — see
@@ -78,13 +77,13 @@ const onSubmit = (_event: FormSubmitEvent<NewsletterForm>) => {
             {{ $t('app.newsletter.interestedLabel') }}
           </p>
           <UCheckbox
-            v-model="interestedWomen"
+            v-model="state.interests.women"
             size="xs"
             :label="$t('app.newsletter.interestWomen')"
             :ui="{ label: 'font-normal text-[11px] text-color-ink' }"
           />
           <UCheckbox
-            v-model="interestedMen"
+            v-model="state.interests.men"
             size="xs"
             :label="$t('app.newsletter.interestMen')"
             :ui="{ label: 'font-normal text-[11px] text-color-ink' }"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ cdnCache: true })
+definePageMeta({ cdnCache: true, prefooter: true })
 
 const { t } = useI18n()
 
@@ -10,9 +10,5 @@ useSeoMeta({
 </script>
 
 <template>
-  <div>
-    <StoreCatalog :title="$t('pages.store.title')" />
-    <AppBenefitsBar />
-    <AppNewsletter />
-  </div>
+  <StoreCatalog :title="$t('pages.store.title')" />
 </template>

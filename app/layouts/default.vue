@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const route = useRoute()
+</script>
 
 <template>
   <UApp>
@@ -8,6 +10,10 @@
     <main class="relative">
       <slot />
     </main>
+    <template v-if="route.meta.prefooter">
+      <AppBenefitsBar />
+      <AppNewsletter />
+    </template>
     <AppFooter />
   </UApp>
 </template>

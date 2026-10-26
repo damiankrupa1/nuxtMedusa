@@ -43,7 +43,18 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 - A section used by exactly one page lives in that page's domain folder (e.g. `app/components/home/*.vue` → `HomeCampaign`, `HomeJournal`, each rendered once from `index.vue`).
 - A section used — or designed — on more than one page lives in `app/components/app/` (e.g. `AppBenefitsBar`, `AppNewsletter`). Check the design's other screens, not just today's usages in code, before deciding something is page-specific. When a page-domain component gains a second page, move it (`git mv`) rather than importing `Home*` from another page.
 - i18n keys follow the component's placement: `app.<component>.*` for shared components, `pages.<page>.*` for page sections. Moving a component to `app/` means moving its keys too (`pages.home.newsletter.*` → `app.newsletter.*`), in every locale file.
-- Page-level sections (benefits bar, newsletter) are rendered by the page, not inside a content component like `StoreCatalog`. Content components can render conditionally (`search.vue` shows `StoreCatalog` only when there is a query), and the page-level sections must still appear.
+- Sections shared by several pages that sit outside the page content — the benefits bar + newsletter above the footer — are rendered by `app/layouts/default.vue` and switched on per page with `definePageMeta({ prefooter: true })` (home, search, store, category, collection). Don't repeat them in each page, and don't put them inside a content component like `StoreCatalog`, which can render conditionally (`search.vue` shows it only when there is a query).
+  - Read the flag through Nuxt's `useRoute()` in the layout. There it returns `nuxtApp._route`, which updates on `page:finish` — after the new page has loaded — so the block doesn't appear or vanish under the old page during navigation. Don't use vue-router's own route there.
+  - Rendered in the layout, the section is one instance for as long as consecutive pages keep the flag: a typed email or the "thanks" message survives home → store → category, and is lost when passing through a page without the flag or on reload.
+- Prefer a page-meta flag in the existing layout over a new layout when only a section differs. Switching layouts remounts the whole layout, `AppHeader` included, on every navigation between them. A new layout is for a different page frame, like `checkout.vue` (checkout header, minimal footer).
+- Don't enable `keepalive` to preserve a shared section's state. It caches whole pages per route key, client-side only, so it never shares one instance between pages; it also keeps entire catalog trees in memory and shows stale data unless the page refetches in `onActivated`.
+
+## Page meta
+
+- Per-page configuration read by the layout, a plugin or middleware is declared in `definePageMeta` (route meta), never set in a store from the page's `setup`. A page's setup runs before the new page has loaded, so a store flag would switch the layout under the old page, and every page would have to reset it on leave. Current keys — keep this list up to date when adding one:
+  - `cdnCache` — share the server render through the CDN cache (read by `app/plugins/cdn-cache.server.ts`, see root `CLAUDE.md`).
+  - `prefooter` — show `AppBenefitsBar` + `AppNewsletter` above the footer (read by `app/layouts/default.vue`).
+- These keys are untyped (`unknown`) and stay that way. Nuxt's documented `declare module '#app' { interface PageMeta { ... } }` does not reach `definePageMeta` or `route.meta` in this project (Nuxt 3.16, TypeScript 5.8, pnpm): `#app` only re-exports `PageMeta` through `export type` chains, and the augmentation never merges into the original in `nuxt/dist/pages/runtime/composables`. `declare module 'nuxt/app'` and the `node_modules/nuxt/...` path fail the same way. The only target that works is the pnpm-hashed real path, which stops working silently on the next dependency update. Even a working augmentation would not catch a misspelled key, because `PageMeta` has a `[key: string]: unknown` index signature. So read the flags by truthiness (`v-if="route.meta.prefooter"`), and re-check after the Nuxt 4 upgrade.
 
 ## Imports
 
@@ -56,22 +67,13 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 ## Where types live
 
 - Every named `type`/`interface` lives in `app/types/<domain>.ts` and is imported with `import type { ... } from '~/types/<domain>'` — including types used by only one component. One simple rule beats a per-case judgment call. The only thing that stays inline is a component's own props/emits literal inside `defineProps<{ ... }>()` / `defineEmits<{ ... }>()`.
-- A form type derived from a `zod` schema (`z.infer`) cannot move on its own, and hand-writing it next to the schema duplicates the shape. Move the schema with it: export a schema factory that takes `t` and the inferred type from the same file, as `app/types/filter.ts` already does for `SORT_OPTIONS` + `SortOptionsType`:
-  ```ts
-  // app/types/newsletter.ts
-  import { z } from 'zod'
+- A form type derived from a `zod` schema (`z.infer`) cannot move on its own, and hand-writing it next to the schema duplicates the shape. Move the schema with it: export a schema factory that takes `t` and the inferred type from the same file, as `app/types/filter.ts` already does for `SORT_OPTIONS` + `SortOptionsType`. Reference implementation: `app/types/newsletter.ts` (`buildNewsletterSchema`, `NewsletterForm`, `createNewsletterForm`) with its test in `tests/unit/types/newsletter.test.ts`. The component keeps only `const schema = computed(() => buildNewsletterSchema(t))`. A schema outside the component can be unit-tested in Jest directly, without mounting the component, stubbing Nuxt UI or mocking `$t`.
 
-  export const buildNewsletterSchema = (t: (key: string) => string) =>
-    z.object({
-      email: z.email(t('app.newsletter.errorEmail')),
-      consent: z.boolean().refine((value) => value === true, {
-        message: t('app.newsletter.errorConsent'),
-      }),
-    })
+## Form state
 
-  export type NewsletterForm = z.infer<ReturnType<typeof buildNewsletterSchema>>
-  ```
-  The component keeps only `const schema = computed(() => buildNewsletterSchema(t))`. A schema outside the component can also be unit-tested in Jest directly (valid/invalid inputs), without mounting the component, stubbing Nuxt UI or mocking `$t`.
+- The `zod` schema is the single source of truth for a form's shape; its type comes from `z.infer`. Don't hand-write an interface that the schema then has to match (`satisfies z.ZodType<T>` only catches some drift), and don't model form state as a class — the codebase has no classes in `app/` or `server/`, and `UForm` hands `onSubmit` a plain object parsed by `zod` anyway, never a class instance.
+- Every field the form collects belongs in the schema and in `state`, even one without validation rules (the newsletter's `interests`). A field kept in a separate `ref` is missing from `event.data` in `onSubmit` and gets silently dropped once a backend is wired.
+- Initial state comes from a factory that returns a new object on every call — `reactive(createNewsletterForm())`. Never call `reactive()` on a shared module-level object: `reactive` wraps that same object instead of copying it, and returns the same proxy for it every time, so values typed into one form instance show up in every other instance and on the next page.
 
 ## Colors as tokens, not raw hex
 
@@ -99,7 +101,7 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 - Components should primarily render UI and coordinate user interactions.
 - Put reusable stateful view logic in composables.
 - Put business rules in focused services/domain functions when they are reused or non-trivial.
-- Use Pinia only when state is genuinely shared or needs store semantics; do not move every local state variable into a global store.
+- Pinia is not installed. Shared client state lives in a composable on Nuxt's `useState` (e.g. `isCartDropdownOpen` in `app/composables/cart.ts`), plus a cookie when it must survive a reload, read client-side only on CDN-cached pages; server data goes through `useLazyAsyncData`. Don't add Pinia for a per-page flag or a single shared value — propose it only for several related stores with actions and getters, and discuss the new dependency first.
 - Introduce interfaces/adapters/repositories only when they isolate a real boundary (for example, an external API) or improve testability. Do not add layers mechanically.
 - Use dependency injection when it improves replaceability or testing; do not replace simple construction with an elaborate DI system without a reason.
 - Keep API DTOs separate from view models when transformations or domain semantics justify it.

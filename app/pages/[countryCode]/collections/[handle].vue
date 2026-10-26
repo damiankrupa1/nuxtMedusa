@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useFetchCollectionByHandle } from '~/composables/collection'
 
-definePageMeta({ cdnCache: true })
+definePageMeta({ cdnCache: true, prefooter: true })
 
 const route = useRoute()
 
@@ -18,9 +18,5 @@ useSeoMeta({
 </script>
 
 <template>
-  <div>
-    <StoreCatalog :title="collection?.title" :collection-id="collection?.id" />
-    <AppBenefitsBar />
-    <AppNewsletter />
-  </div>
+  <StoreCatalog :title="collection?.title" :collection-id="collection?.id" />
 </template>

@@ -17,7 +17,7 @@ description: Implement polished, responsive storefront UI from a design, screens
 - Figma file `DhPbwldUg4mqgwzo7N7Oj0` ("Fashion"), one page (`0:1`) with two screens:
   - `3:3845` "RÓWNE — strona główna" — the home page (`app/pages/[countryCode]/index.vue`).
   - `12:1572` "RÓWNE — wyszukiwarka produktów" — the product search page (`search.vue`), also the reference for the other `StoreCatalog` pages (`store.vue`, `categories/[handle].vue`, `collections/[handle].vue`).
-- Both screens end with the same stack: "Shopping assurances" → "Newsletter signup" → "Footer", implemented as `AppBenefitsBar` + `AppNewsletter` at page level and `AppFooter` in the default layout.
+- Both screens end with the same stack: "Shopping assurances" → "Newsletter signup" → "Footer", implemented in `app/layouts/default.vue` as `AppBenefitsBar` + `AppNewsletter` (only on pages with `definePageMeta({ prefooter: true })`) followed by `AppFooter`.
 - There are no designs for product detail, cart, checkout, account or order pages. Say so instead of inventing a layout, and ask before adding design-only sections (like the newsletter) there.
 
 ## Design inconsistencies between screens

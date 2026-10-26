@@ -77,8 +77,9 @@ Entries are added as each home page section is implemented. Each entry notes how
 ## Newsletter signup (home and product list pages)
 
 - **Needs**: a working email signup form (with interest checkboxes and marketing consent) that actually subscribes the visitor.
-- **Mocked today**: `app/components/app/newsletter.vue` (`AppNewsletter`, rendered on the home page and the search/store/category/collection pages) validates the email format and that consent is checked client-side via a `zod` schema on `UForm`, then just shows a local "thanks for signing up" success state — no request is sent anywhere. No newsletter/ESP (email service provider) integration, composable, repository, or server route exists anywhere in this codebase.
-- **Real fix would need**: a real newsletter provider (Klaviyo, Mailchimp, a Medusa customer-group/marketing-consent field, etc.) and a server route or repository to call it from.
+- **Mocked today**: `app/components/app/newsletter.vue` (`AppNewsletter`, rendered by `app/layouts/default.vue` on pages with `definePageMeta({ prefooter: true })`: home, search, store, category, collection) validates the email format and that consent is checked client-side via the `zod` schema in `app/types/newsletter.ts`, then just shows a local "thanks for signing up" success state — no request is sent anywhere. The validated `event.data` in `onSubmit` already carries `email`, `interests` (`women`/`men`) and `consent`, ready to send. No newsletter/ESP (email service provider) integration, composable, repository, or server route exists anywhere in this codebase.
+- **Not remembered**: nothing records that a visitor signed up. The "thanks" state lives only in the layout's component instance, so the form shows again after a reload or after passing through a page without `prefooter`.
+- **Real fix would need**: a real newsletter provider (Klaviyo, Mailchimp, a Medusa customer-group/marketing-consent field, etc.) and a server route or repository to call it from. If "already signed up" should be remembered, do it client-side only (cookie/`localStorage` read inside `<ClientOnly>`): the pages showing the newsletter are CDN-cached and must render the same for every visitor on the server.
 
 ## Product list (store/category/collection): filter bar facets
 
