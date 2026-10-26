@@ -1,19 +1,5 @@
 import type { StoreCartShippingOption } from '@medusajs/types'
-
-/** The part of the Geowidget `PointInterface` the storefront relies on. */
-export interface InpostPoint {
-  name: string
-  address?: {
-    line1?: string
-    line2?: string
-  }
-  address_details?: {
-    street?: string
-    building_number?: string
-    city?: string
-    post_code?: string
-  }
-}
+import type { InpostPoint } from '~/types/inpost'
 
 // `data.id` the fulfillment provider sets on its parcel locker shipping option.
 const INPOST_LOCKER_OPTION_ID = 'inpost_locker_standard'

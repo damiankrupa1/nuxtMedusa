@@ -6,10 +6,10 @@ import type {
   CmsJournalSection,
   CmsNavigation,
   CmsStudioStory,
+  ResolvedShopTheLook,
 } from '../types/cms'
 import { cmsRepository } from '../repository/cms.repository'
 import { useCmsService } from '../services/cms.service'
-import type { ResolvedShopTheLook } from '../services/cms.service'
 
 export const useFetchNavigation = () => {
   const { locale } = useI18n()

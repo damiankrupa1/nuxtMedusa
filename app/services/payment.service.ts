@@ -7,13 +7,7 @@ import type {
 import type { StripeCardElement } from '@stripe/stripe-js'
 import { paymentRepository } from '../repository/payment.repository'
 import { stripeRepository } from '../repository/stripe.repository'
-
-/**
- * `paid` once Stripe has the payment, `redirected` while the customer pays
- * with Przelewy24, `unpaid` when Stripe finished without it (e.g. a BLIK
- * payment that wasn't approved).
- */
-export type StripePaymentOutcome = 'paid' | 'unpaid' | 'redirected'
+import type { StripePaymentOutcome } from '~/types/payment'
 
 export const usePaymentService = () => {
   const { listPaymentProviders, initiatePaymentSession } = paymentRepository()

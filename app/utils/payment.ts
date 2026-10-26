@@ -1,4 +1,5 @@
 import type { StoreCart } from '@medusajs/types'
+import type { StripePaymentMethod } from '~/types/payment'
 
 export const providers = [
   {
@@ -37,9 +38,6 @@ export const providers = [
     icon: 'i-lucide-hand-coins',
   },
 ]
-
-/** Stripe methods the review step knows how to confirm. */
-export type StripePaymentMethod = 'card' | 'blik' | 'p24'
 
 /**
  * Medusa registers the Stripe card provider as `pp_stripe_<id>` and every
