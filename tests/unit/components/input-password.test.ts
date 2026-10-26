@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals'
 import { mount } from '@vue/test-utils'
 
-import InputPassword from '../../../app/components/app/input/password.vue'
+import InputPassword from '~/components/app/input/password.vue'
 
 describe('input password component', () => {
   const stubs = {

@@ -1,4 +1,4 @@
-import type { MedusaError } from '../../types/medusa-error'
+import type { MedusaError } from '~~/server/types/medusa-error'
 import { serverMedusaClient } from '#medusa/server'
 
 export default defineWrappedResponseHandler(async (event) => {

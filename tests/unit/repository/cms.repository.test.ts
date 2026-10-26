@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals'
 
-import { cmsRepository } from '../../../app/repository/cms.repository'
+import { cmsRepository } from '~/repository/cms.repository'
 
 describe('cms repository', () => {
   const fetchMock = jest.fn<(...args: unknown[]) => Promise<unknown>>()

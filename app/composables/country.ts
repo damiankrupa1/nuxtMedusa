@@ -1,5 +1,5 @@
-import { countryRepository } from '../repository/country.repository'
-import { getCountriesFromRegions } from '../utils/country'
+import { countryRepository } from '~/repository/country.repository'
+import { getCountriesFromRegions } from '~/utils/country'
 import type { BaseRegionCountryWithRegionId } from '~/types/country'
 
 export const useCountry = () => {

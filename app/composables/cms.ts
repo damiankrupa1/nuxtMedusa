@@ -7,9 +7,9 @@ import type {
   CmsNavigation,
   CmsStudioStory,
   ResolvedShopTheLook,
-} from '../types/cms'
-import { cmsRepository } from '../repository/cms.repository'
-import { useCmsService } from '../services/cms.service'
+} from '~/types/cms'
+import { cmsRepository } from '~/repository/cms.repository'
+import { useCmsService } from '~/services/cms.service'
 
 export const useFetchNavigation = () => {
   const { locale } = useI18n()

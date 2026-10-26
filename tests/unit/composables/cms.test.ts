@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals'
 import { ref } from 'vue'
 
-import { cmsRepository } from '../../../app/repository/cms.repository'
-import { useCmsService } from '../../../app/services/cms.service'
+import { cmsRepository } from '~/repository/cms.repository'
+import { useCmsService } from '~/services/cms.service'
 import {
   useFetchBrands,
   useFetchCampaignSlides,
@@ -12,7 +12,7 @@ import {
   useFetchNavigation,
   useFetchShopTheLook,
   useFetchStudioStory,
-} from '../../../app/composables/cms'
+} from '~/composables/cms'
 import type {
   CmsBrands,
   CmsCampaignSlides,
@@ -22,14 +22,14 @@ import type {
   CmsNavigation,
   CmsShopTheLook,
   CmsStudioStory,
-} from '../../../app/types/cms'
-import { toMedusaLocale } from '../../../app/utils/locale'
-import type { ResolvedShopTheLook } from '~/types/cms'
+  ResolvedShopTheLook,
+} from '~/types/cms'
+import { toMedusaLocale } from '~/utils/locale'
 
-jest.mock('../../../app/repository/cms.repository', () => ({
+jest.mock('~/repository/cms.repository', () => ({
   cmsRepository: jest.fn(),
 }))
-jest.mock('../../../app/services/cms.service', () => ({
+jest.mock('~/services/cms.service', () => ({
   useCmsService: jest.fn(),
 }))
 
