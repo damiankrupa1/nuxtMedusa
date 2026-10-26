@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, jest } from '@jest/globals'
 import { loadStripe } from '@stripe/stripe-js'
 import type { Stripe, StripeCardElement } from '@stripe/stripe-js'
 
-import { stripeRepository } from '../../../app/repository/stripe.repository'
+import { stripeRepository } from '~/repository/stripe.repository'
 
 jest.mock('@stripe/stripe-js', () => ({ loadStripe: jest.fn() }))
 

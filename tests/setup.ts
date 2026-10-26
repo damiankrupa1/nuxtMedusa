@@ -11,13 +11,13 @@ import {
   watch,
 } from 'vue'
 
-import { captureError } from '../app/utils/capture-error'
-import { formatInpostPointAddress } from '../app/utils/inpost'
+import { captureError } from '~/utils/capture-error'
+import { formatInpostPointAddress } from '~/utils/inpost'
 import {
   getStripePaymentMethod,
   toStripeBillingDetails,
-} from '../app/utils/payment'
-import { getPercentageDiff } from '../app/utils/percentage-diff'
+} from '~/utils/payment'
+import { getPercentageDiff } from '~/utils/percentage-diff'
 
 Object.assign(globalThis, {
   formatInpostPointAddress,

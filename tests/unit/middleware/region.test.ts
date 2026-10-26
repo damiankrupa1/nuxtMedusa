@@ -8,9 +8,9 @@ import {
 } from '@jest/globals'
 import { ref } from 'vue'
 
-import { getCountryFromCountryCode } from '../../../app/utils/country'
-import type { BaseRegionCountryWithRegionId } from '../../../app/utils/country'
-import { getLocaleFromCountryCode } from '../../../app/utils/locale'
+import { getCountryFromCountryCode } from '~/utils/country'
+import type { BaseRegionCountryWithRegionId } from '~/utils/country'
+import { getLocaleFromCountryCode } from '~/utils/locale'
 
 type Middleware = (to: { path: string; fullPath: string }) => Promise<unknown>
 
@@ -37,7 +37,7 @@ describe('region middleware', () => {
 
   let middleware: Middleware
   beforeAll(async () => {
-    const module = await import('../../../app/middleware/region.global')
+    const module = await import('~/middleware/region.global')
     middleware = module.default as unknown as Middleware
   })
 

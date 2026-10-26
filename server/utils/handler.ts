@@ -1,5 +1,5 @@
 import type { EventHandler, EventHandlerRequest, H3Event } from 'h3'
-import type { MedusaError } from '../types/medusa-error'
+import type { MedusaError } from '~~/server/types/medusa-error'
 
 export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
   handler: EventHandler<T, D>,

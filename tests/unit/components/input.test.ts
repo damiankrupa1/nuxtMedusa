@@ -2,7 +2,7 @@ import { describe, expect, it } from '@jest/globals'
 import { mount } from '@vue/test-utils'
 import { defineComponent, h, provide, ref } from 'vue'
 
-import AppInput from '../../../app/components/app/input/index.vue'
+import AppInput from '~/components/app/input/index.vue'
 
 // Mimics UFormField: provides its input id under Nuxt UI's injection key.
 const FormFieldStub = defineComponent({

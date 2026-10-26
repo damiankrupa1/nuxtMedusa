@@ -1,4 +1,4 @@
-import { apiRepository } from './api.repository'
+import { apiRepository } from '~/repository/api.repository'
 import type {
   CustomerResponse,
   LoginCustomerData,
