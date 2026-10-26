@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import * as z from 'zod'
 import type { StoreCartResponse } from '@medusajs/types'
 import type { FormSubmitEvent } from '#ui/types'
+import { buildAddressSchema, type PartialSchema } from '~/types/checkout'
 
 const emit = defineEmits<{
   validate: [boolean]
@@ -15,57 +15,7 @@ const { mutate: updateCart, loading } = useUpdateCart()
 
 const { t } = useI18n()
 
-const buildSchema = () =>
-  z.object({
-    shipping_address: z.object({
-      first_name: z
-        .string({ required_error: t('validation.firstNameRequired') })
-        .min(1, t('validation.firstNameRequired')),
-      last_name: z
-        .string({ required_error: t('validation.lastNameRequired') })
-        .min(1, t('validation.lastNameRequired')),
-      address_1: z
-        .string({ required_error: t('validation.addressRequired') })
-        .min(1, t('validation.addressRequired')),
-      address_2: z.string().optional(),
-      company: z.string().optional(),
-      postal_code: z
-        .string({ required_error: t('validation.postalCodeRequired') })
-        .min(1, t('validation.postalCodeRequired')),
-      city: z
-        .string({ required_error: t('validation.cityRequired') })
-        .min(1, t('validation.cityRequired')),
-      country_code: z
-        .string({ required_error: t('validation.countryRequired') })
-        .min(1, t('validation.countryRequired')),
-      province: z.string().optional(),
-      phone: z.string().optional(),
-    }),
-    email: z
-      .string({ required_error: t('validation.emailRequired') })
-      .email(t('validation.emailInvalid')),
-    billing_address: z.object({
-      first_name: z.string().optional(),
-      last_name: z.string().optional(),
-      address_1: z.string().optional(),
-      address_2: z.string().optional(),
-      company: z.string().optional(),
-      postal_code: z.string().optional(),
-      city: z.string().optional(),
-      country_code: z.string().optional(),
-      province: z.string().optional(),
-      phone: z.string().optional(),
-    }),
-  })
-
-type Schema = z.infer<ReturnType<typeof buildSchema>>
-const schema = computed(buildSchema)
-
-interface PartialSchema {
-  shipping_address: Partial<Schema['shipping_address']>
-  email?: Schema['email']
-  billing_address: Partial<Schema['billing_address']>
-}
+const schema = computed(() => buildAddressSchema(t))
 
 const state = reactive<PartialSchema>({
   shipping_address: {
