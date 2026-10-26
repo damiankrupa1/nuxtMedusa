@@ -1,20 +1,11 @@
 <script setup lang="ts">
-import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
+import { buildNewsletterSchema, type NewsletterForm } from '~/types/newsletter'
 
 const { title } = useAppConfig()
 const { t } = useI18n()
 
-const buildSchema = () =>
-  z.object({
-    email: z.email(t('app.newsletter.errorEmail')),
-    consent: z.boolean().refine((value) => value === true, {
-      message: t('app.newsletter.errorConsent'),
-    }),
-  })
-
-type NewsletterForm = z.infer<ReturnType<typeof buildSchema>>
-const schema = computed(buildSchema)
+const schema = computed(() => buildNewsletterSchema(t))
 
 const state = reactive<NewsletterForm>({
   email: '',
