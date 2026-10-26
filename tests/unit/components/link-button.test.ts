@@ -14,7 +14,7 @@ const UButton = {
     '<a :href="to" :data-trailing-icon="trailingIcon" :data-color="color"><slot /></a>',
 }
 
-const mountLink = (props: Record<string, unknown>) =>
+const mountLink = (props: { to: string; countryCode?: string }) =>
   mount(LinkButton, {
     props,
     slots: { default: 'View all' },
