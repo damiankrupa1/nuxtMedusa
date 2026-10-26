@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { UiSize } from '~/types/ui'
+
 defineProps<{
   modelValue: string | undefined
   name: string
@@ -7,7 +9,7 @@ defineProps<{
   autocomplete?: string
   required?: boolean
   label: string
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  size?: UiSize
 }>()
 
 defineEmits(['update:modelValue'])

@@ -18,15 +18,21 @@ const departments = computed(
     <p class="text-[10px] text-color-paper">
       {{ $t('app.footer.shopping.heading') }}
     </p>
-    <ul class="flex flex-col gap-y-5 text-xs text-[#dbddd3]">
+    <ul class="flex flex-col gap-y-5 text-xs text-color-sage">
       <li v-for="department in departments" :key="department.id">
         <AppLink :to="`/categories/${department.handle}`">
           {{ department.name }}
         </AppLink>
       </li>
-      <li><AppLink to="/store">{{ $t('app.footer.shopping.newIn') }}</AppLink></li>
-      <li><AppLink to="/store">{{ $t('app.footer.shopping.allBrands') }}</AppLink></li>
-      <li><AppLink to="/store">{{ $t('app.footer.shopping.giftCards') }}</AppLink></li>
+      <li>
+        <AppLink to="/store">{{ $t('app.footer.shopping.newIn') }}</AppLink>
+      </li>
+      <li>
+        <AppLink to="/store">{{ $t('app.footer.shopping.allBrands') }}</AppLink>
+      </li>
+      <li>
+        <AppLink to="/store">{{ $t('app.footer.shopping.giftCards') }}</AppLink>
+      </li>
     </ul>
   </div>
 </template>

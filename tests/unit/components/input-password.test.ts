@@ -13,12 +13,17 @@ describe('input password component', () => {
       template: '<i :data-icon="name" />',
       props: ['name'],
     },
+    AppIconButton: {
+      template: '<button type="button" />',
+      props: ['icon', 'label', 'size'],
+    },
   }
+  const mocks = { $t: (key: string) => key }
 
   it('masks the value as a password by default', () => {
     const wrapper = mount(InputPassword, {
       props: { modelValue: '', name: 'password', label: 'Password' },
-      global: { stubs },
+      global: { stubs, mocks },
     })
 
     expect(wrapper.find('input').attributes('type')).toBe('password')
@@ -27,7 +32,7 @@ describe('input password component', () => {
   it('reveals the value as text after toggling visibility', async () => {
     const wrapper = mount(InputPassword, {
       props: { modelValue: '', name: 'password', label: 'Password' },
-      global: { stubs },
+      global: { stubs, mocks },
     })
 
     await wrapper.find('button').trigger('click')

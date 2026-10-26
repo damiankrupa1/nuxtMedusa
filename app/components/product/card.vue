@@ -76,13 +76,19 @@ const colorOption = computed(() =>
         <USkeleton v-else class="h-4 w-[60px]" />
       </div>
     </div>
-    <div v-if="colorOption" class="flex gap-1.5 mt-1.5">
+    <p v-if="product?.material" class="mt-1 text-xs text-color-dimmed">
+      {{ product.material }}
+    </p>
+    <div v-if="colorOption" class="flex gap-1.5 mt-1.5 items-center">
       <span
         v-for="value in colorOption.values"
         :key="value.id"
         class="size-[11px] rounded-full border border-color-line"
         :style="{ backgroundColor: getSwatchColor(value.value) }"
       />
+      <span class="text-[10px] text-color-dimmed">
+        {{ colorOption.values?.[0]?.value }}
+      </span>
     </div>
   </AppLink>
 </template>

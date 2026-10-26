@@ -14,16 +14,14 @@ const removeItem = () => {
 </script>
 
 <template>
-  <button
-    class="cursor-pointer flex items-center gap-x-1"
+  <UButton
+    icon="i-lucide-trash-2"
+    :loading="loading"
+    variant="link"
+    color="neutral"
+    class="cursor-pointer p-0"
     @click="removeItem()"
   >
-    <UIcon
-      v-if="loading"
-      name="i-lucide-refresh-cw"
-      class="size-4 animate-spin"
-    />
-    <UIcon v-else name="i-lucide-trash-2" class="size-4" />
     <slot />
-  </button>
+  </UButton>
 </template>

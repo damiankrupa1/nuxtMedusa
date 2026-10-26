@@ -19,7 +19,7 @@ export const useFetchProducts = (
 
   const key = computed(
     () =>
-      `products:${queryParams.value?.collection_id}:${queryParams.value?.category_id}:${queryParams.value?.limit}:${queryParams.value?.offset}:${country.value?.region_id}:${medusaLocale.value}`,
+      `products:${queryParams.value?.collection_id}:${queryParams.value?.category_id}:${queryParams.value?.q}:${queryParams.value?.limit}:${queryParams.value?.offset}:${country.value?.region_id}:${medusaLocale.value}`,
   )
 
   return useLazyAsyncData(

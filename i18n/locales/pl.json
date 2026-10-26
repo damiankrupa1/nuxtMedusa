@@ -33,6 +33,11 @@
       "title": "Menu",
       "description": "Menu nawigacyjne"
     },
+    "input": {
+      "password": {
+        "toggleVisibility": "Przełącz widoczność hasła"
+      }
+    },
     "benefits": {
       "delivery": {
         "title": "Dostawa po Twojemu",
@@ -50,6 +55,22 @@
         "title": "Jesteśmy blisko",
         "note": "Pomożemy z rozmiarem i wyborem."
       }
+    },
+    "newsletter": {
+      "eyebrow": "LISTY OD {title}",
+      "heading": "Dobry styl zostaje w kontakcie.",
+      "description": "Odbierz 10% na pierwsze zakupy. Dołącz po nowe kolekcje, przemyślane inspiracje i pierwszeństwo w odkrywaniu nowości.",
+      "emailPlaceholder": "Twój adres e-mail",
+      "submit": "DOŁĄCZ",
+      "interestedLabel": "Interesuje mnie:",
+      "interestWomen": "Moda damska",
+      "interestMen": "Moda męska",
+      "consentPrefix": "Chcę otrzymywać newsletter {title} i akceptuję",
+      "privacyPolicy": "politykę prywatności",
+      "consentSuffix": ". Zgodę mogę wycofać w każdej chwili. Rabat nie łączy się z innymi promocjami.",
+      "errorEmail": "Podaj prawidłowy adres e-mail.",
+      "errorConsent": "Zaakceptuj politykę prywatności, aby się zapisać.",
+      "success": "Dziękujemy za zapis — sprawdź wkrótce swoją skrzynkę."
     },
     "footer": {
       "tagline": "Dobrze wybrane. Na dłużej.",
@@ -203,26 +224,17 @@
           "summary": "Wygodne warstwy na dni bez wielkich planów.",
           "imageAlt": "Mężczyzna idący brukowaną uliczką w mieście jesienią"
         }
-      },
-      "newsletter": {
-        "eyebrow": "LISTY OD {title}",
-        "heading": "Dobry styl zostaje w kontakcie.",
-        "description": "Odbierz 10% na pierwsze zakupy. Dołącz po nowe kolekcje, przemyślane inspiracje i pierwszeństwo w odkrywaniu nowości.",
-        "emailPlaceholder": "Twój adres e-mail",
-        "submit": "DOŁĄCZ",
-        "interestedLabel": "Interesuje mnie:",
-        "interestWomen": "Moda damska",
-        "interestMen": "Moda męska",
-        "consentPrefix": "Chcę otrzymywać newsletter {title} i akceptuję",
-        "privacyPolicy": "politykę prywatności",
-        "consentSuffix": ". Zgodę mogę wycofać w każdej chwili. Rabat nie łączy się z innymi promocjami.",
-        "errorEmail": "Podaj prawidłowy adres e-mail.",
-        "errorConsent": "Zaakceptuj politykę prywatności, aby się zapisać.",
-        "success": "Dziękujemy za zapis — sprawdź wkrótce swoją skrzynkę."
       }
     },
     "store": {
       "title": "Wszystkie produkty"
+    },
+    "search": {
+      "title": "Wyszukiwanie",
+      "heading": "Znajdź swoje na dłużej.",
+      "placeholder": "Czego szukasz?",
+      "submit": "Szukaj",
+      "clear": "Wyczyść zapytanie"
     },
     "contact": {
       "title": "Kontakt"
@@ -319,7 +331,19 @@
       "placeholder": "Kraj*"
     },
     "catalog": {
-      "sortBy": "Sortuj według"
+      "sortBy": "Sortuj:",
+      "filters": "Filtry",
+      "filterLabels": {
+        "forWhom": "Dla kogo",
+        "category": "Kategoria",
+        "size": "Rozmiar",
+        "color": "Kolor",
+        "material": "Materiał",
+        "price": "Cena",
+        "brand": "Marka"
+      },
+      "searchResultsFor": "Wyniki dla „{query}” ({count})",
+      "noResults": "Nie znaleziono żadnych produktów."
     },
     "sort": {
       "latest": "Najnowsze",

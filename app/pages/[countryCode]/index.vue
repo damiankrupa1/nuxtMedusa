@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ cdnCache: true })
+definePageMeta({ cdnCache: true, prefooter: true })
 
 const { t } = useI18n()
 
@@ -18,7 +18,5 @@ useSeoMeta({
     <HomeBrands />
     <HomeStudioStory />
     <HomeJournal />
-    <AppBenefitsBar />
-    <HomeNewsletter />
   </div>
 </template>

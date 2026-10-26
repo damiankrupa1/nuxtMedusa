@@ -85,6 +85,11 @@ export const useCartPayment = () => {
   const error = ref<string | null>(null)
   const cardContainer = ref<HTMLElement | null>(null)
   const cardComplete = ref(false)
+  // TODO: cardError/paidPaymentIntentId/cardElement/stripeMethod use
+  // `undefined` for "no value yet" right next to error/cardContainer above
+  // using `null` for the same thing — normalize on `null` here (see the
+  // null-vs-undefined convention in the nuxt-vue-architecture skill and
+  // https://github.com/damiankrupa1/nuxtMedusa/issues/21).
   const cardError = ref<string>()
   const blikCode = ref('')
   // Set once Stripe took the payment, so retrying an order that failed

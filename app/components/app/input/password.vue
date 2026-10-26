@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { UiSize } from '~/types/ui'
+
 defineProps<{
   modelValue: string | undefined
   name: string
@@ -6,7 +8,7 @@ defineProps<{
   autocomplete?: string
   required?: boolean
   label: string
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  size?: UiSize
 }>()
 
 const passwordVisible = ref(false)
@@ -38,15 +40,11 @@ defineEmits(['update:modelValue'])
         </span>
       </label>
     </UInput>
-    <button
-      type="button"
-      class="absolute inset-y-0 right-3 flex items-center z-10"
+    <AppIconButton
+      :icon="passwordVisible ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
+      :label="$t('app.input.password.toggleVisibility')"
+      class="absolute inset-y-0 right-3 z-10"
       @click="togglePasswordVisibility"
-    >
-      <UIcon
-        :name="passwordVisible ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
-        class="w-5 h-5 text-gray-500"
-      />
-    </button>
+    />
   </div>
 </template>

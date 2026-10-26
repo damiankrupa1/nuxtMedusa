@@ -28,10 +28,7 @@ const isSideMenuOpen = ref(false)
         <nav
           class="flex items-center gap-x-4 md:gap-x-6 flex-1 min-w-0 justify-end text-xs text-color-ink"
         >
-          <AppLink
-            to="/store"
-            class="hidden sm:flex items-center gap-x-2"
-          >
+          <AppLink to="/search" class="hidden sm:flex items-center gap-x-2">
             <UIcon name="i-lucide-search" class="size-5" />
             <span class="text-color-muted">{{ $t('app.header.search') }}</span>
           </AppLink>

@@ -32,5 +32,8 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      # TODO(#16): add `pnpm format:check` here once the pre-existing
+      # repo-wide Prettier drift is cleaned up — right now it would fail.
+
       - name: Build
         run: pnpm build

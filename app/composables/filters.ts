@@ -55,5 +55,21 @@ export const useFilters = () => {
     },
   })
 
-  return { sortOptions, sortBy, pageNumber }
+  const searchQuery = computed<string>({
+    get: () => (route.query.q as string) || '',
+    set: async (newQuery: string) => {
+      const newQueryParams = { ...route.query }
+      if (newQuery) {
+        newQueryParams.q = newQuery
+      } else {
+        delete newQueryParams.q
+      }
+      await router.push({ query: newQueryParams })
+      nextTick(() => {
+        pageNumber.value = 1
+      })
+    },
+  })
+
+  return { sortOptions, sortBy, pageNumber, searchQuery }
 }

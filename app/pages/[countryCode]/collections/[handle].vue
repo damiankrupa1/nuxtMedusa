@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useFetchCollectionByHandle } from '~/composables/collection'
 
-definePageMeta({ cdnCache: true })
+definePageMeta({ cdnCache: true, prefooter: true })
 
 const route = useRoute()
 
