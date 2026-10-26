@@ -1,14 +1,15 @@
 <script setup lang="ts">
-const { country } = useCountry()
+import type { AppLinkTarget } from '~/types/link'
 
 const { to, countryCode } = defineProps<{
-  to: string
+  to: AppLinkTarget
   countryCode?: string
 }>()
 
-const link = computed(() => {
-  return `/${countryCode || country.value?.iso_2}${to}`
-})
+const link = useCountryLink(
+  () => to,
+  () => countryCode,
+)
 </script>
 
 <template>

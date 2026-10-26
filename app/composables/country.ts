@@ -1,5 +1,6 @@
 import { countryRepository } from '../repository/country.repository'
 import { getCountriesFromRegions } from '../utils/country'
+import type { AppLinkTarget } from '~/types/link'
 
 export const useCountry = () => {
   const countryCodeFromCookie = useCookie('country_code', {
@@ -52,4 +53,22 @@ export const useCountries = async () => {
   }
 
   return countries
+}
+
+/**
+ * Resolves an `AppLink` target for the current country (or `countryCode`
+ * when given): see `toCountryLink()`. Shared by `AppLink`/`AppLinkButton`
+ * and any `UButton :to` / `navigateTo` that links inside the store.
+ */
+export const useCountryLink = (
+  to: MaybeRefOrGetter<AppLinkTarget | undefined>,
+  countryCode?: MaybeRefOrGetter<string | undefined>,
+) => {
+  const { country } = useCountry()
+
+  return computed(() => {
+    const target = toValue(to)
+    if (!target) return undefined
+    return toCountryLink(target, toValue(countryCode) || country.value?.iso_2)
+  })
 }
