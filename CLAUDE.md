@@ -104,6 +104,7 @@ Catalog pages (the `/[countryCode]` home, `store`, `products/[handle]`, `categor
 
 ### Directory layout
 
+- Imports use root aliases, never relative paths: `~/` for `app/` (also from `tests/`), `~~/` for the project root (e.g. `~~/server/...`). ESLint enforces it (`no-restricted-imports` in `eslint.config.mjs`, for `app/`, `server/`, `tests/`; dynamic `import()` is not checked). Details: `.claude/skills/nuxt-vue-architecture/SKILL.md` -> `## Imports`.
 - `app/pages` — file-based routes, all nested under `[countryCode]`.
 - `app/components` — organized by domain (`cart`, `checkout`, `product`, `order`, `collection`, `store`, `auth`, `app`), with further subfolders for compound UI (e.g. `checkout/address`, `checkout/payment`, `cart/item`).
 - `app/composables` — one file per domain (`cart`, `category`, `checkout`, `cms`, `collection`, `country`, `customer`, `filters`, `order`, `payment`, `product`), plus `not-found` shared by the by-handle pages and `seo` (canonical/hreflang, product JSON-LD). These call into `app/services` and/or `app/repository` rather than Medusa directly (see above).

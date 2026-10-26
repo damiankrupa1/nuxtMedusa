@@ -1,5 +1,5 @@
 import type { StoreOrder } from '@medusajs/types'
-import { apiRepository } from './api.repository'
+import { apiRepository } from '~/repository/api.repository'
 
 export function orderRepository() {
   const { client, request } = apiRepository()

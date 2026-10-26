@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals'
 import { mount } from '@vue/test-utils'
 
-import ProductPrice from '../../../app/components/product/price.vue'
+import ProductPrice from '~/components/product/price.vue'
 
 describe('product price component', () => {
   const stubs = {

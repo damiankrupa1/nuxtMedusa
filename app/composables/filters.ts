@@ -1,4 +1,4 @@
-import type { LocationQuery } from 'vue-router'
+import type { LocationQuery } from '#vue-router'
 import { SORT_OPTIONS, type SortOptionsType } from '~/types/filter'
 
 // Shared by every query-param toggle below: set it when it's not the
