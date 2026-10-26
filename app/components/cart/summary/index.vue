@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { StoreCart } from '@medusajs/types'
 
-const { country } = useCountry()
+const checkoutLink = useCountryLink('/checkout')
 
 const { cart } = defineProps<{
   title: string
@@ -27,7 +27,7 @@ const isCartUndefined = computed(() => cart === undefined)
     <CartTable v-if="isCheckout" :cart="cart" is-preview />
     <UButton
       v-if="!isCheckout"
-      :to="`/${country?.iso_2}/checkout`"
+      :to="checkoutLink"
       :block="true"
       color="neutral"
       :disabled="isCartUndefined"

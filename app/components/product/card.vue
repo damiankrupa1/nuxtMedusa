@@ -30,7 +30,14 @@ const colorOption = computed(() =>
 
 <template>
   <AppLink
-    :to="product?.handle ? `/products/${product?.handle}` : undefined"
+    :to="
+      product?.handle
+        ? {
+            name: 'countryCode-products-handle',
+            params: { handle: product.handle },
+          }
+        : undefined
+    "
     class="group"
   >
     <div

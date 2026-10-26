@@ -1,8 +1,10 @@
 <script lang="ts" setup>
+import type { AppRoute } from '~/types/link'
+
 defineProps<{
   src?: string
   alt: string
-  link: string
+  link?: AppRoute
 }>()
 </script>
 

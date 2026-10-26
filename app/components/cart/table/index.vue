@@ -81,7 +81,14 @@ const isCartUndefined = computed(() => cart === undefined)
             <CartItemThumbnail
               :src="row.original.thumbnail || undefined"
               :alt="row.original.title"
-              :link="`/products/${row.original.product_handle}`"
+              :link="
+                row.original.product_handle
+                  ? {
+                      name: 'countryCode-products-handle',
+                      params: { handle: row.original.product_handle },
+                    }
+                  : undefined
+              "
             />
           </div>
           <div :class="isDropDown ? 'w-40' : 'w-auto'">
@@ -89,7 +96,9 @@ const isCartUndefined = computed(() => cart === undefined)
               {{ row.original.product_title }}
             </div>
             <div>
-              {{ $t('cart.table.variant', { name: row.original.variant_title }) }}
+              {{
+                $t('cart.table.variant', { name: row.original.variant_title })
+              }}
             </div>
             <CartItemDeleteButton
               v-if="isDropDown"

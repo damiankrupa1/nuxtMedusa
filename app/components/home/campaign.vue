@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { AppLinkTarget } from '~/types/link'
+
 const { title } = useAppConfig()
 
 // "Dla niego" links to the men's department, same source as the header's
@@ -6,8 +8,13 @@ const { title } = useAppConfig()
 // commerce routing, so it applies to the CMS and fallback copy alike —
 // Payload only supplies the CTA label, never this URL.
 const { men } = await useDepartmentCategories()
-const secondaryDepartmentLink = computed(() =>
-  men.value ? `/categories/${men.value.handle}` : '/store',
+const secondaryDepartmentLink = computed<AppLinkTarget>(() =>
+  men.value
+    ? {
+        name: 'countryCode-categories-handle',
+        params: { handle: men.value.handle },
+      }
+    : '/store',
 )
 
 // Falls back to the single static slide below when Payload has no

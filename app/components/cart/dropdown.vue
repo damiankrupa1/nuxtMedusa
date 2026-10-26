@@ -3,6 +3,8 @@ const { isCartDropdownOpen } = useCartDropdown()
 
 const { country } = useCountry()
 const { mutate: updateCart } = useUpdateCart()
+const storeLink = useCountryLink('/store')
+const cartLink = useCountryLink('/cart')
 
 const { data: cartResponse } = await useFetchCart()
 // null once loaded without a cart, undefined while loading
@@ -53,7 +55,7 @@ watch(country, () => {
           <div>{{ $t('cart.dropdown.empty') }}</div>
         </div>
         <div class="flex items-center justify-center pb-8">
-          <UButton :to="`/${country?.iso_2}/store`" color="neutral">
+          <UButton :to="storeLink" color="neutral">
             {{ $t('cart.empty.cta') }}
           </UButton>
         </div>
@@ -80,7 +82,7 @@ watch(country, () => {
             <span class="font-bold text-lg">{{ subtotal }}</span>
           </div>
           <UButton
-            :to="`/${country?.iso_2}/cart`"
+            :to="cartLink"
             color="neutral"
             size="lg"
             :block="true"

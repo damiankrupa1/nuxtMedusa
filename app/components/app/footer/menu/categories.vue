@@ -20,7 +20,12 @@ const departments = computed(
     </p>
     <ul class="flex flex-col gap-y-5 text-xs text-color-sage">
       <li v-for="department in departments" :key="department.id">
-        <AppLink :to="`/categories/${department.handle}`">
+        <AppLink
+          :to="{
+            name: 'countryCode-categories-handle',
+            params: { handle: department.handle },
+          }"
+        >
           {{ department.name }}
         </AppLink>
       </li>
