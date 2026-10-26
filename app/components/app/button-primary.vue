@@ -1,11 +1,13 @@
 <script lang="ts" setup>
+import type { UiSize } from '~/types/ui'
+
 defineProps<{
   type?: 'button' | 'submit' | 'reset'
   to?: string
   loading?: boolean
   disabled?: boolean
   block?: boolean
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  size?: UiSize
 }>()
 </script>
 

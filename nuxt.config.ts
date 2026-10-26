@@ -40,6 +40,7 @@ export default defineNuxtConfig({
     '/**/products/**': { ssr: true },
     '/**/collections/**': { ssr: true },
     '/**/categories/**': { ssr: true },
+    '/**/search': { ssr: true },
     '/**/account': { ssr: true },
     '/**/store': { ssr: true },
     '/**/cart': { ssr: true },

@@ -254,7 +254,6 @@ watch(state, (value) => {
       <div class="py-4">
         <UCheckbox
           v-model="sameAsBilling"
-          color="neutral"
           :label="$t('checkout.address.billingSameAsShipping')"
         />
       </div>

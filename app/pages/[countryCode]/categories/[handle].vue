@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useFetchCategoryByHandle } from '~/composables/category'
 
-definePageMeta({ cdnCache: true })
+definePageMeta({ cdnCache: true, prefooter: true })
 
 const route = useRoute()
 

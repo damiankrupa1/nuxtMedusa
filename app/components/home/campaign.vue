@@ -30,20 +30,34 @@ watch(slides, () => {
     >
       <div class="flex items-start justify-between text-[10px]">
         <p class="text-color-ink">
-          {{ activeSlide?.seasonLabel ?? $t('pages.home.campaign.seasonLabel') }}
+          {{
+            activeSlide?.seasonLabel ?? $t('pages.home.campaign.seasonLabel')
+          }}
         </p>
         <p class="text-color-muted">
-          {{ activeSlide?.editionLabel ?? $t('pages.home.campaign.editionLabel') }}
+          {{
+            activeSlide?.editionLabel ?? $t('pages.home.campaign.editionLabel')
+          }}
         </p>
       </div>
 
       <div class="flex flex-col gap-6 lg:gap-[26px]">
-        <h1 class="font-serif text-5xl leading-[0.94] text-color-ink sm:text-6xl lg:text-[88px]">
-          <span class="block">{{ activeSlide?.headlineLine1 ?? $t('pages.home.campaign.headlineLine1') }}</span>
-          <span class="block">{{ activeSlide?.headlineLine2 ?? $t('pages.home.campaign.headlineLine2') }}</span>
+        <h1
+          class="font-serif text-5xl leading-[0.94] text-color-ink sm:text-6xl lg:text-[88px]"
+        >
+          <span class="block">{{
+            activeSlide?.headlineLine1 ??
+            $t('pages.home.campaign.headlineLine1')
+          }}</span>
+          <span class="block">{{
+            activeSlide?.headlineLine2 ??
+            $t('pages.home.campaign.headlineLine2')
+          }}</span>
         </h1>
         <p class="max-w-[370px] text-sm leading-[1.7] text-color-muted">
-          {{ activeSlide?.description ?? $t('pages.home.campaign.description') }}
+          {{
+            activeSlide?.description ?? $t('pages.home.campaign.description')
+          }}
         </p>
         <div class="flex items-center gap-6">
           <AppLink
@@ -57,30 +71,44 @@ watch(slides, () => {
             :to="secondaryDepartmentLink"
             class="flex items-center gap-4 border-b border-color-ink pb-2 text-[13px] text-color-ink"
           >
-            {{ activeSlide?.secondaryCtaLabel ?? $t('pages.home.campaign.secondaryCta') }}
+            {{
+              activeSlide?.secondaryCtaLabel ??
+              $t('pages.home.campaign.secondaryCta')
+            }}
             <UIcon name="i-lucide-arrow-up-right" class="size-4" />
           </AppLink>
         </div>
       </div>
 
       <div class="flex items-center justify-between">
-        <div v-if="slides?.length" class="flex items-center gap-[13px] text-[10px]">
-          <p class="text-color-ink">{{ String(activeIndex + 1).padStart(2, '0') }}</p>
+        <div
+          v-if="slides?.length"
+          class="flex items-center gap-[13px] text-[10px]"
+        >
+          <p class="text-color-ink">
+            {{ String(activeIndex + 1).padStart(2, '0') }}
+          </p>
           <button
             v-for="(slide, index) in slides"
             :key="index"
             type="button"
             class="h-px"
-            :class="index === activeIndex ? 'w-[70px] bg-color-ink' : 'w-[30px] bg-[#dcd4c7]'"
+            :class="
+              index === activeIndex
+                ? 'w-[70px] bg-color-ink'
+                : 'w-[30px] bg-color-stone'
+            "
             :aria-label="`Slide ${index + 1}`"
             @click="activeIndex = index"
           />
-          <p class="text-color-muted">{{ String(slides.length).padStart(2, '0') }}</p>
+          <p class="text-color-muted">
+            {{ String(slides.length).padStart(2, '0') }}
+          </p>
         </div>
         <div v-else class="flex items-center gap-[13px] text-[10px]">
           <p class="text-color-ink">01</p>
           <span class="h-px w-[70px] bg-color-ink" />
-          <span class="h-px w-[30px] bg-[#dcd4c7]" />
+          <span class="h-px w-[30px] bg-color-stone" />
           <p class="text-color-muted">03</p>
         </div>
         <p class="font-serif text-lg italic text-color-muted">
@@ -96,7 +124,7 @@ watch(slides, () => {
         :alt="activeSlide.image.alt"
         class="size-full object-cover"
         loading="lazy"
-      >
+      />
       <NuxtImg
         v-else
         src="/images/home/autumn-campaign.jpg"
@@ -112,13 +140,22 @@ watch(slides, () => {
       >
         <div class="flex flex-col gap-1 text-color-ink">
           <p class="text-[10px]">
-            {{ activeSlide?.captionEyebrow ?? $t('pages.home.campaign.captionEyebrow') }}
+            {{
+              activeSlide?.captionEyebrow ??
+              $t('pages.home.campaign.captionEyebrow')
+            }}
           </p>
           <p class="font-serif text-xl">
-            {{ activeSlide?.captionHeadline ?? $t('pages.home.campaign.captionHeadline') }}
+            {{
+              activeSlide?.captionHeadline ??
+              $t('pages.home.campaign.captionHeadline')
+            }}
           </p>
         </div>
-        <UIcon name="i-lucide-arrow-up-right" class="size-5 shrink-0 text-color-ink" />
+        <UIcon
+          name="i-lucide-arrow-up-right"
+          class="size-5 shrink-0 text-color-ink"
+        />
       </div>
       <p
         class="absolute right-6 top-7 hidden text-[10px] text-color-ink sm:block"
