@@ -4,8 +4,8 @@ import { loadStripe } from '@stripe/stripe-js'
 import type { Stripe } from '@stripe/stripe-js'
 import { nextTick, ref } from 'vue'
 
-import CheckoutReview from '../../../app/components/checkout/review/index.vue'
-import { useCartPayment } from '../../../app/composables/payment'
+import CheckoutReview from '~/components/checkout/review/index.vue'
+import { useCartPayment } from '~/composables/payment'
 
 jest.mock('@stripe/stripe-js', () => ({ loadStripe: jest.fn() }))
 

@@ -1,19 +1,19 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals'
 import type { StoreProduct, StoreProductCategory } from '@medusajs/types'
 
-import { useCmsService } from '../../../app/services/cms.service'
-import { cmsRepository } from '../../../app/repository/cms.repository'
-import { categoryRepository } from '../../../app/repository/category.repository'
-import { productRepository } from '../../../app/repository/product.repository'
-import type { CmsCategoryTiles, CmsShopTheLook } from '../../../app/types/cms'
+import { useCmsService } from '~/services/cms.service'
+import { cmsRepository } from '~/repository/cms.repository'
+import { categoryRepository } from '~/repository/category.repository'
+import { productRepository } from '~/repository/product.repository'
+import type { CmsCategoryTiles, CmsShopTheLook } from '~/types/cms'
 
-jest.mock('../../../app/repository/cms.repository', () => ({
+jest.mock('~/repository/cms.repository', () => ({
   cmsRepository: jest.fn(),
 }))
-jest.mock('../../../app/repository/category.repository', () => ({
+jest.mock('~/repository/category.repository', () => ({
   categoryRepository: jest.fn(),
 }))
-jest.mock('../../../app/repository/product.repository', () => ({
+jest.mock('~/repository/product.repository', () => ({
   productRepository: jest.fn(),
 }))
 

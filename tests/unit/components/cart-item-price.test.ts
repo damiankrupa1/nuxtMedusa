@@ -2,8 +2,8 @@ import { describe, expect, it } from '@jest/globals'
 import { mount } from '@vue/test-utils'
 import type { StoreCartLineItem } from '@medusajs/types'
 
-import CartItemPrice from '../../../app/components/cart/item/price.vue'
-import ProductPrice from '../../../app/components/product/price.vue'
+import CartItemPrice from '~/components/cart/item/price.vue'
+import ProductPrice from '~/components/product/price.vue'
 
 describe('cart item price component', () => {
   const stubs = {
