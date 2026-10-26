@@ -3,7 +3,7 @@ import type { StoreCart, StoreOrder } from '@medusajs/types'
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
 
 const { cart, isPreview, isDropDown } = defineProps<{
-  cart?: StoreCart | StoreOrder
+  cart?: StoreCart | StoreOrder | null
   isPreview?: boolean
   isDropDown?: boolean
 }>()

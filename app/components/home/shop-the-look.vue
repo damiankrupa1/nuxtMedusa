@@ -25,14 +25,15 @@ const products = computed(() => cms.value?.products ?? fallbackProducts.value)
 
 const total = computed(() =>
   products.value.reduce(
-    (sum, product) => sum + (getCheapestVariantPriceAmount(product) || 0),
+    (sum, product) => sum + (getCheapestVariantPriceAmount(product) ?? 0),
     0,
   ),
 )
 const currencyCode = computed(
   () =>
-    products.value[0] &&
-    getCheapestVariant(products.value[0])?.calculated_price?.currency_code,
+    (products.value[0] &&
+      getCheapestVariant(products.value[0])?.calculated_price?.currency_code) ??
+    null,
 )
 
 // No "buy the whole look" bulk-add-to-cart action exists — see

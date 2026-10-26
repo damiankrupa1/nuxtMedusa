@@ -14,13 +14,13 @@ const { product, badge, withSaveIcon } = defineProps<{
 const cheapestVariant = computed(() => getCheapestVariant(product))
 
 const currentPrice = computed(
-  () => cheapestVariant.value?.calculated_price?.calculated_amount || undefined,
+  () => cheapestVariant.value?.calculated_price?.calculated_amount ?? null,
 )
 const originalPrice = computed(
-  () => cheapestVariant.value?.calculated_price?.original_amount || undefined,
+  () => cheapestVariant.value?.calculated_price?.original_amount ?? null,
 )
 const currencyCode = computed(
-  () => cheapestVariant.value?.calculated_price?.currency_code || undefined,
+  () => cheapestVariant.value?.calculated_price?.currency_code ?? null,
 )
 
 const colorOption = computed(() =>
