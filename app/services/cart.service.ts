@@ -4,7 +4,7 @@ import type {
   StoreUpdateCart,
   StoreUpdateCartLineItem,
 } from '@medusajs/types'
-import { cartRepository } from '../repository/cart.repository'
+import { cartRepository } from '~/repository/cart.repository'
 
 export const useCartService = () => {
   const { cartId, setCartId } = useUserCart()

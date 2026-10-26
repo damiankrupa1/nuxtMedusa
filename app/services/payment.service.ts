@@ -5,8 +5,8 @@ import type {
   StorePaymentSession,
 } from '@medusajs/types'
 import type { StripeCardElement } from '@stripe/stripe-js'
-import { paymentRepository } from '../repository/payment.repository'
-import { stripeRepository } from '../repository/stripe.repository'
+import { paymentRepository } from '~/repository/payment.repository'
+import { stripeRepository } from '~/repository/stripe.repository'
 
 /**
  * `paid` once Stripe has the payment, `redirected` while the customer pays

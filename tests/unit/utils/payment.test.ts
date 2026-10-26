@@ -3,7 +3,7 @@ import {
   getStripePaymentMethod,
   providers,
   toStripeBillingDetails,
-} from '../../../app/utils/payment'
+} from '~/utils/payment'
 
 describe('payment utils', () => {
   it('contains the expected payment provider labels', () => {

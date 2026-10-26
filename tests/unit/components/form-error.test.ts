@@ -1,7 +1,7 @@
 import { describe, expect, it } from '@jest/globals'
 import { mount } from '@vue/test-utils'
 
-import FormError from '../../../app/components/app/form-error.vue'
+import FormError from '~/components/app/form-error.vue'
 
 describe('form-error component', () => {
   const stubs = {

@@ -1,6 +1,6 @@
 import type { StoreCartResponse, StorePaymentCollection } from '@medusajs/types'
 import type { StripeCardElement } from '@stripe/stripe-js'
-import { usePaymentService } from '../services/payment.service'
+import { usePaymentService } from '~/services/payment.service'
 
 const getErrorMessage = (err: unknown, fallback: string) =>
   err instanceof Error && err.message ? err.message : fallback

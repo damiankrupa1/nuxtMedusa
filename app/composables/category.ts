@@ -1,4 +1,4 @@
-import { categoryRepository } from '../repository/category.repository'
+import { categoryRepository } from '~/repository/category.repository'
 
 export const useFetchCategories = () => {
   const { locale } = useI18n()

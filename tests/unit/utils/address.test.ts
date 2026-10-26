@@ -1,6 +1,6 @@
 import { describe, expect, it } from '@jest/globals'
 import type { StoreCartAddress } from '@medusajs/types'
-import { compareAddresses } from '../../../app/utils/address'
+import { compareAddresses } from '~/utils/address'
 
 describe('address utils', () => {
   const makeAddress = (
