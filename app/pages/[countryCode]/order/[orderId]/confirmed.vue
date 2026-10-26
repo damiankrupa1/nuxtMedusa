@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { useFetchOrder } from '~/composables/order'
 
-const route = useRoute()
+const route = useRoute('countryCode-order-orderId-confirmed')
 
-const orderId = computed(() => route.params.orderId as string)
+const orderId = computed(() => route.params.orderId)
 
 const { data: order } = await useFetchOrder(orderId.value)
 

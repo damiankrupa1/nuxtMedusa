@@ -13,11 +13,11 @@ const adjustmentsSum = computed(() => {
 })
 
 const currentPrice = computed(() => {
-  return item.total ? item.total - adjustmentsSum.value : 0
+  return item.total != null ? item.total - adjustmentsSum.value : 0
 })
 
 const originalPrice = computed(() => {
-  return item.original_total || 0
+  return item.original_total ?? 0
 })
 </script>
 

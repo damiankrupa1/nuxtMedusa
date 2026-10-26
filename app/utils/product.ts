@@ -6,12 +6,12 @@ export function getCheapestVariant(product?: StoreProduct) {
     throw new Error('No product provided')
   }
 
-  return product.variants
+  const variant = product.variants
     ?.filter((v) => !!v.calculated_price)
     .sort((a, b) => {
       if (
-        a.calculated_price?.calculated_amount &&
-        b.calculated_price?.calculated_amount
+        a.calculated_price?.calculated_amount != null &&
+        b.calculated_price?.calculated_amount != null
       ) {
         return (
           a.calculated_price?.calculated_amount -
@@ -20,10 +20,14 @@ export function getCheapestVariant(product?: StoreProduct) {
       }
       return 0
     })[0]
+
+  return variant ?? null
 }
 
 export function getCheapestVariantPriceAmount(product: StoreProduct) {
-  return getCheapestVariant(product)?.calculated_price?.calculated_amount
+  return (
+    getCheapestVariant(product)?.calculated_price?.calculated_amount ?? null
+  )
 }
 
 export function sortProducts(
@@ -32,9 +36,9 @@ export function sortProducts(
 ) {
   if (sortBy === SORT_OPTIONS.PRICE_ASC || sortBy === SORT_OPTIONS.PRICE_DESC) {
     return products.sort((a, b) => {
-      const priceA = getCheapestVariantPriceAmount(a) || 0
-      const priceB = getCheapestVariantPriceAmount(b) || 0
-      const diff = priceA! - priceB!
+      const priceA = getCheapestVariantPriceAmount(a) ?? 0
+      const priceB = getCheapestVariantPriceAmount(b) ?? 0
+      const diff = priceA - priceB
 
       return sortBy === SORT_OPTIONS.PRICE_ASC ? diff : -diff
     })
@@ -49,13 +53,15 @@ export function sortProducts(
 
 export function optionsAsKeyMap(
   variantOptions: StoreProductOptionValue[] | null,
-) {
-  return variantOptions?.reduce(
-    (acc: Record<string, string>, varOpt: StoreProductOptionValue) => {
-      if (!varOpt.option_id) return acc
-      acc[varOpt.option_id] = varOpt.value
-      return acc
-    },
-    {},
+): Record<string, string> | null {
+  return (
+    variantOptions?.reduce(
+      (acc: Record<string, string>, varOpt: StoreProductOptionValue) => {
+        if (!varOpt.option_id) return acc
+        acc[varOpt.option_id] = varOpt.value
+        return acc
+      },
+      {},
+    ) ?? null
   )
 }

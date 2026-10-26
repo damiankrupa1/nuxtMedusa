@@ -6,7 +6,8 @@ const departments = computed(() =>
   [women.value, men.value].filter((department) => department !== null),
 )
 
-const isActive = (handle: string) => route.path.includes(`/categories/${handle}`)
+const isActive = (handle: string) =>
+  route.path.includes(`/categories/${handle}`)
 </script>
 
 <template>
@@ -17,9 +18,16 @@ const isActive = (handle: string) => route.path.includes(`/categories/${handle}`
     <AppLink
       v-for="department in departments"
       :key="department.id"
-      :to="`/categories/${department.handle}`"
+      :to="{
+        name: 'countryCode-categories-handle',
+        params: { handle: department.handle },
+      }"
       class="flex flex-col gap-y-2 text-[13px]"
-      :class="isActive(department.handle) ? 'text-color-ink font-semibold' : 'text-color-muted'"
+      :class="
+        isActive(department.handle)
+          ? 'text-color-ink font-semibold'
+          : 'text-color-muted'
+      "
     >
       {{ department.name }}
       <span

@@ -1,15 +1,17 @@
 <script setup lang="ts">
+import type { AppLinkTarget } from '~/types/link'
+
 // The redesign's underlined "text ↗" link.
-const { country } = useCountry()
 
 const { to, countryCode } = defineProps<{
-  to: string
+  to: AppLinkTarget
   countryCode?: string
 }>()
 
-const link = computed(() => {
-  return `/${countryCode || country.value?.iso_2}${to}`
-})
+const link = useCountryLink(
+  () => to,
+  () => countryCode,
+)
 </script>
 
 <template>

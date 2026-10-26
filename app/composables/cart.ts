@@ -184,7 +184,13 @@ export const usePlaceOrder = () => {
         refreshNuxtData(`cart`)
         data.value = orderResponse.order
         navigateTo(
-          `/${country.value?.iso_2}/order/${orderResponse.order.id}/confirmed`,
+          toCountryLink(
+            {
+              name: 'countryCode-order-orderId-confirmed',
+              params: { orderId: orderResponse.order.id },
+            },
+            country.value?.iso_2,
+          ),
         )
         return
       }

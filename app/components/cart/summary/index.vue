@@ -1,22 +1,21 @@
 <script lang="ts" setup>
 import type { StoreCart } from '@medusajs/types'
 
-const { country } = useCountry()
+const checkoutLink = useCountryLink('/checkout')
 
 const { cart } = defineProps<{
   title: string
-  cart?: StoreCart
+  cart?: StoreCart | null
   isCheckout?: boolean
 }>()
 
-const isCartEmpty = computed(() => cart?.items?.length === 0)
+const isCartEmpty = computed(() => cart === null || cart?.items?.length === 0)
 const isCartUndefined = computed(() => cart === undefined)
 </script>
 
 <template>
   <div
     v-if="isCartUndefined || !isCartEmpty"
-    :cart="cart && cart.items && cart.items.length > 0 ? cart : undefined"
     class="flex flex-col gap-y-4"
   >
     <AppHeading as="h2">
@@ -27,7 +26,7 @@ const isCartUndefined = computed(() => cart === undefined)
     <CartTable v-if="isCheckout" :cart="cart" is-preview />
     <UButton
       v-if="!isCheckout"
-      :to="`/${country?.iso_2}/checkout`"
+      :to="checkoutLink"
       :block="true"
       color="neutral"
       :disabled="isCartUndefined"

@@ -158,16 +158,13 @@ const switchToSignin = () => {
         />
       </UFormField>
 
+      <!-- TODO: link the documents once the store has privacy-policy and
+           terms-of-use pages; there are none yet, so a link would only 404. -->
       <div class="text-xs py-6">
         {{ $t('auth.register.agreement') }}
-        <AppLink class="underline" to="/privacy-policy">
-          {{ $t('auth.register.privacyPolicy') }}
-        </AppLink>
+        {{ $t('auth.register.privacyPolicy') }}
         {{ $t('auth.register.and') }}
-        <AppLink class="underline" to="/terms-of-use">
-          {{ $t('auth.register.termsOfUse') }}
-        </AppLink>
-        .
+        {{ $t('auth.register.termsOfUse') }}.
       </div>
 
       <AppButtonPrimary type="submit" block :loading="isRegistering">

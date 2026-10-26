@@ -62,6 +62,15 @@ Every page lives under `app/pages/[countryCode]/...`; `app/pages/index.vue` is j
 
 `useCountry()`/`useCountries()` (`app/composables/country.ts`) are the source of truth for the current region; most data-fetching composables key off `country.value.region_id`.
 
+### Internal links
+
+Links inside the store never hard-code the country prefix; `AppLink`/`AppLinkButton` (and, outside them, `useCountryLink()` for a `UButton :to`, or `toCountryLink()` for `navigateTo`) add it from `useCountry()`. Their `to` takes two forms (`AppLinkTarget`, `app/types/link.ts`):
+
+- **A route with params → named route** without `countryCode`: `:to="{ name: 'countryCode-products-handle', params: { handle } }"`. `experimental.typedPages` generates the route names, so a misspelled name or a missing param is a type error, and pages read their params through `useRoute('countryCode-products-handle')`. Guard an optional param (`product.collection?.handle ? { ... } : undefined`); a named route with an empty param resolves to no link instead of throwing.
+- **A static page or a CMS/fallback URL → path string** relative to the country: `to="/store"`, `:to="link.url"`. Payload hands out arbitrary URLs, and the static fallback lists share their `to: string` shape.
+
+Type a named route with `AppRoute` from `~/types/link`, never `RouteLocationRaw` imported from `'vue-router'`: the root `vue-router` dependency isn't the copy the generated route types extend, so that type accepts any name.
+
 ### Data-fetching conventions
 
 - Read operations use `useLazyFetch`/`useLazyAsyncData` with explicit, colon-delimited cache keys that encode the params they depend on (e.g. `` `products:${collection_id}:${category_id}:${limit}:${offset}:${region_id}` `` , `` `product:${handle}:region:${region_id}` ``). When adding a new fetcher, follow this key convention so `refreshNuxtData`/payload lookups keep working.
@@ -99,7 +108,7 @@ Catalog pages (the `/[countryCode]` home, `store`, `products/[handle]`, `categor
 - `app/composables` — one file per domain (`cart`, `category`, `checkout`, `cms`, `collection`, `country`, `customer`, `filters`, `order`, `payment`, `product`), plus `not-found` shared by the by-handle pages. These call into `app/services` and/or `app/repository` rather than Medusa directly (see above).
 - `app/services` — `*.service.ts` business-logic layer between composables and repositories (cart, category, cms, collection, customer, order, payment, product). See the repository → service → composable note above for which ones actually have callers.
 - `app/repository` — `*.repository.ts` data-access layer; `api.repository.ts` provides the shared `useMedusaClient()` + error-handling wrapper the other repositories (product, category, collection, country, order, payment, cart, customer) build on; `stripe.repository.ts` is the Stripe.js counterpart; `cms.repository.ts` is the Payload counterpart (see Payload CMS integration above) — it calls Payload's REST API directly, not through `apiRepository()`, since that wrapper is Medusa-specific.
-- `app/utils` — pure helpers (`price`, `product`, `address`, `country`, `payment`, `percentage-diff`, `homepage`), auto-imported by Nuxt, plus `capture-error` (see Error reporting).
+- `app/utils` — pure helpers (`price`, `product`, `address`, `country`, `link`, `payment`, `percentage-diff`, `homepage`), auto-imported by Nuxt, plus `capture-error` (see Error reporting).
 - `server/api` — Nitro route handlers for `products`, `categories`, `collections`, `customers`, `regions`; only `customers/**` and `regions` are currently wired up to `app/` (see above).
 - `server/utils/handler.ts` / `server/types/medusa-error.ts` — shared error-wrapping for API routes.
 

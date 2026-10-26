@@ -71,8 +71,15 @@ watch(
 
 // Redirect to the right store if shipping address changes - Not applicable for billing address
 watch(state, (value) => {
-  if (value.shipping_address?.country_code !== country.value?.iso_2) {
-    navigateTo(`/${value.shipping_address?.country_code}/checkout?step=address`)
+  const countryCode = value.shipping_address?.country_code
+  // An empty country (select cleared) has no store to switch to
+  if (countryCode && countryCode !== country.value?.iso_2) {
+    navigateTo(
+      toCountryLink(
+        { name: 'countryCode-checkout', query: { step: 'address' } },
+        countryCode,
+      ),
+    )
   }
 })
 </script>

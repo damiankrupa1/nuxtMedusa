@@ -50,6 +50,13 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 - Prefer a page-meta flag in the existing layout over a new layout when only a section differs. Switching layouts remounts the whole layout, `AppHeader` included, on every navigation between them. A new layout is for a different page frame, like `checkout.vue` (checkout header, minimal footer).
 - Don't enable `keepalive` to preserve a shared section's state. It caches whole pages per route key, client-side only, so it never shares one instance between pages; it also keeps entire catalog trees in memory and shows stale data unless the page refetches in `onActivated`.
 
+## Internal links
+
+- Link inside the store through `AppLink`/`AppLinkButton`, which add the country prefix. Never build `` `/${country.iso_2}/...` `` by hand: use `useCountryLink()` for a `UButton :to` and `toCountryLink(to, countryCode)` for `navigateTo` (see "Internal links" in root `CLAUDE.md`).
+- A route with params (`products/[handle]`, `categories/[handle]`, `collections/[handle]`, `order/[orderId]/confirmed`) is linked as a named route without `countryCode` — `{ name: 'countryCode-categories-handle', params: { handle } }` — so `typedPages` checks the name and params. A static page (`/store`, `/cart`, `/account`) and every CMS-provided URL stay path strings.
+- A computed link that is either form is typed `AppLinkTarget`; a prop that only takes a named route is `AppRoute` (both in `~/types/link`). Don't type them with `RouteLocationRaw` from `'vue-router'` — it doesn't carry the generated route names here.
+- A page reads its params with the route name, `useRoute('countryCode-products-handle').params.handle`, not `route.params.handle as string`.
+
 ## Page meta
 
 - Per-page configuration read by the layout, a plugin or middleware is declared in `definePageMeta` (route meta), never set in a store from the page's `setup`. A page's setup runs before the new page has loaded, so a store flag would switch the layout under the old page, and every page would have to reset it on leave. Current keys — keep this list up to date when adding one:

@@ -1,18 +1,19 @@
 <script setup lang="ts">
-// TODO(#20): consider a named-route (RouteLocationRaw) variant of `to`
-// instead of/alongside plain path strings, once experimental.typedPages is
-// enabled — would need to keep auto-injecting countryCode as a param.
-const { country } = useCountry()
+import type { AppLinkTarget } from '~/types/link'
 
 const { to, countryCode } = defineProps<{
-  to?: string
+  /**
+   * Path relative to `/[countryCode]` (static pages, CMS URLs) or a named
+   * route without `countryCode` — use the named form for routes with params.
+   */
+  to?: AppLinkTarget
   countryCode?: string
 }>()
 
-const link = computed(() => {
-  if (!to) return undefined
-  return `/${countryCode || country.value?.iso_2}${to}`
-})
+const link = useCountryLink(
+  () => to,
+  () => countryCode,
+)
 </script>
 
 <template>

@@ -1,11 +1,23 @@
 import { describe, expect, it } from '@jest/globals'
 import { mount } from '@vue/test-utils'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 import LinkButton from '~/components/app/link-button.vue'
+import { toCountryLink } from '~/utils/link'
+
+const country = ref({ iso_2: 'pl' })
 
 Object.assign(globalThis, {
-  useCountry: () => ({ country: ref({ iso_2: 'pl' }) }),
+  useCountry: () => ({ country }),
+  useCountryLink: (
+    to: () => string | undefined,
+    countryCode?: () => string | undefined,
+  ) =>
+    computed(() => {
+      const target = to()
+      if (!target) return undefined
+      return toCountryLink(target, countryCode?.() || country.value.iso_2)
+    }),
 })
 
 const UButton = {
