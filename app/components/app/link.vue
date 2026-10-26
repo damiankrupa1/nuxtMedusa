@@ -1,4 +1,7 @@
 <script setup lang="ts">
+// TODO(#20): consider a named-route (RouteLocationRaw) variant of `to`
+// instead of/alongside plain path strings, once experimental.typedPages is
+// enabled — would need to keep auto-injecting countryCode as a param.
 const { country } = useCountry()
 
 const { to, countryCode } = defineProps<{
