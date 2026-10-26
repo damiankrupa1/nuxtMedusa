@@ -11,6 +11,6 @@ module.exports = {
   },
   moduleNameMapper: {
     '^~/(.*)$': '<rootDir>/app/$1',
-    '^#/(.*)$': '<rootDir>/$1',
+    '^~~/(.*)$': '<rootDir>/$1',
   },
 }

@@ -6,7 +6,7 @@ import type {
   StoreUpdateCart,
   StoreUpdateCartLineItem,
 } from '@medusajs/types'
-import { useCartService } from '../services/cart.service'
+import { useCartService } from '~/services/cart.service'
 
 export const useUserCart = () => {
   const cartIdCookie = useCookie('cart_id', {

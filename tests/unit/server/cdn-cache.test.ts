@@ -16,7 +16,7 @@ describe('cdn cache plugin', () => {
     Object.assign(globalThis, {
       defineNitroPlugin: (plugin: unknown) => plugin,
     })
-    const module = await import('../../../server/plugins/cdn-cache')
+    const module = await import('~~/server/plugins/cdn-cache')
     const plugin = module.default as unknown as (nitroApp: unknown) => void
     plugin({
       hooks: {

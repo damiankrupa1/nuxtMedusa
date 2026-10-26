@@ -7,7 +7,7 @@ import type {
   CmsNavigation,
   CmsShopTheLook,
   CmsStudioStory,
-} from '../types/cms'
+} from '~/types/cms'
 
 // Payload's REST API is public read-only today (see the Navigation/
 // FooterContent globals' `access.read`), so this fetches it directly. If that

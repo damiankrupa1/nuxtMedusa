@@ -1,5 +1,5 @@
 import type { StoreProductListParams } from '@medusajs/types'
-import { productRepository } from '../repository/product.repository'
+import { productRepository } from '~/repository/product.repository'
 
 // TODO: unused (composables call productRepository directly) — remove if no logic is added here
 
