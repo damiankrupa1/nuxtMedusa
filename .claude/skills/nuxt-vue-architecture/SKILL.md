@@ -21,6 +21,12 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 - Use `useAsyncData`/`useFetch` or the project's existing data-fetching layer consistently; avoid duplicate requests and unnecessary client-side refetches.
 - Give components typed props and emits. Avoid `any`; use `unknown` and narrow it when the type is genuinely uncertain.
 
+## `null` vs `undefined`
+
+- Default to `null` for "intentionally no value" domain state: a lookup that found nothing, a cleared/reset field, an error slot that isn't currently set (`ref<string | null>(null)`, `computed(() => data.value?.customer ?? null)`). This already matches the codebase's own convention for by-handle repository lookups (see root `CLAUDE.md`) and most composable error state (e.g. `app/composables/customer.ts`) — `null` reads as "no value, on purpose."
+- Reserve `undefined` for what is inherently `undefined` in JS/Vue/TS rather than something you're choosing: an optional prop that wasn't passed (`defineProps<{ x?: string }>()`), an omitted optional function argument, or a destructured field that may not exist on an object. Don't fight the language by forcing those to `null` — an optional prop's "not passed" state is natively `undefined`.
+- Don't mix both for the same kind of "no value" within one composable/component. `app/composables/payment.ts` currently does both (`error`/`cardContainer` default to `null`; `cardElement`, `paidPaymentIntentId`, and `stripeMethod` use `undefined`) for state that is conceptually the same "nothing yet" — when touching a file like this, align it on `null` rather than copying whichever one happens to be nearby.
+
 ## Native element vs Nuxt UI component vs small wrapper
 
 - Reach for the Nuxt UI component (`UButton`, `UInput`, `UForm`, ...) when the control participates in form validation, loading/disabled state, or needs consistent focus-visible styling — that wiring runs through `useFormField()`/form injection and is easy to get right once centrally, easy to silently regress by hand in every form.
@@ -29,6 +35,11 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 - `UFormField` only earns its keep when a child actually calls `useFormField()` (a Nuxt UI input component), which is what wires `aria-describedby`/`aria-invalid`/error-color/auto-disable-while-submitting. Wrapping a raw native `<input>`/`<label>` in `UFormField` for its scoped `error` alone adds a layer with no consumer — read the `errors` off `UForm`'s own default slot instead for that case (see the Volar gotcha below for how to bind it without a type error).
 - When a visual pattern (icon-only toggle, primary CTA, link-with-icon, etc.) repeats 3+ times, extract a small `app/components/app/*.vue` wrapper around the Nuxt UI component (see `button-primary.vue`, `link-button.vue`, `icon-button.vue`, `form-error.vue`) rather than re-styling the Nuxt UI component inline every time, or building one catch-all "does everything" wrapper.
 - Extract a repeated literal prop type (e.g. a shared size union) into `app/types/*.ts` once it is duplicated across 3+ components, following the existing `~/types/<domain>` import convention (see `app/types/ui.ts`).
+
+## Colors as tokens, not raw hex
+
+- Never hardcode a raw hex value in a Tailwind arbitrary-value class (`bg-[#dcd4c7]`, `text-[#dbddd3]`). Add it as a CSS variable in `app/assets/css/variables.css`, map it under `@theme` and expose a `@utility` for it in `app/assets/css/main.css`, following the existing `--color-ink`/`--color-paper`/`--color-sand`/`--color-stone`/`--color-sage` pattern, then use the resulting `bg-color-*`/`text-color-*` utility.
+- This applies even to a color used only once today — a raw hex with no name is already a latent duplicate waiting to be pasted into the next component, and a design change then means grepping for hex strings across the codebase instead of editing one variable. Check for an existing close token first (e.g. `--color-sand` vs `--color-stone` are both muted beiges but are genuinely different shades — don't collapse distinct design colors into one token just to avoid adding a new one).
 
 ## Focus-visible styling
 

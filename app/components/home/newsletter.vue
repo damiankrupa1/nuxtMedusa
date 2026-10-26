@@ -33,7 +33,7 @@ const onSubmit = (_event: FormSubmitEvent<NewsletterForm>) => {
 
 <template>
   <section
-    class="flex flex-col gap-10 bg-[#dcd4c7] px-6 py-14 md:flex-row md:gap-[100px] md:px-24 md:py-[72px]"
+    class="flex flex-col gap-10 bg-color-stone px-6 py-14 md:flex-row md:gap-[100px] md:px-24 md:py-[72px]"
   >
     <div class="flex flex-col gap-[19px] md:w-[530px] md:shrink-0">
       <p class="text-[10px] text-color-ink">

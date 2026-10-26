@@ -20,7 +20,10 @@ const legalLinks = [
 </script>
 
 <template>
-  <div v-if="minimal" class="flex w-full text-color-dimmed text-xs py-4 justify-center">
+  <div
+    v-if="minimal"
+    class="flex w-full text-color-dimmed text-xs py-4 justify-center"
+  >
     <div class="flex gap-x-2 items-center">
       <div>{{ $t('app.footer.poweredBy') }}</div>
       <NuxtLink
@@ -42,7 +45,7 @@ const legalLinks = [
   </div>
   <div
     v-else
-    class="flex flex-col sm:flex-row gap-y-2 w-full items-start sm:items-center justify-between text-[9px] text-[#dbddd3]"
+    class="flex flex-col sm:flex-row gap-y-2 w-full items-start sm:items-center justify-between text-[9px] text-color-sage"
   >
     <p>{{ $t('app.footer.copyright', { year: currentYear, title }) }}</p>
     <div class="flex flex-wrap gap-x-6">

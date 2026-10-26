@@ -13,18 +13,26 @@ const deliveryProviders = ['InPost', 'DPD']
     class="flex flex-col sm:flex-row gap-y-4 items-start sm:items-center justify-between border-t border-[rgba(250,248,244,0.19)] pt-[26px] text-color-paper"
   >
     <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
-      <span class="text-[10px] text-[#dbddd3]">
+      <span class="text-[10px] text-color-sage">
         {{ $t('app.footer.paymentLabel') }}
       </span>
-      <span v-for="provider in paymentProviders" :key="provider" class="text-xs font-semibold">
+      <span
+        v-for="provider in paymentProviders"
+        :key="provider"
+        class="text-xs font-semibold"
+      >
         {{ provider }}
       </span>
     </div>
     <div class="flex flex-wrap items-center gap-x-5">
-      <span class="text-[10px] text-[#dbddd3]">
+      <span class="text-[10px] text-color-sage">
         {{ $t('app.footer.deliveryLabel') }}
       </span>
-      <span v-for="provider in deliveryProviders" :key="provider" class="text-sm font-medium">
+      <span
+        v-for="provider in deliveryProviders"
+        :key="provider"
+        class="text-sm font-medium"
+      >
         {{ provider }}
       </span>
     </div>

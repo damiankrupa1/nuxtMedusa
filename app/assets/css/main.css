@@ -13,6 +13,8 @@
   --color-line: var(--color-line);
   --color-accent: var(--color-accent);
   --color-sand: var(--color-sand);
+  --color-stone: var(--color-stone);
+  --color-sage: var(--color-sage);
   --font-sans: 'Inter', sans-serif;
   --font-serif: 'Cormorant Garamond', ui-serif, Georgia, Cambria, serif;
 }
@@ -83,4 +85,12 @@ body {
 
 @utility bg-color-sand {
   background-color: var(--color-sand);
+}
+
+@utility bg-color-stone {
+  background-color: var(--color-stone);
+}
+
+@utility text-color-sage {
+  color: var(--color-sage);
 }

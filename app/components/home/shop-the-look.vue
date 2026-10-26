@@ -20,19 +20,24 @@ const total = computed(() =>
 )
 const currencyCode = computed(
   () =>
-    products.value[0] && getCheapestVariant(products.value[0])?.calculated_price?.currency_code,
+    products.value[0] &&
+    getCheapestVariant(products.value[0])?.calculated_price?.currency_code,
 )
 
 // No "buy the whole look" bulk-add-to-cart action exists — see
 // missing-medusa-api-data skill. Links to the first piece's page instead.
 const shopSetLink = computed(() =>
-  products.value[0]?.handle ? `/products/${products.value[0].handle}` : '/store',
+  products.value[0]?.handle
+    ? `/products/${products.value[0].handle}`
+    : '/store',
 )
 </script>
 
 <template>
   <section class="flex flex-col lg:flex-row">
-    <div class="relative h-[420px] w-full lg:h-[760px] lg:w-[740px] lg:shrink-0">
+    <div
+      class="relative h-[420px] w-full lg:h-[760px] lg:w-[740px] lg:shrink-0"
+    >
       <NuxtImg
         src="/images/home/shop-the-look.jpg"
         :alt="$t('pages.home.shopTheLook.imageAlt')"
@@ -42,26 +47,36 @@ const shopSetLink = computed(() =>
         class="size-full object-cover"
         loading="lazy"
       />
-      <div class="absolute left-8 top-[30px] flex items-center gap-2.5 bg-color-paper px-3 py-2.5">
+      <div
+        class="absolute left-8 top-[30px] flex items-center gap-2.5 bg-color-paper px-3 py-2.5"
+      >
         <span class="h-px w-[30px] bg-color-ink" />
         <p class="text-[10px] text-color-ink">
           {{ $t('pages.home.shopTheLook.captionLabel', { title }) }}
         </p>
       </div>
-      <p
-        class="absolute bottom-10 left-8 text-[10px] text-color-ink"
-      >
+      <p class="absolute bottom-10 left-8 text-[10px] text-color-ink">
         {{ $t('pages.home.shopTheLook.bottomTagline') }}
       </p>
     </div>
 
-    <div class="flex flex-1 flex-col gap-6 bg-color-accent px-6 py-10 lg:gap-[25px] lg:px-16 lg:py-[52px]">
-      <p class="text-[10px] text-[#dbddd3]">{{ $t('pages.home.shopTheLook.eyebrow') }}</p>
-      <h2 class="font-serif text-4xl leading-[0.98] text-color-paper lg:text-[56px]">
-        <span class="block">{{ $t('pages.home.shopTheLook.headlineLine1') }}</span>
-        <span class="block">{{ $t('pages.home.shopTheLook.headlineLine2') }}</span>
+    <div
+      class="flex flex-1 flex-col gap-6 bg-color-accent px-6 py-10 lg:gap-[25px] lg:px-16 lg:py-[52px]"
+    >
+      <p class="text-[10px] text-color-sage">
+        {{ $t('pages.home.shopTheLook.eyebrow') }}
+      </p>
+      <h2
+        class="font-serif text-4xl leading-[0.98] text-color-paper lg:text-[56px]"
+      >
+        <span class="block">{{
+          $t('pages.home.shopTheLook.headlineLine1')
+        }}</span>
+        <span class="block">{{
+          $t('pages.home.shopTheLook.headlineLine2')
+        }}</span>
       </h2>
-      <p class="text-[13px] leading-[1.7] text-[#dbddd3]">
+      <p class="text-[13px] leading-[1.7] text-color-sage">
         {{ $t('pages.home.shopTheLook.description') }}
       </p>
 
@@ -72,16 +87,21 @@ const shopSetLink = computed(() =>
           :to="`/products/${product.handle}`"
           class="flex items-center gap-[18px] border-t border-[rgba(250,248,244,0.24)] py-[18px]"
         >
-          <p class="font-serif text-2xl text-[#dbddd3] lg:text-[26px]">
+          <p class="font-serif text-2xl text-color-sage lg:text-[26px]">
             {{ String(index + 1).padStart(2, '0') }}
           </p>
           <p class="flex-1 text-[13px] text-color-paper">{{ product.title }}</p>
           <StoreLocalizedPrice
             :amount="getCheapestVariantPriceAmount(product)"
-            :currency-code="getCheapestVariant(product)?.calculated_price?.currency_code"
+            :currency-code="
+              getCheapestVariant(product)?.calculated_price?.currency_code
+            "
             class="text-xs text-color-paper"
           />
-          <UIcon name="i-lucide-arrow-up-right" class="size-4 shrink-0 text-color-paper" />
+          <UIcon
+            name="i-lucide-arrow-up-right"
+            class="size-4 shrink-0 text-color-paper"
+          />
         </AppLink>
       </div>
 
@@ -94,7 +114,9 @@ const shopSetLink = computed(() =>
           <UIcon name="i-lucide-arrow-right" class="size-[18px]" />
         </AppLink>
         <div class="flex flex-col items-end gap-1 text-right">
-          <p class="text-[10px] text-[#dbddd3]">{{ $t('pages.home.shopTheLook.totalLabel') }}</p>
+          <p class="text-[10px] text-color-sage">
+            {{ $t('pages.home.shopTheLook.totalLabel') }}
+          </p>
           <StoreLocalizedPrice
             :amount="total"
             :currency-code="currencyCode"
@@ -103,7 +125,9 @@ const shopSetLink = computed(() =>
         </div>
       </div>
 
-      <p class="text-[10px] text-[#dbddd3]">{{ $t('pages.home.shopTheLook.sizeHint') }}</p>
+      <p class="text-[10px] text-color-sage">
+        {{ $t('pages.home.shopTheLook.sizeHint') }}
+      </p>
     </div>
   </section>
 </template>

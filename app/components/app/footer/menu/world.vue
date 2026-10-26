@@ -9,12 +9,22 @@
     <p class="text-[10px] text-color-paper">
       {{ $t('app.footer.world.heading') }}
     </p>
-    <ul class="flex flex-col gap-y-5 text-xs text-[#dbddd3]">
-      <li><AppLink to="/store">{{ $t('app.footer.world.about') }}</AppLink></li>
-      <li><AppLink to="/store">{{ $t('app.footer.world.studio') }}</AppLink></li>
-      <li><AppLink to="/#journal">{{ $t('app.footer.world.journal') }}</AppLink></li>
-      <li><AppLink to="/store">{{ $t('app.footer.world.materials') }}</AppLink></li>
-      <li><AppLink to="/store">{{ $t('app.footer.world.careers') }}</AppLink></li>
+    <ul class="flex flex-col gap-y-5 text-xs text-color-sage">
+      <li>
+        <AppLink to="/store">{{ $t('app.footer.world.about') }}</AppLink>
+      </li>
+      <li>
+        <AppLink to="/store">{{ $t('app.footer.world.studio') }}</AppLink>
+      </li>
+      <li>
+        <AppLink to="/#journal">{{ $t('app.footer.world.journal') }}</AppLink>
+      </li>
+      <li>
+        <AppLink to="/store">{{ $t('app.footer.world.materials') }}</AppLink>
+      </li>
+      <li>
+        <AppLink to="/store">{{ $t('app.footer.world.careers') }}</AppLink>
+      </li>
     </ul>
   </div>
 </template>
