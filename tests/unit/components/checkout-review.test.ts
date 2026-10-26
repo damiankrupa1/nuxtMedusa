@@ -221,6 +221,24 @@ describe('checkout review component', () => {
     expect(placeOrder).toHaveBeenCalledTimes(2)
   })
 
+  it('takes the payment for a session whose PaymentIntent has no id', async () => {
+    stripe.confirmBlikPayment.mockResolvedValue({
+      paymentIntent: { status: 'succeeded' },
+    })
+    const wrapper = await mountReview('pp_stripe-blik_stripe', {
+      data: { client_secret: 'pi_1_secret' },
+    })
+
+    expect(wrapper.find('button').attributes('disabled')).toBeDefined()
+
+    await wrapper.find('input.blik-code').setValue('123456')
+    await wrapper.find('button').trigger('click')
+    await flushPromises()
+
+    expect(stripe.confirmBlikPayment).toHaveBeenCalledTimes(1)
+    expect(placeOrder).toHaveBeenCalledTimes(1)
+  })
+
   it('redirects to Przelewy24 instead of placing the order', async () => {
     stripe.confirmP24Payment.mockResolvedValue({})
     const wrapper = await mountReview('pp_stripe-przelewy24_stripe')
