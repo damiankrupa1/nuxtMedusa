@@ -3,14 +3,23 @@ const { title, shopTheLookProductHandles } = useAppConfig()
 
 // Hand-picked handles resolved to real products — see app.config.ts and the
 // missing-cms-content skill for why this grouping is editorial curation.
-const results = await Promise.all(
+// Falls back to this static list when Payload has no ShopTheLook global
+// yet, none of its productHandles still resolve to a real Medusa product,
+// or it's unreachable. Both are fetched in parallel (3 products either
+// way) so neither path adds extra latency to the other.
+const { data: shopTheLook } = useFetchShopTheLook()
+const cms = computed(() => shopTheLook.value ?? null)
+
+const fallbackResults = await Promise.all(
   (shopTheLookProductHandles as string[]).map((handle) =>
     useFetchProductByHandle(handle),
   ),
 )
-const products = computed(() =>
-  results.map((result) => result.data.value).filter((p) => p !== null),
+const fallbackProducts = computed(() =>
+  fallbackResults.map((result) => result.data.value).filter((p) => p !== null),
 )
+
+const products = computed(() => cms.value?.products ?? fallbackProducts.value)
 
 const total = computed(() =>
   products.value.reduce(
@@ -33,7 +42,15 @@ const shopSetLink = computed(() =>
 <template>
   <section class="flex flex-col lg:flex-row">
     <div class="relative h-[420px] w-full lg:h-[760px] lg:w-[740px] lg:shrink-0">
+      <img
+        v-if="cms"
+        :src="cms.image.url"
+        :alt="cms.image.alt"
+        class="size-full object-cover"
+        loading="lazy"
+      >
       <NuxtImg
+        v-else
         src="/images/home/shop-the-look.jpg"
         :alt="$t('pages.home.shopTheLook.imageAlt')"
         width="1024"
@@ -45,24 +62,26 @@ const shopSetLink = computed(() =>
       <div class="absolute left-8 top-[30px] flex items-center gap-2.5 bg-color-paper px-3 py-2.5">
         <span class="h-px w-[30px] bg-color-ink" />
         <p class="text-[10px] text-color-ink">
-          {{ $t('pages.home.shopTheLook.captionLabel', { title }) }}
+          {{ cms?.captionLabel ?? $t('pages.home.shopTheLook.captionLabel', { title }) }}
         </p>
       </div>
       <p
         class="absolute bottom-10 left-8 text-[10px] text-color-ink"
       >
-        {{ $t('pages.home.shopTheLook.bottomTagline') }}
+        {{ cms?.bottomTagline ?? $t('pages.home.shopTheLook.bottomTagline') }}
       </p>
     </div>
 
     <div class="flex flex-1 flex-col gap-6 bg-color-accent px-6 py-10 lg:gap-[25px] lg:px-16 lg:py-[52px]">
-      <p class="text-[10px] text-[#dbddd3]">{{ $t('pages.home.shopTheLook.eyebrow') }}</p>
+      <p class="text-[10px] text-[#dbddd3]">
+        {{ cms?.eyebrow ?? $t('pages.home.shopTheLook.eyebrow') }}
+      </p>
       <h2 class="font-serif text-4xl leading-[0.98] text-color-paper lg:text-[56px]">
-        <span class="block">{{ $t('pages.home.shopTheLook.headlineLine1') }}</span>
-        <span class="block">{{ $t('pages.home.shopTheLook.headlineLine2') }}</span>
+        <span class="block">{{ cms?.headlineLine1 ?? $t('pages.home.shopTheLook.headlineLine1') }}</span>
+        <span class="block">{{ cms?.headlineLine2 ?? $t('pages.home.shopTheLook.headlineLine2') }}</span>
       </h2>
       <p class="text-[13px] leading-[1.7] text-[#dbddd3]">
-        {{ $t('pages.home.shopTheLook.description') }}
+        {{ cms?.description ?? $t('pages.home.shopTheLook.description') }}
       </p>
 
       <div class="flex flex-col">
@@ -90,11 +109,13 @@ const shopSetLink = computed(() =>
           :to="shopSetLink"
           class="flex h-12 items-center gap-7 bg-color-paper px-6 text-xs font-medium text-color-ink"
         >
-          {{ $t('pages.home.shopTheLook.shopSetCta') }}
+          {{ cms?.shopSetCtaLabel ?? $t('pages.home.shopTheLook.shopSetCta') }}
           <UIcon name="i-lucide-arrow-right" class="size-[18px]" />
         </AppLink>
         <div class="flex flex-col items-end gap-1 text-right">
-          <p class="text-[10px] text-[#dbddd3]">{{ $t('pages.home.shopTheLook.totalLabel') }}</p>
+          <p class="text-[10px] text-[#dbddd3]">
+            {{ cms?.totalLabel ?? $t('pages.home.shopTheLook.totalLabel') }}
+          </p>
           <StoreLocalizedPrice
             :amount="total"
             :currency-code="currencyCode"
@@ -103,7 +124,9 @@ const shopSetLink = computed(() =>
         </div>
       </div>
 
-      <p class="text-[10px] text-[#dbddd3]">{{ $t('pages.home.shopTheLook.sizeHint') }}</p>
+      <p class="text-[10px] text-[#dbddd3]">
+        {{ cms?.sizeHint ?? $t('pages.home.shopTheLook.sizeHint') }}
+      </p>
     </div>
   </section>
 </template>
