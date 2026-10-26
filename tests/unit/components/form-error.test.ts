@@ -37,4 +37,13 @@ describe('form-error component', () => {
 
     expect(wrapper.find('.u-alert').exists()).toBe(false)
   })
+
+  it('renders nothing when the message was cleared to null', () => {
+    const wrapper = mount(FormError, {
+      props: { show: true, message: null },
+      global: { stubs },
+    })
+
+    expect(wrapper.find('.u-alert').exists()).toBe(false)
+  })
 })
