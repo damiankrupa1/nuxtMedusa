@@ -47,10 +47,11 @@ const shopSetLink = computed(() =>
     <div
       class="relative h-[420px] w-full lg:h-[760px] lg:w-[740px] lg:shrink-0"
     >
-      <img
+      <NuxtImg
         v-if="cms"
         :src="cms.image.url"
         :alt="cms.image.alt"
+        sizes="100vw lg:51vw"
         class="size-full object-cover"
         loading="lazy"
       />

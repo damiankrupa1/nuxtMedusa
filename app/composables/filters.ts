@@ -1,4 +1,18 @@
+import type { LocationQuery } from 'vue-router'
 import { SORT_OPTIONS, type SortOptionsType } from '~/types/filter'
+
+// Shared by every query-param toggle below: set it when it's not the
+// default value, otherwise drop it so the URL doesn't carry redundant
+// params (e.g. no ?page=1 or ?sortBy=created_at).
+function setOrDeleteQueryParam(
+  query: LocationQuery,
+  key: string,
+  value: string,
+  isDefault: boolean,
+) {
+  if (isDefault) Reflect.deleteProperty(query, key)
+  else query[key] = value
+}
 
 export const useFilters = () => {
   const route = useRoute()
@@ -17,11 +31,7 @@ export const useFilters = () => {
     },
     set: (newPage: number) => {
       const newQuery = { ...route.query }
-      if (newPage === 1) {
-        delete newQuery.page
-      } else {
-        newQuery.page = newPage.toString()
-      }
+      setOrDeleteQueryParam(newQuery, 'page', newPage.toString(), newPage === 1)
       router.push({ query: newQuery })
     },
   })
@@ -32,11 +42,12 @@ export const useFilters = () => {
     },
     set: async (newSortBy: SortOptionsType) => {
       const newQuery = { ...route.query }
-      if (newSortBy === SORT_OPTIONS.CREATED_AT) {
-        delete newQuery.sortBy
-      } else {
-        newQuery.sortBy = newSortBy
-      }
+      setOrDeleteQueryParam(
+        newQuery,
+        'sortBy',
+        newSortBy,
+        newSortBy === SORT_OPTIONS.CREATED_AT,
+      )
       await router.push({ query: newQuery })
       nextTick(() => {
         pageNumber.value = 1

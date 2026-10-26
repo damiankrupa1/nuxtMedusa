@@ -1,3 +1,15 @@
+// Payload's image URLs are on a separate host from this app; @nuxt/image
+// needs it allow-listed to run them through its own image optimizer —
+// without this, NuxtImg silently falls back to serving them unoptimized.
+const payloadImageDomain = (() => {
+  if (!process.env.NUXT_PUBLIC_PAYLOAD_URL) return undefined
+  try {
+    return new URL(process.env.NUXT_PUBLIC_PAYLOAD_URL).hostname
+  } catch {
+    return undefined
+  }
+})()
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   // TODO(#11): SEO — sitemap with products per country, robots.txt rules
@@ -99,6 +111,10 @@ export default defineNuxtConfig({
     // the country flags picked at runtime. The rest is bundled per icon.
     serverBundle: { collections: ['lucide', 'flag'] },
     clientBundle: { scan: true },
+  },
+
+  image: {
+    domains: payloadImageDomain ? [payloadImageDomain] : [],
   },
 
   medusa: {

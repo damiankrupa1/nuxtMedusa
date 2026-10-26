@@ -118,10 +118,11 @@ watch(slides, () => {
     </div>
 
     <div class="relative min-h-[420px] flex-1 lg:min-h-0">
-      <img
+      <NuxtImg
         v-if="activeSlide"
         :src="activeSlide.image.url"
         :alt="activeSlide.image.alt"
+        sizes="100vw lg:60vw"
         class="size-full object-cover"
         loading="lazy"
       />
