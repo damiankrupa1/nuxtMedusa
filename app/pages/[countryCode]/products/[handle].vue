@@ -9,6 +9,9 @@ const handle = computed(() => route.params.handle)
 const { data: product, status } = await useFetchProductByHandle(handle.value)
 useNotFoundWhenMissing(product, status, 'Product not found')
 
+const { canonicalUrl } = useCountrySeoLinks(() => !!product.value)
+useProductJsonLd(product, canonicalUrl)
+
 useSeoMeta({
   title: () => product.value?.title,
   description: () => product.value?.description ?? undefined,

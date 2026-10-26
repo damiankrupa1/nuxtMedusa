@@ -8,6 +8,7 @@ const route = useRoute('countryCode-categories-handle')
 const handle = computed(() => route.params.handle)
 const { data: category, status } = await useFetchCategoryByHandle(handle.value)
 useNotFoundWhenMissing(category, status, 'Category not found')
+useCountrySeoLinks(() => !!category.value)
 
 useSeoMeta({
   title: () => category.value?.name,

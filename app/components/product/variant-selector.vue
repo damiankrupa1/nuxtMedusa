@@ -52,28 +52,9 @@ const isValidVariant = computed(() => {
   )
 })
 
-const inStock = computed(() => {
-  // If we don't manage inventory, we can always add to cart
-  if (selectedVariant.value && !selectedVariant.value.manage_inventory) {
-    return true
-  }
-
-  // If we allow back orders on the variant, we can add to cart
-  if (selectedVariant.value?.allow_backorder) {
-    return true
-  }
-
-  // If there is inventory available, we can add to cart
-  if (
-    selectedVariant.value?.manage_inventory &&
-    (selectedVariant.value?.inventory_quantity || 0) > 0
-  ) {
-    return true
-  }
-
-  // Otherwise, we can't add to cart
-  return false
-})
+const inStock = computed(
+  () => !!selectedVariant.value && isVariantInStock(selectedVariant.value),
+)
 
 const { t } = useI18n()
 

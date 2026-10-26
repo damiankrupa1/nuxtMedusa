@@ -12,16 +12,13 @@ const payloadImageDomain = (() => {
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  // TODO(#11): SEO — sitemap with products per country, robots.txt rules
-  // (public/robots.txt is empty), canonical + hreflang between the country
-  // versions of a page, Product structured data. Use @nuxtjs/sitemap and
-  // nuxt-schema-org, or @nuxtjs/seo without nuxt-og-image (too heavy).
   modules: [
     '@nuxtjs/medusa',
     '@nuxt/ui',
     '@nuxt/image',
     '@nuxt/eslint',
     '@nuxtjs/i18n',
+    '@nuxtjs/sitemap',
   ],
 
   devtools: { enabled: true },
@@ -122,5 +119,15 @@ export default defineNuxtConfig({
     baseUrl: process.env.NUXT_PUBLIC_MEDUSA_BACKEND_URL,
     publishableKey: process.env.NUXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
     server: true,
+  },
+
+  // /sitemap.xml lists only the Medusa-backed catalog pages of every country
+  // (server/api/__sitemap__/urls.get.ts). The pages/ scan is off: it can't
+  // expand [countryCode]/[handle] and would only add `/`, a redirect.
+  // Absolute URLs use NUXT_PUBLIC_SITE_URL (nuxt-site-config), else the
+  // request origin.
+  sitemap: {
+    excludeAppSources: true,
+    sources: ['/api/__sitemap__/urls'],
   },
 })
