@@ -4,31 +4,31 @@ export const buildAddressSchema = (t: (key: string) => string) =>
   z.object({
     shipping_address: z.object({
       first_name: z
-        .string({ required_error: t('validation.firstNameRequired') })
+        .string({ error: t('validation.firstNameRequired') })
         .min(1, t('validation.firstNameRequired')),
       last_name: z
-        .string({ required_error: t('validation.lastNameRequired') })
+        .string({ error: t('validation.lastNameRequired') })
         .min(1, t('validation.lastNameRequired')),
       address_1: z
-        .string({ required_error: t('validation.addressRequired') })
+        .string({ error: t('validation.addressRequired') })
         .min(1, t('validation.addressRequired')),
       address_2: z.string().optional(),
       company: z.string().optional(),
       postal_code: z
-        .string({ required_error: t('validation.postalCodeRequired') })
+        .string({ error: t('validation.postalCodeRequired') })
         .min(1, t('validation.postalCodeRequired')),
       city: z
-        .string({ required_error: t('validation.cityRequired') })
+        .string({ error: t('validation.cityRequired') })
         .min(1, t('validation.cityRequired')),
       country_code: z
-        .string({ required_error: t('validation.countryRequired') })
+        .string({ error: t('validation.countryRequired') })
         .min(1, t('validation.countryRequired')),
       province: z.string().optional(),
       phone: z.string().optional(),
     }),
     email: z
-      .string({ required_error: t('validation.emailRequired') })
-      .email(t('validation.emailInvalid')),
+      .string({ error: t('validation.emailRequired') })
+      .pipe(z.email(t('validation.emailInvalid'))),
     billing_address: z.object({
       first_name: z.string().optional(),
       last_name: z.string().optional(),
@@ -43,10 +43,10 @@ export const buildAddressSchema = (t: (key: string) => string) =>
     }),
   })
 
-export type Schema = z.infer<ReturnType<typeof buildAddressSchema>>
+export type AddressSchema = z.infer<ReturnType<typeof buildAddressSchema>>
 
-export interface PartialSchema {
-  shipping_address: Partial<Schema['shipping_address']>
-  email?: Schema['email']
-  billing_address: Partial<Schema['billing_address']>
+export interface AddressFormState {
+  shipping_address: Partial<AddressSchema['shipping_address']>
+  email?: AddressSchema['email']
+  billing_address: Partial<AddressSchema['billing_address']>
 }

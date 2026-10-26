@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type { StoreCartResponse } from '@medusajs/types'
 import type { FormSubmitEvent } from '#ui/types'
-import { buildAddressSchema, type PartialSchema } from '~/types/checkout'
+import { buildAddressSchema, type AddressFormState } from '~/types/checkout'
 
 const emit = defineEmits<{
   validate: [boolean]
@@ -17,7 +17,7 @@ const { t } = useI18n()
 
 const schema = computed(() => buildAddressSchema(t))
 
-const state = reactive<PartialSchema>({
+const state = reactive<AddressFormState>({
   shipping_address: {
     first_name: cart.value?.shipping_address?.first_name || undefined,
     last_name: cart.value?.shipping_address?.last_name || undefined,
@@ -49,7 +49,7 @@ const sameAsBilling = ref(
   compareAddresses(cart.value?.shipping_address, cart.value?.billing_address),
 )
 
-async function onSubmit(event: FormSubmitEvent<PartialSchema>) {
+async function onSubmit(event: FormSubmitEvent<AddressFormState>) {
   if (sameAsBilling.value)
     event.data.billing_address = event.data.shipping_address
 
