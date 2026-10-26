@@ -1,5 +1,6 @@
 import { countryRepository } from '~/repository/country.repository'
 import { getCountriesFromRegions } from '~/utils/country'
+import type { BaseRegionCountryWithRegionId } from '~/types/country'
 
 export const useCountry = () => {
   const countryCodeFromCookie = useCookie('country_code', {

@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import type { TabKey } from '~/types/home'
+
 const { t } = useI18n()
 const { women, men } = await useDepartmentCategories()
 
-type TabKey = 'women' | 'men' | 'studio'
 const activeTab = ref<TabKey>('women')
 
 const tabs: { key: TabKey; labelKey: string }[] = [
@@ -27,11 +28,19 @@ const isLoading = computed(() => status.value === 'pending')
 </script>
 
 <template>
-  <section class="flex flex-col gap-[30px] px-6 pb-20 pt-16 md:px-16 md:pt-[72px]">
-    <div class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
+  <section
+    class="flex flex-col gap-[30px] px-6 pb-20 pt-16 md:px-16 md:pt-[72px]"
+  >
+    <div
+      class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end"
+    >
       <div class="flex flex-col gap-2.5">
-        <p class="text-[10px] text-color-muted">{{ $t('pages.home.newArrivals.eyebrow') }}</p>
-        <h2 class="font-serif text-4xl leading-[1.05] text-color-ink md:text-[48px]">
+        <p class="text-[10px] text-color-muted">
+          {{ $t('pages.home.newArrivals.eyebrow') }}
+        </p>
+        <h2
+          class="font-serif text-4xl leading-[1.05] text-color-ink md:text-[48px]"
+        >
           {{ $t('pages.home.newArrivals.heading') }}
         </h2>
       </div>
@@ -50,7 +59,11 @@ const isLoading = computed(() => status.value === 'pending')
         :key="tab.key"
         type="button"
         class="flex flex-col gap-2 text-xs"
-        :class="activeTab === tab.key ? 'font-medium text-color-ink' : 'text-color-muted'"
+        :class="
+          activeTab === tab.key
+            ? 'font-medium text-color-ink'
+            : 'text-color-muted'
+        "
         @click="activeTab = tab.key"
       >
         {{ $t(tab.labelKey) }}
@@ -64,7 +77,10 @@ const isLoading = computed(() => status.value === 'pending')
       :badge="t('pages.home.newArrivals.badge')"
       with-save-icon
     />
-    <ul v-else class="grid w-full grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 md:grid-cols-4">
+    <ul
+      v-else
+      class="grid w-full grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 md:grid-cols-4"
+    >
       <li v-for="n in 4" :key="n">
         <ProductCard with-save-icon />
       </li>

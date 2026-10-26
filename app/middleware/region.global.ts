@@ -1,3 +1,5 @@
+import type { BaseRegionCountryWithRegionId } from '~/types/country'
+
 export default defineNuxtRouteMiddleware(async (to) => {
   const urlCountryCode = to.path.split('/')[1] || undefined
   const { defaultCountry: defaultCountryCode } = useAppConfig()

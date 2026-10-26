@@ -7,7 +7,7 @@ import {
   isInpostShippingOption,
   toInpostShippingData,
 } from '~/utils/inpost'
-import type { InpostPoint } from '~/utils/inpost'
+import type { InpostPoint } from '~/types/inpost'
 
 describe('inpost utils', () => {
   const makeOption = (

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { StoreCartResponse } from '@medusajs/types'
-import type { InpostPoint } from '~/utils/inpost'
+import type { InpostPoint } from '~/types/inpost'
 import { useFetchShippingOptions } from '~/composables/payment'
 
 const emit = defineEmits<{

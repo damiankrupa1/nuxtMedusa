@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 
 import CheckoutDeliveryInpost from '~/components/checkout/delivery/inpost/index.vue'
-import type { InpostPoint } from '~/utils/inpost'
+import type { InpostPoint } from '~/types/inpost'
 
 describe('checkout delivery inpost component', () => {
   const PickerStub = {

@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import type { InpostPoint } from '~/utils/inpost'
-
-interface InpostGeowidgetInitDetail {
-  api: {
-    addPointSelectedCallback: (callback: (point: InpostPoint) => void) => void
-  }
-}
+import type { InpostPoint, InpostGeowidgetInitDetail  } from '~/types/inpost'
 
 const emit = defineEmits<{
   select: [point: InpostPoint]
