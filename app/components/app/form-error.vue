@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 defineProps<{
-  message?: string | null
+  message?: string
   show?: boolean
 }>()
 </script>

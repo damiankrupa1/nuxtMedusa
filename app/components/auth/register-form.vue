@@ -35,10 +35,10 @@ const form = ref<FormType>({
   password: '',
 })
 
-const formError = ref<string | null>(null)
+const formError = ref<string | undefined>(undefined)
 
 const onSubmit = async (_event: FormSubmitEvent<FormType>) => {
-  formError.value = null
+  formError.value = undefined
 
   try {
     const customerData: RegisterCustomerData = {
