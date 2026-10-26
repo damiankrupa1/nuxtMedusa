@@ -34,23 +34,13 @@ const isLoading = computed(() => status.value === 'pending')
     <div
       class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end"
     >
-      <div class="flex flex-col gap-2.5">
-        <p class="text-[10px] text-color-muted">
-          {{ $t('pages.home.newArrivals.eyebrow') }}
-        </p>
-        <h2
-          class="font-serif text-4xl leading-[1.05] text-color-ink md:text-[48px]"
-        >
-          {{ $t('pages.home.newArrivals.heading') }}
-        </h2>
-      </div>
-      <AppLink
-        to="/store"
-        class="flex items-center gap-4 border-b border-color-ink pb-2 text-[13px] text-color-ink"
-      >
+      <AppSectionIntro
+        :eyebrow="$t('pages.home.newArrivals.eyebrow')"
+        :heading="$t('pages.home.newArrivals.heading')"
+      />
+      <AppLinkButton to="/store">
         {{ $t('pages.home.newArrivals.viewAll') }}
-        <UIcon name="i-lucide-arrow-up-right" class="size-4" />
-      </AppLink>
+      </AppLinkButton>
     </div>
 
     <div class="flex items-center gap-6">

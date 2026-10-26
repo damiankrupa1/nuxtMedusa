@@ -75,6 +75,14 @@ body {
   background-color: var(--color-ink);
 }
 
+@utility border-color-ink {
+  border-color: var(--color-ink);
+}
+
+@utility bg-color-accent {
+  background-color: var(--color-accent);
+}
+
 @utility bg-color-paper {
   background-color: var(--color-paper);
 }

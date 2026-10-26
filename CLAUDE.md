@@ -35,8 +35,8 @@ Copy `.env.template` to `.env` and set:
 
 ### Git hooks (husky)
 
-- `pre-commit` runs `pnpm lint` and blocks the commit on failure; `lint-staged` also runs `eslint --fix`/`prettier --write` on staged `*.{js,ts,vue}` and `prettier --write` on `*.{json,css,scss,md}`.
-- `commit-msg` runs commitlint (`@commitlint/config-conventional` + `commitlint.config.js`). Commit subjects must use `type: description` with `type` restricted to `feat|fix|refactor|docs|style|test|build`, a non-empty subject, max 72 chars.
+- `pre-commit` runs `pnpm lint` (`eslint .` on the whole project, not only staged files) and blocks the commit on failure. That is all it does: `package.json` has a `lint-staged` config (`eslint --fix` + `prettier --write` on `*.{js,ts,vue}`, `prettier --write` on `*.{json,css,scss,md}`), but no hook calls it, so nothing formats or auto-fixes staged files. Run `pnpm format:check` / `prettier --write <files>` yourself.
+- `commit-msg` runs commitlint (`@commitlint/config-conventional` + `commitlint.config.js`). Commit subjects must use `type: description` with `type` restricted to `feat|fix|refactor|docs|style|test|build`, a non-empty subject, max 72 chars. The hook prints commitlint's errors but does not block the commit (the script ends without `exit 1`, so it always exits 0), so check its output yourself.
 
 ## Architecture
 

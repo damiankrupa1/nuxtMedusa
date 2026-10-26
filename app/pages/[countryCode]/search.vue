@@ -37,11 +37,9 @@ useSeoMeta({
       </nav>
 
       <div class="flex flex-col items-center gap-[22px] py-9 text-center">
-        <h1
-          class="font-serif text-4xl leading-[1.05] text-color-ink md:text-5xl lg:text-[56px]"
-        >
+        <AppHeading as="h1" variant="display" size="lg">
           {{ $t('pages.search.heading') }}
-        </h1>
+        </AppHeading>
         <form
           class="flex h-14 w-full max-w-[680px] items-center gap-4 border border-color-ink bg-white pl-5 pr-1.5"
           @submit.prevent="submitSearch"
@@ -64,13 +62,13 @@ useSeoMeta({
             class="shrink-0"
             @click="clearSearch"
           />
-          <button
+          <AppButtonPrimary
             type="submit"
-            class="flex h-11 shrink-0 items-center gap-[22px] bg-color-ink px-6 text-xs text-color-paper"
+            trailing-icon="i-lucide-arrow-right"
+            class="shrink-0"
           >
             {{ $t('pages.search.submit') }}
-            <UIcon name="i-lucide-arrow-right" class="size-[18px]" />
-          </button>
+          </AppButtonPrimary>
         </form>
       </div>
     </UContainer>
