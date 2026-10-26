@@ -132,6 +132,36 @@ describe('checkout review component', () => {
     expect(placeOrder).toHaveBeenCalledTimes(1)
   })
 
+  it('announces card field errors and completion, keeping the button in step', async () => {
+    const wrapper = await mountReview('pp_stripe_stripe')
+    const onCardChange = card.on.mock.calls[0]?.[1] as (event: {
+      complete: boolean
+      error?: { message: string }
+    }) => void
+    const status = wrapper.find('[role="status"]')
+    const alerts = () => wrapper.findAll('[role="alert"]').map((r) => r.text())
+
+    // Both regions exist before Stripe reports anything.
+    expect(status.text()).toBe('')
+    expect(alerts()).toContain('')
+
+    onCardChange({
+      complete: false,
+      error: { message: 'Your card number is invalid.' },
+    })
+    await nextTick()
+    expect(alerts()).toContain('Your card number is invalid.')
+    expect(status.text()).toBe('')
+    expect(wrapper.find('button').attributes('disabled')).toBeDefined()
+
+    onCardChange({ complete: true })
+    await nextTick()
+    expect(alerts()).not.toContain('Your card number is invalid.')
+    expect(wrapper.find('[role="status"]').element).toBe(status.element)
+    expect(status.text()).toBe('checkout.review.cardComplete')
+    expect(wrapper.find('button').attributes('disabled')).toBeUndefined()
+  })
+
   it('asks for a 6-digit BLIK code instead of a card', async () => {
     const wrapper = await mountReview('pp_stripe-blik_stripe')
 
