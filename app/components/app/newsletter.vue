@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '#ui/types'
+import type AppStatusMessage from '~/components/app/status-message.vue'
 import {
   buildNewsletterSchema,
   createNewsletterForm,
@@ -13,11 +14,15 @@ const schema = computed(() => buildNewsletterSchema(t))
 
 const state = reactive(createNewsletterForm())
 const submitted = ref(false)
+const successMessage = ref<InstanceType<typeof AppStatusMessage> | null>(null)
 
 // No newsletter backend/composable exists in this codebase — see
 // missing-medusa-api-data skill. Presentational only, no network call.
-const onSubmit = (_event: FormSubmitEvent<NewsletterForm>) => {
+const onSubmit = async (_event: FormSubmitEvent<NewsletterForm>) => {
   submitted.value = true
+  // The form, and the submit button that had focus, is gone now.
+  await nextTick()
+  successMessage.value?.focus()
 }
 </script>
 
@@ -25,26 +30,22 @@ const onSubmit = (_event: FormSubmitEvent<NewsletterForm>) => {
   <section
     class="flex flex-col gap-10 bg-color-stone px-6 py-14 md:flex-row md:gap-[100px] md:px-24 md:py-[72px]"
   >
-    <div class="flex flex-col gap-[19px] md:w-[530px] md:shrink-0">
-      <p class="text-[10px] text-color-ink">
-        {{ $t('app.newsletter.eyebrow', { title }) }}
-      </p>
-      <h2
-        class="font-serif text-4xl leading-none text-color-ink md:text-[51px]"
-      >
-        {{ $t('app.newsletter.heading') }}
-      </h2>
-      <p class="text-[13px] leading-[1.7] text-color-muted">
-        {{ $t('app.newsletter.description') }}
-      </p>
-    </div>
+    <AppSectionIntro
+      :eyebrow="$t('app.newsletter.eyebrow', { title })"
+      :heading="$t('app.newsletter.heading')"
+      class="md:w-[530px] md:shrink-0"
+    >
+      {{ $t('app.newsletter.description') }}
+    </AppSectionIntro>
 
-    <div class="flex flex-1 flex-col gap-[22px]">
-      <p v-if="submitted" class="text-sm text-color-ink">
-        {{ $t('app.newsletter.success') }}
-      </p>
+    <div class="flex-1">
+      <AppStatusMessage
+        ref="successMessage"
+        type="success"
+        :message="submitted ? $t('app.newsletter.success') : null"
+      />
       <UForm
-        v-else
+        v-if="!submitted"
         v-slot="formSlot"
         :schema="schema"
         :state="state"
@@ -63,13 +64,18 @@ const onSubmit = (_event: FormSubmitEvent<NewsletterForm>) => {
               }"
             />
           </UFormField>
-          <button
+          <UButton
             type="submit"
-            class="flex shrink-0 items-center gap-2 text-[11px] font-medium text-color-ink"
-          >
-            {{ $t('app.newsletter.submit') }}
-            <UIcon name="i-lucide-arrow-right" class="size-[21px]" />
-          </button>
+            variant="link"
+            color="neutral"
+            loading-auto
+            trailing-icon="i-lucide-arrow-right"
+            :label="$t('app.newsletter.submit')"
+            :ui="{
+              base: 'shrink-0 gap-2 p-0 text-[11px] text-color-ink hover:text-color-ink',
+              trailingIcon: 'size-[21px]',
+            }"
+          />
         </div>
 
         <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
@@ -90,29 +96,31 @@ const onSubmit = (_event: FormSubmitEvent<NewsletterForm>) => {
           />
         </div>
 
-        <UFormField name="consent" :ui="{ error: 'sr-only' }">
-          <UCheckbox
-            v-model="state.consent"
-            size="xs"
-            :ui="{
-              wrapper: 'ms-2.5',
-              label: 'font-normal text-[10px] leading-[1.7] text-color-muted',
-            }"
-          >
-            <template #label>
-              {{ $t('app.newsletter.consentPrefix', { title }) }}
-              <AppLink to="/store" class="underline">{{
-                $t('app.newsletter.privacyPolicy')
-              }}</AppLink>
-              {{ $t('app.newsletter.consentSuffix') }}
-            </template>
-          </UCheckbox>
-        </UFormField>
-
-        <AppFormError
-          :show="!!formSlot?.errors?.length"
-          :message="formSlot?.errors?.[0]?.message"
-        />
+        <div>
+          <UFormField name="consent" :ui="{ error: 'sr-only' }">
+            <UCheckbox
+              v-model="state.consent"
+              size="xs"
+              :ui="{
+                wrapper: 'ms-2.5',
+                label: 'font-normal text-[10px] leading-[1.7] text-color-muted',
+              }"
+            >
+              <template #label>
+                {{ $t('app.newsletter.consentPrefix', { title }) }}
+                <AppLink to="/store" class="underline">{{
+                  $t('app.newsletter.privacyPolicy')
+                }}</AppLink>
+                {{ $t('app.newsletter.consentSuffix') }}
+              </template>
+            </UCheckbox>
+          </UFormField>
+          <AppStatusMessage
+            type="error"
+            class="mt-[22px]"
+            :message="formSlot?.errors?.[0]?.message ?? null"
+          />
+        </div>
       </UForm>
     </div>
   </section>
