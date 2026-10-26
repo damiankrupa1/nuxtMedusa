@@ -13,8 +13,8 @@ export const useUserCart = () => {
     maxAge: 60 * 60 * 24 * 90,
   })
 
+  // Without an id the cookie is removed
   const setCartId = (cartId?: string) => {
-    if (!cartId) cartIdCookie.value = null
     cartIdCookie.value = cartId
   }
 
