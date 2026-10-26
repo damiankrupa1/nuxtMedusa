@@ -14,5 +14,10 @@ export default defineAppConfig({
       primary: 'blue',
       neutral: 'zinc',
     },
+    checkbox: {
+      defaultVariants: {
+        color: 'neutral',
+      },
+    },
   },
 })

@@ -33,6 +33,8 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 - A bare native element (`<button>`, `<input>`, `<form>`) is fine for a one-off control that is fully custom per design and has no validation/loading/error state to participate in (a tab switcher, a mobile-menu toggle, a cosmetic search-bar row). Forcing the Nuxt UI component there mostly means fighting its own opinionated base classes (padding, rounded, ring) for no behavioral gain.
 - `UForm`'s own theme base is empty (`{ base: "" }`) — it never conflicts with custom styling, so use it (with a `zod` schema) whenever a form has real validation rules, even if its fields stay visually bespoke.
 - `UFormField` only earns its keep when a child actually calls `useFormField()` (a Nuxt UI input component), which is what wires `aria-describedby`/`aria-invalid`/error-color/auto-disable-while-submitting. Wrapping a raw native `<input>`/`<label>` in `UFormField` for its scoped `error` alone adds a layer with no consumer — read the `errors` off `UForm`'s own default slot instead for that case (see the Volar gotcha below for how to bind it without a type error).
+- Checkboxes are `UCheckbox` — never `UInput type="checkbox"` (`UInput`'s theme is for text fields) and not a native `<input type="checkbox">` inside a `UForm`. Use `UCheckbox` for every checkbox in a form, validated or not, so they look and behave the same; a native checkbox also ignores Tailwind border/color classes because its `appearance` is not reset. Put a link inside the label through the `#label` slot.
+- An app-wide default for a Nuxt UI component (e.g. every checkbox is `neutral`, because `primary` is blue and nothing in the design is) goes in `app/app.config.ts` under `ui.<component>.defaultVariants`, not as a repeated prop on each usage and not as a wrapper component.
 - When a visual pattern (icon-only toggle, primary CTA, link-with-icon, etc.) repeats 3+ times, extract a small `app/components/app/*.vue` wrapper around the Nuxt UI component (see `button-primary.vue`, `link-button.vue`, `icon-button.vue`, `form-error.vue`) rather than re-styling the Nuxt UI component inline every time, or building one catch-all "does everything" wrapper.
 - Extract a repeated literal prop type (e.g. a shared size union) into `app/types/*.ts` once it is duplicated across 3+ components, following the existing `~/types/<domain>` import convention (see `app/types/ui.ts`).
 
@@ -42,6 +44,26 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 - A section used — or designed — on more than one page lives in `app/components/app/` (e.g. `AppBenefitsBar`, `AppNewsletter`). Check the design's other screens, not just today's usages in code, before deciding something is page-specific. When a page-domain component gains a second page, move it (`git mv`) rather than importing `Home*` from another page.
 - i18n keys follow the component's placement: `app.<component>.*` for shared components, `pages.<page>.*` for page sections. Moving a component to `app/` means moving its keys too (`pages.home.newsletter.*` → `app.newsletter.*`), in every locale file.
 - Page-level sections (benefits bar, newsletter) are rendered by the page, not inside a content component like `StoreCatalog`. Content components can render conditionally (`search.vue` shows `StoreCatalog` only when there is a query), and the page-level sections must still appear.
+
+## Where types live
+
+- Every named `type`/`interface` lives in `app/types/<domain>.ts` and is imported with `import type { ... } from '~/types/<domain>'` — including types used by only one component. One simple rule beats a per-case judgment call. The only thing that stays inline is a component's own props/emits literal inside `defineProps<{ ... }>()` / `defineEmits<{ ... }>()`.
+- A form type derived from a `zod` schema (`z.infer`) cannot move on its own, and hand-writing it next to the schema duplicates the shape. Move the schema with it: export a schema factory that takes `t` and the inferred type from the same file, as `app/types/filter.ts` already does for `SORT_OPTIONS` + `SortOptionsType`:
+  ```ts
+  // app/types/newsletter.ts
+  import { z } from 'zod'
+
+  export const buildNewsletterSchema = (t: (key: string) => string) =>
+    z.object({
+      email: z.email(t('app.newsletter.errorEmail')),
+      consent: z.boolean().refine((value) => value === true, {
+        message: t('app.newsletter.errorConsent'),
+      }),
+    })
+
+  export type NewsletterForm = z.infer<ReturnType<typeof buildNewsletterSchema>>
+  ```
+  The component keeps only `const schema = computed(() => buildNewsletterSchema(t))`. A schema outside the component can also be unit-tested in Jest directly (valid/invalid inputs), without mounting the component, stubbing Nuxt UI or mocking `$t`.
 
 ## Colors as tokens, not raw hex
 

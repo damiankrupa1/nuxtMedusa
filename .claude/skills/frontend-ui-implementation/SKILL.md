@@ -23,6 +23,7 @@ description: Implement polished, responsive storefront UI from a design, screens
 ## Design inconsistencies between screens
 
 - When the same section differs slightly between screens (e.g. "Newsletter signup" is 340px tall with 72px top padding on home but 324px/64px on search; "Shopping assurances" is 127px vs 111px), treat it as a design error, not an intentional variant: reuse the one component unchanged. Don't add size props or variants just to match each screen pixel-perfectly.
+- The same applies within one screen: the newsletter's interest checkboxes are 12×12px (`12:1858`, `12:1861`) but its consent checkbox is 13×13px (`12:1864`). All three use `UCheckbox size="xs"` (12px).
 - Always tell the user about such a discrepancy explicitly — which nodes differ and by how much — so they can confirm it with the designer. Never fold it silently into the implementation.
 
 ## Figma MCP limits

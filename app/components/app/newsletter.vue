@@ -86,41 +86,37 @@ const onSubmit = (_event: FormSubmitEvent<NewsletterForm>) => {
           <p class="text-[11px] text-color-muted">
             {{ $t('app.newsletter.interestedLabel') }}
           </p>
-          <label class="flex items-center gap-2 text-[11px] text-color-ink">
-            <input
-              v-model="interestedWomen"
-              type="checkbox"
-              class="size-[13px] border-color-muted"
-            />
-            {{ $t('app.newsletter.interestWomen') }}
-          </label>
-          <label class="flex items-center gap-2 text-[11px] text-color-ink">
-            <input
-              v-model="interestedMen"
-              type="checkbox"
-              class="size-[13px] border-color-muted"
-            />
-            {{ $t('app.newsletter.interestMen') }}
-          </label>
+          <UCheckbox
+            v-model="interestedWomen"
+            size="xs"
+            :label="$t('app.newsletter.interestWomen')"
+            :ui="{ label: 'font-normal text-[11px] text-color-ink' }"
+          />
+          <UCheckbox
+            v-model="interestedMen"
+            size="xs"
+            :label="$t('app.newsletter.interestMen')"
+            :ui="{ label: 'font-normal text-[11px] text-color-ink' }"
+          />
         </div>
 
         <UFormField name="consent" :ui="{ error: 'sr-only' }">
-          <label
-            class="flex items-start gap-2.5 text-[10px] leading-[1.7] text-color-muted"
+          <UCheckbox
+            v-model="state.consent"
+            size="xs"
+            :ui="{
+              wrapper: 'ms-2.5',
+              label: 'font-normal text-[10px] leading-[1.7] text-color-muted',
+            }"
           >
-            <input
-              v-model="state.consent"
-              type="checkbox"
-              class="mt-0.5 size-[13px] shrink-0 border-color-muted"
-            />
-            <span>
+            <template #label>
               {{ $t('app.newsletter.consentPrefix', { title }) }}
               <AppLink to="/store" class="underline">{{
                 $t('app.newsletter.privacyPolicy')
               }}</AppLink>
               {{ $t('app.newsletter.consentSuffix') }}
-            </span>
-          </label>
+            </template>
+          </UCheckbox>
         </UFormField>
 
         <AppFormError
