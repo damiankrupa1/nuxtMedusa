@@ -16,13 +16,14 @@ const cms = computed(() => studioStory.value ?? null)
 <template>
   <section class="flex flex-col items-center gap-10 px-6 py-16 md:flex-row md:gap-20 md:px-16 md:py-24">
     <div class="relative h-[360px] w-full md:h-[528px] md:w-[632px] md:shrink-0">
-      <img
+      <NuxtImg
         v-if="cms"
         :src="cms.image.url"
         :alt="cms.image.alt"
+        sizes="100vw md:44vw"
         class="size-full object-cover"
         loading="lazy"
-      >
+      />
       <NuxtImg
         v-else
         src="/images/home/studio-craft.jpg"

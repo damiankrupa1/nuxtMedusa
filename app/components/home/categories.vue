@@ -56,12 +56,13 @@ const cms = computed(() => categoryTiles.value ?? null)
         class="flex flex-col gap-[18px]"
       >
         <div class="h-[340px] w-full overflow-hidden">
-          <img
+          <NuxtImg
             :src="card.image.url"
             :alt="card.image.alt"
+            sizes="100vw sm:50vw lg:25vw"
             class="size-full object-cover"
             loading="lazy"
-          >
+          />
         </div>
         <div class="flex items-center justify-between">
           <p class="font-serif text-[28px] text-color-ink">{{ card.title }}</p>

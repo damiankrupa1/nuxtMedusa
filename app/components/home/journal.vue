@@ -53,12 +53,13 @@ const cms = computed(() => journalSection.value ?? null)
         class="flex flex-col gap-[17px]"
       >
         <div class="h-[284px] w-full overflow-hidden">
-          <img
+          <NuxtImg
             :src="article.image.url"
             :alt="article.image.alt"
+            sizes="100vw sm:33vw"
             class="size-full object-cover"
             loading="lazy"
-          >
+          />
         </div>
         <div class="flex items-start justify-between text-color-muted">
           <p class="text-[9px]">{{ article.category }}</p>
