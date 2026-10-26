@@ -56,6 +56,22 @@
         "note": "We'll help with sizing and choice."
       }
     },
+    "newsletter": {
+      "eyebrow": "LETTERS FROM {title}",
+      "heading": "Good style stays in touch.",
+      "description": "Get 10% off your first order. Join for new collections, thoughtful inspiration and first access to new arrivals.",
+      "emailPlaceholder": "Your email address",
+      "submit": "JOIN",
+      "interestedLabel": "I'm interested in:",
+      "interestWomen": "Womenswear",
+      "interestMen": "Menswear",
+      "consentPrefix": "I want to receive the {title} newsletter and I accept the",
+      "privacyPolicy": "privacy policy",
+      "consentSuffix": ". I can withdraw consent at any time. The discount can't be combined with other promotions.",
+      "errorEmail": "Please enter a valid email address.",
+      "errorConsent": "Please accept the privacy policy to sign up.",
+      "success": "Thanks for signing up — check your inbox soon."
+    },
     "footer": {
       "tagline": "Well chosen. For longer.",
       "contact": {
@@ -208,22 +224,6 @@
           "summary": "Easy layers for days with no big plans.",
           "imageAlt": "A man walking down a cobblestone street in a city in autumn"
         }
-      },
-      "newsletter": {
-        "eyebrow": "LETTERS FROM {title}",
-        "heading": "Good style stays in touch.",
-        "description": "Get 10% off your first order. Join for new collections, thoughtful inspiration and first access to new arrivals.",
-        "emailPlaceholder": "Your email address",
-        "submit": "JOIN",
-        "interestedLabel": "I'm interested in:",
-        "interestWomen": "Womenswear",
-        "interestMen": "Menswear",
-        "consentPrefix": "I want to receive the {title} newsletter and I accept the",
-        "privacyPolicy": "privacy policy",
-        "consentSuffix": ". I can withdraw consent at any time. The discount can't be combined with other promotions.",
-        "errorEmail": "Please enter a valid email address.",
-        "errorConsent": "Please accept the privacy policy to sign up.",
-        "success": "Thanks for signing up — check your inbox soon."
       }
     },
     "store": {

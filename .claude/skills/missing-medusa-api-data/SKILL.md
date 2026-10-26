@@ -74,10 +74,10 @@ Entries are added as each home page section is implemented. Each entry notes how
 - **Mocked today**: `app/components/home/shop-the-look.vue`'s CTA just links to the first product's page — no multi-item add-to-cart happens.
 - **Real fix would need**: `useAddToCart`/`cart.service.ts` only take one line item at a time; a "buy the set" action would need either a loop of individual add calls (still needs a size picked per item first, which the UI doesn't collect here) or a true bulk-add endpoint — plus a size-selection UI this component doesn't have.
 
-## Home: newsletter signup
+## Newsletter signup (home and product list pages)
 
 - **Needs**: a working email signup form (with interest checkboxes and marketing consent) that actually subscribes the visitor.
-- **Mocked today**: `app/components/home/newsletter.vue` validates the email format and that consent is checked client-side, then just shows a local "thanks for signing up" success state — no request is sent anywhere. No newsletter/ESP (email service provider) integration, composable, repository, or server route exists anywhere in this codebase.
+- **Mocked today**: `app/components/app/newsletter.vue` (`AppNewsletter`, rendered on the home page and the search/store/category/collection pages) validates the email format and that consent is checked client-side via a `zod` schema on `UForm`, then just shows a local "thanks for signing up" success state — no request is sent anywhere. No newsletter/ESP (email service provider) integration, composable, repository, or server route exists anywhere in this codebase.
 - **Real fix would need**: a real newsletter provider (Klaviyo, Mailchimp, a Medusa customer-group/marketing-consent field, etc.) and a server route or repository to call it from.
 
 ## Product list (store/category/collection): filter bar facets

@@ -76,5 +76,7 @@ useSeoMeta({
     </UContainer>
 
     <StoreCatalog v-if="searchQuery" :q="searchQuery" />
+    <AppBenefitsBar />
+    <AppNewsletter />
   </div>
 </template>

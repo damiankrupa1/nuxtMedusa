@@ -10,5 +10,9 @@ useSeoMeta({
 </script>
 
 <template>
-  <StoreCatalog :title="$t('pages.store.title')" />
+  <div>
+    <StoreCatalog :title="$t('pages.store.title')" />
+    <AppBenefitsBar />
+    <AppNewsletter />
+  </div>
 </template>

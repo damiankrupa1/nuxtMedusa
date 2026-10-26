@@ -7,9 +7,9 @@ const { t } = useI18n()
 
 const buildSchema = () =>
   z.object({
-    email: z.email(t('pages.home.newsletter.errorEmail')),
+    email: z.email(t('app.newsletter.errorEmail')),
     consent: z.boolean().refine((value) => value === true, {
-      message: t('pages.home.newsletter.errorConsent'),
+      message: t('app.newsletter.errorConsent'),
     }),
   })
 
@@ -37,21 +37,21 @@ const onSubmit = (_event: FormSubmitEvent<NewsletterForm>) => {
   >
     <div class="flex flex-col gap-[19px] md:w-[530px] md:shrink-0">
       <p class="text-[10px] text-color-ink">
-        {{ $t('pages.home.newsletter.eyebrow', { title }) }}
+        {{ $t('app.newsletter.eyebrow', { title }) }}
       </p>
       <h2
         class="font-serif text-4xl leading-none text-color-ink md:text-[51px]"
       >
-        {{ $t('pages.home.newsletter.heading') }}
+        {{ $t('app.newsletter.heading') }}
       </h2>
       <p class="text-[13px] leading-[1.7] text-color-muted">
-        {{ $t('pages.home.newsletter.description') }}
+        {{ $t('app.newsletter.description') }}
       </p>
     </div>
 
     <div class="flex flex-1 flex-col gap-[22px]">
       <p v-if="submitted" class="text-sm text-color-ink">
-        {{ $t('pages.home.newsletter.success') }}
+        {{ $t('app.newsletter.success') }}
       </p>
       <UForm
         v-else
@@ -67,7 +67,7 @@ const onSubmit = (_event: FormSubmitEvent<NewsletterForm>) => {
               v-model="state.email"
               type="email"
               variant="none"
-              :placeholder="$t('pages.home.newsletter.emailPlaceholder')"
+              :placeholder="$t('app.newsletter.emailPlaceholder')"
               :ui="{
                 base: 'p-0 rounded-none text-sm text-color-ink placeholder:text-color-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-ink)',
               }"
@@ -77,14 +77,14 @@ const onSubmit = (_event: FormSubmitEvent<NewsletterForm>) => {
             type="submit"
             class="flex shrink-0 items-center gap-2 text-[11px] font-medium text-color-ink"
           >
-            {{ $t('pages.home.newsletter.submit') }}
+            {{ $t('app.newsletter.submit') }}
             <UIcon name="i-lucide-arrow-right" class="size-[21px]" />
           </button>
         </div>
 
         <div class="flex flex-wrap items-center gap-x-6 gap-y-2">
           <p class="text-[11px] text-color-muted">
-            {{ $t('pages.home.newsletter.interestedLabel') }}
+            {{ $t('app.newsletter.interestedLabel') }}
           </p>
           <label class="flex items-center gap-2 text-[11px] text-color-ink">
             <input
@@ -92,7 +92,7 @@ const onSubmit = (_event: FormSubmitEvent<NewsletterForm>) => {
               type="checkbox"
               class="size-[13px] border-color-muted"
             />
-            {{ $t('pages.home.newsletter.interestWomen') }}
+            {{ $t('app.newsletter.interestWomen') }}
           </label>
           <label class="flex items-center gap-2 text-[11px] text-color-ink">
             <input
@@ -100,7 +100,7 @@ const onSubmit = (_event: FormSubmitEvent<NewsletterForm>) => {
               type="checkbox"
               class="size-[13px] border-color-muted"
             />
-            {{ $t('pages.home.newsletter.interestMen') }}
+            {{ $t('app.newsletter.interestMen') }}
           </label>
         </div>
 
@@ -114,11 +114,11 @@ const onSubmit = (_event: FormSubmitEvent<NewsletterForm>) => {
               class="mt-0.5 size-[13px] shrink-0 border-color-muted"
             />
             <span>
-              {{ $t('pages.home.newsletter.consentPrefix', { title }) }}
+              {{ $t('app.newsletter.consentPrefix', { title }) }}
               <AppLink to="/store" class="underline">{{
-                $t('pages.home.newsletter.privacyPolicy')
+                $t('app.newsletter.privacyPolicy')
               }}</AppLink>
-              {{ $t('pages.home.newsletter.consentSuffix') }}
+              {{ $t('app.newsletter.consentSuffix') }}
             </span>
           </label>
         </UFormField>

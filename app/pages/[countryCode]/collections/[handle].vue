@@ -18,5 +18,9 @@ useSeoMeta({
 </script>
 
 <template>
-  <StoreCatalog :title="collection?.title" :collection-id="collection?.id" />
+  <div>
+    <StoreCatalog :title="collection?.title" :collection-id="collection?.id" />
+    <AppBenefitsBar />
+    <AppNewsletter />
+  </div>
 </template>

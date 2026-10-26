@@ -19,6 +19,6 @@ useSeoMeta({
     <HomeStudioStory />
     <HomeJournal />
     <AppBenefitsBar />
-    <HomeNewsletter />
+    <AppNewsletter />
   </div>
 </template>

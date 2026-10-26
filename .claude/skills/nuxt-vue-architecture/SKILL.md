@@ -36,6 +36,13 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 - When a visual pattern (icon-only toggle, primary CTA, link-with-icon, etc.) repeats 3+ times, extract a small `app/components/app/*.vue` wrapper around the Nuxt UI component (see `button-primary.vue`, `link-button.vue`, `icon-button.vue`, `form-error.vue`) rather than re-styling the Nuxt UI component inline every time, or building one catch-all "does everything" wrapper.
 - Extract a repeated literal prop type (e.g. a shared size union) into `app/types/*.ts` once it is duplicated across 3+ components, following the existing `~/types/<domain>` import convention (see `app/types/ui.ts`).
 
+## Where a component lives
+
+- A section used by exactly one page lives in that page's domain folder (e.g. `app/components/home/*.vue` → `HomeCampaign`, `HomeJournal`, each rendered once from `index.vue`).
+- A section used — or designed — on more than one page lives in `app/components/app/` (e.g. `AppBenefitsBar`, `AppNewsletter`). Check the design's other screens, not just today's usages in code, before deciding something is page-specific. When a page-domain component gains a second page, move it (`git mv`) rather than importing `Home*` from another page.
+- i18n keys follow the component's placement: `app.<component>.*` for shared components, `pages.<page>.*` for page sections. Moving a component to `app/` means moving its keys too (`pages.home.newsletter.*` → `app.newsletter.*`), in every locale file.
+- Page-level sections (benefits bar, newsletter) are rendered by the page, not inside a content component like `StoreCatalog`. Content components can render conditionally (`search.vue` shows `StoreCatalog` only when there is a query), and the page-level sections must still appear.
+
 ## Colors as tokens, not raw hex
 
 - Never hardcode a raw hex value in a Tailwind arbitrary-value class (`bg-[#dcd4c7]`, `text-[#dbddd3]`). Add it as a CSS variable in `app/assets/css/variables.css`, map it under `@theme` and expose a `@utility` for it in `app/assets/css/main.css`, following the existing `--color-ink`/`--color-paper`/`--color-sand`/`--color-stone`/`--color-sage` pattern, then use the resulting `bg-color-*`/`text-color-*` utility.
