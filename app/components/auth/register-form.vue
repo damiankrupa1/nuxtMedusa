@@ -35,10 +35,10 @@ const form = ref<FormType>({
   password: '',
 })
 
-const formError = ref<string | undefined>(undefined)
+const formError = ref<string | null>(null)
 
 const onSubmit = async (_event: FormSubmitEvent<FormType>) => {
-  formError.value = undefined
+  formError.value = null
 
   try {
     const customerData: RegisterCustomerData = {
@@ -72,7 +72,7 @@ const switchToSignin = () => {
       :description="$t('auth.register.description')"
     />
 
-    <AppFormError :message="displayError" :show="!!displayError" class="mb-4" />
+    <AppStatusMessage type="error" :message="displayError" class="mb-4" />
 
     <UForm
       :schema="formSchema"

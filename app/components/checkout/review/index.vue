@@ -66,13 +66,10 @@ const {
       {{ $t('checkout.review.p24Redirect') }}
     </p>
 
-    <UAlert
-      v-if="error"
-      :title="$t('checkout.review.paymentErrorTitle')"
+    <AppStatusMessage
+      type="error"
+      :message="error ? $t('checkout.review.paymentErrorTitle') : null"
       :description="error"
-      color="error"
-      variant="soft"
-      icon="i-lucide-alert-circle"
       class="mb-6"
     />
 

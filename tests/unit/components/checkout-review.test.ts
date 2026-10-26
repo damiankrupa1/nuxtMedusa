@@ -4,8 +4,9 @@ import { loadStripe } from '@stripe/stripe-js'
 import type { Stripe } from '@stripe/stripe-js'
 import { nextTick, ref } from 'vue'
 
-import CheckoutReview from '../../../app/components/checkout/review/index.vue'
-import { useCartPayment } from '../../../app/composables/payment'
+import AppStatusMessage from '~/components/app/status-message.vue'
+import CheckoutReview from '~/components/checkout/review/index.vue'
+import { useCartPayment } from '~/composables/payment'
 
 jest.mock('@stripe/stripe-js', () => ({ loadStripe: jest.fn() }))
 
@@ -58,6 +59,7 @@ describe('checkout review component', () => {
     },
   }
   const mocks = { $t: (key: string) => key }
+  const components = { AppStatusMessage }
 
   const stripeData = { id: 'pi_1', client_secret: 'pi_1_secret' }
   const p24Return = {
@@ -91,7 +93,9 @@ describe('checkout review component', () => {
     }
     route.query = query
 
-    const wrapper = mount(CheckoutReview, { global: { stubs, mocks } })
+    const wrapper = mount(CheckoutReview, {
+      global: { stubs, mocks, components },
+    })
     await flushPromises()
     return wrapper
   }
@@ -172,7 +176,7 @@ describe('checkout review component', () => {
     await flushPromises()
 
     expect(placeOrder).not.toHaveBeenCalled()
-    expect(wrapper.find('.alert').text()).toBe('Kod BLIK wygasł')
+    expect(wrapper.find('[role="alert"] .alert').text()).toBe('Kod BLIK wygasł')
     expect(
       (wrapper.find('input.blik-code').element as HTMLInputElement).value,
     ).toBe('')
