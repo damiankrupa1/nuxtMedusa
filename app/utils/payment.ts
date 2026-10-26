@@ -48,11 +48,11 @@ export type StripePaymentMethod = 'card' | 'blik' | 'p24'
  */
 export function getStripePaymentMethod(
   providerId?: string,
-): StripePaymentMethod | undefined {
+): StripePaymentMethod | null {
   if (providerId?.startsWith('pp_stripe_')) return 'card'
   if (providerId?.startsWith('pp_stripe-blik_')) return 'blik'
   if (providerId?.startsWith('pp_stripe-przelewy24_')) return 'p24'
-  return undefined
+  return null
 }
 
 /** Billing details Stripe attaches to the payment, from the cart. */
