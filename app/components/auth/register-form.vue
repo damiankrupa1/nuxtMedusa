@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
-import type { RegisterCustomerData } from '~/types/customer'
+import {
+  buildRegisterSchema,
+  type RegisterCustomerData,
+  type RegisterForm,
+} from '~/types/customer'
 
 const emit = defineEmits<{
   'switch-to-signin': []
@@ -15,19 +18,9 @@ const {
 
 const { t } = useI18n()
 
-const buildSchema = () =>
-  z.object({
-    first_name: z.string().min(2, t('validation.firstNameMin')),
-    last_name: z.string().min(2, t('validation.lastNameMin')),
-    email: z.email(t('validation.emailInvalid')),
-    phone: z.string().optional(),
-    password: z.string().min(6, t('validation.passwordMin')),
-  })
+const formSchema = computed(() => buildRegisterSchema(t))
 
-type FormType = z.infer<ReturnType<typeof buildSchema>>
-const formSchema = computed(buildSchema)
-
-const form = ref<FormType>({
+const form = ref<RegisterForm>({
   first_name: '',
   last_name: '',
   email: '',
@@ -35,10 +28,10 @@ const form = ref<FormType>({
   password: '',
 })
 
-const formError = ref<string | undefined>(undefined)
+const formError = ref<string | null>(null)
 
-const onSubmit = async (_event: FormSubmitEvent<FormType>) => {
-  formError.value = undefined
+const onSubmit = async (_event: FormSubmitEvent<RegisterForm>) => {
+  formError.value = null
 
   try {
     const customerData: RegisterCustomerData = {
@@ -72,7 +65,7 @@ const switchToSignin = () => {
       :description="$t('auth.register.description')"
     />
 
-    <AppFormError :message="displayError" :show="!!displayError" class="mb-4" />
+    <AppStatusMessage type="error" :message="displayError" class="mb-4" />
 
     <UForm
       :schema="formSchema"

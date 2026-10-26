@@ -89,22 +89,21 @@ const shopSetLink = computed<AppLinkTarget>(() =>
     <div
       class="flex flex-1 flex-col gap-6 bg-color-accent px-6 py-10 lg:gap-[25px] lg:px-16 lg:py-[52px]"
     >
-      <p class="text-[10px] text-color-sage">
-        {{ cms?.eyebrow ?? $t('pages.home.shopTheLook.eyebrow') }}
-      </p>
-      <h2
-        class="font-serif text-4xl leading-[0.98] text-color-paper lg:text-[56px]"
+      <AppSectionIntro
+        :eyebrow="cms?.eyebrow ?? $t('pages.home.shopTheLook.eyebrow')"
+        size="lg"
+        tone="dark"
       >
-        <span class="block">{{
-          cms?.headlineLine1 ?? $t('pages.home.shopTheLook.headlineLine1')
-        }}</span>
-        <span class="block">{{
-          cms?.headlineLine2 ?? $t('pages.home.shopTheLook.headlineLine2')
-        }}</span>
-      </h2>
-      <p class="text-[13px] leading-[1.7] text-color-sage">
+        <template #heading>
+          <span class="block">{{
+            cms?.headlineLine1 ?? $t('pages.home.shopTheLook.headlineLine1')
+          }}</span>
+          <span class="block">{{
+            cms?.headlineLine2 ?? $t('pages.home.shopTheLook.headlineLine2')
+          }}</span>
+        </template>
         {{ cms?.description ?? $t('pages.home.shopTheLook.description') }}
-      </p>
+      </AppSectionIntro>
 
       <div class="flex flex-col">
         <AppLink
@@ -135,13 +134,13 @@ const shopSetLink = computed<AppLinkTarget>(() =>
       </div>
 
       <div class="flex items-center justify-between">
-        <AppLink
+        <AppButtonPrimary
           :to="shopSetLink"
-          class="flex h-12 items-center gap-7 bg-color-paper px-6 text-xs font-medium text-color-ink"
+          inverted
+          trailing-icon="i-lucide-arrow-right"
         >
           {{ cms?.shopSetCtaLabel ?? $t('pages.home.shopTheLook.shopSetCta') }}
-          <UIcon name="i-lucide-arrow-right" class="size-[18px]" />
-        </AppLink>
+        </AppButtonPrimary>
         <div class="flex flex-col items-end gap-1 text-right">
           <p class="text-[10px] text-color-sage">
             {{ cms?.totalLabel ?? $t('pages.home.shopTheLook.totalLabel') }}

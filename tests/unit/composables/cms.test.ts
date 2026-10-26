@@ -3,7 +3,6 @@ import { ref } from 'vue'
 
 import { cmsRepository } from '~/repository/cms.repository'
 import { useCmsService } from '~/services/cms.service'
-import type { ResolvedShopTheLook } from '~/services/cms.service'
 import {
   useFetchBrands,
   useFetchCampaignSlides,
@@ -23,6 +22,7 @@ import type {
   CmsNavigation,
   CmsShopTheLook,
   CmsStudioStory,
+  ResolvedShopTheLook,
 } from '~/types/cms'
 import { toMedusaLocale } from '~/utils/locale'
 
@@ -51,7 +51,10 @@ describe('cms composables', () => {
     jest.fn<(locale: string) => Promise<CmsShopTheLook | null>>()
   const getResolvedCategoryTiles =
     jest.fn<
-      (locale: string, medusaLocale?: string) => Promise<CmsCategoryTiles | null>
+      (
+        locale: string,
+        medusaLocale?: string,
+      ) => Promise<CmsCategoryTiles | null>
     >()
   const getResolvedShopTheLook =
     jest.fn<

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import type { StoreCartResponse } from '@medusajs/types'
-import type { InpostPoint } from '~/utils/inpost'
+import type { InpostPoint } from '~/types/inpost'
 import { useFetchShippingOptions } from '~/composables/payment'
 
 const emit = defineEmits<{
@@ -96,14 +96,7 @@ const validateDelivery = async () => {
       class="mb-6"
     />
 
-    <UAlert
-      v-if="deliveryError"
-      color="error"
-      variant="soft"
-      icon="i-lucide-alert-circle"
-      class="mb-4"
-      :title="deliveryError"
-    />
+    <AppStatusMessage type="error" :message="deliveryError" class="mb-4" />
 
     <UButton
       class="cursor-pointer"

@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 export interface Customer {
   id: string
   email: string
@@ -13,18 +15,9 @@ export interface CustomerResponse {
   customer: Customer | null
 }
 
-export interface RegisterCustomerData {
-  first_name: string
-  last_name: string
-  email: string
-  password: string
-  phone?: string
-}
+export type RegisterCustomerData = RegisterForm
 
-export interface LoginCustomerData {
-  email: string
-  password: string
-}
+export type LoginCustomerData = SigninForm
 
 export interface UpdateCustomerData {
   first_name?: string
@@ -33,3 +26,22 @@ export interface UpdateCustomerData {
   password?: string
   phone?: string
 }
+
+export const buildSigninSchema = (t: (key: string) => string) =>
+  z.object({
+    email: z.email(t('validation.emailInvalid')),
+    password: z.string().min(1, t('validation.passwordRequired')),
+  })
+
+export type SigninForm = z.infer<ReturnType<typeof buildSigninSchema>>
+
+export const buildRegisterSchema = (t: (key: string) => string) =>
+  z.object({
+    first_name: z.string().min(2, t('validation.firstNameMin')),
+    last_name: z.string().min(2, t('validation.lastNameMin')),
+    email: z.email(t('validation.emailInvalid')),
+    phone: z.string().optional(),
+    password: z.string().min(6, t('validation.passwordMin')),
+  })
+
+export type RegisterForm = z.infer<ReturnType<typeof buildRegisterSchema>>

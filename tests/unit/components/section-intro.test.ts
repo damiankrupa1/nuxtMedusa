@@ -5,7 +5,7 @@ import Heading from '~/components/app/heading.vue'
 import SectionIntro from '~/components/app/section-intro.vue'
 
 const mountIntro = (
-  props: Record<string, unknown>,
+  props: Record<string, unknown> = {},
   slots: Record<string, string> = {},
 ) =>
   mount(SectionIntro, {
@@ -22,6 +22,27 @@ describe('section intro component', () => {
     expect(wrapper.text()).toContain('LETTERS FROM FASHION')
     expect(heading.text()).toBe('Good style stays in touch.')
     expect(heading.classes()).toContain('font-serif')
+  })
+
+  it('renders only the eyebrow when there is no heading', () => {
+    const wrapper = mountIntro()
+
+    expect(wrapper.text()).toBe('LETTERS FROM FASHION')
+    expect(wrapper.find('h2').exists()).toBe(false)
+  })
+
+  it('takes heading markup through the heading slot', () => {
+    const wrapper = mountIntro(
+      { as: 'h1', size: 'lg' },
+      {
+        heading:
+          '<span class="block">Made slowly,</span><span class="block">worn long.</span>',
+      },
+    )
+
+    const heading = wrapper.find('h1')
+    expect(heading.findAll('span.block')).toHaveLength(2)
+    expect(heading.classes()).toContain('md:text-[56px]')
   })
 
   it('renders the lead paragraph only when one is passed', () => {

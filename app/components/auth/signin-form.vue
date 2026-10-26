@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import { z } from 'zod'
 import type { FormSubmitEvent } from '#ui/types'
-import type { LoginCustomerData } from '~/types/customer'
+import {
+  buildSigninSchema,
+  type LoginCustomerData,
+  type SigninForm,
+} from '~/types/customer'
 import { useLoginCustomer } from '~/composables/customer'
 
 const emit = defineEmits<{
@@ -16,24 +19,17 @@ const {
 
 const { t } = useI18n()
 
-const buildSchema = () =>
-  z.object({
-    email: z.string().email(t('validation.emailInvalid')),
-    password: z.string().min(1, t('validation.passwordRequired')),
-  })
+const formSchema = computed(() => buildSigninSchema(t))
 
-type FormType = z.infer<ReturnType<typeof buildSchema>>
-const formSchema = computed(buildSchema)
-
-const form = ref<FormType>({
+const form = ref<SigninForm>({
   email: '',
   password: '',
 })
 
-const formError = ref<string | undefined>(undefined)
+const formError = ref<string | null>(null)
 
-const onSubmit = async (_event: FormSubmitEvent<FormType>) => {
-  formError.value = undefined
+const onSubmit = async (_event: FormSubmitEvent<SigninForm>) => {
+  formError.value = null
 
   try {
     const loginData: LoginCustomerData = {
@@ -64,7 +60,7 @@ const switchToRegister = () => {
       :description="$t('auth.signin.description')"
     />
 
-    <AppFormError :message="displayError" :show="!!displayError" class="mb-4" />
+    <AppStatusMessage type="error" :message="displayError" class="mb-4" />
 
     <UForm
       :schema="formSchema"

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { InpostPoint } from '~/utils/inpost'
+import type { InpostPoint } from '~/types/inpost'
 
 const point = defineModel<InpostPoint | null>({ required: true })
 

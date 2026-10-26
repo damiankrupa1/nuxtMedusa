@@ -4,7 +4,7 @@
       {{ $t('cart.empty.message') }}
     </p>
     <div>
-      <AppLinkButton to="/store" class="pl-0">
+      <AppLinkButton to="/store">
         {{ $t('cart.empty.cta') }}
       </AppLinkButton>
     </div>

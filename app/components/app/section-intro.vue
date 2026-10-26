@@ -23,14 +23,16 @@ const mutedText = computed(() =>
     <p class="text-[10px]" :class="mutedText">
       {{ eyebrow }}
     </p>
+    <!-- The `heading` slot is for markup the prop can't carry, e.g. a
+         headline set on two lines (a `<span class="block">` per line). -->
     <AppHeading
-      v-if="heading"
+      v-if="heading || $slots.heading"
       :as="as"
       variant="display"
       :size="size"
       :tone="tone"
     >
-      {{ heading }}
+      <slot name="heading">{{ heading }}</slot>
     </AppHeading>
     <p
       v-if="$slots.default"

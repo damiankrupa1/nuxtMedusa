@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { StoreCartResponse } from '@medusajs/types'
+import type { PaymentProviderData } from '~/types/payment'
 import { providers } from '~/utils/payment'
 import {
   useFetchPaymentProviders,
@@ -17,12 +18,6 @@ const { data } = await useFetchPaymentProviders()
 const { loading, mutate } = useInitiatePaymentSession()
 
 const { t } = useI18n()
-
-interface PaymentProviderData {
-  id: string
-  label: string
-  icon: string
-}
 
 const paymentProviders = computed<PaymentProviderData[] | undefined>(() => {
   const availableProviders = data.value?.payment_providers?.map((provider) => {
@@ -115,15 +110,7 @@ const validatePayment = async () => {
       <UIcon name="i-lucide-loader-circle" class="size-6 animate-spin" />
     </div>
 
-    <UAlert
-      v-if="paymentError"
-      color="error"
-      variant="soft"
-      icon="i-lucide-alert-circle"
-      class="mb-4"
-    >
-      {{ paymentError }}
-    </UAlert>
+    <AppStatusMessage type="error" :message="paymentError" class="mb-4" />
 
     <UButton
       class="cursor-pointer"

@@ -1,7 +1,10 @@
-export const SUPPORTED_LOCALES = ['en', 'pl'] as const
-export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number]
+import type { SupportedLocale } from '~/types/locale'
 
-export function getLocaleFromCountryCode(countryCode?: string): SupportedLocale {
+export const SUPPORTED_LOCALES = ['en', 'pl'] as const
+
+export function getLocaleFromCountryCode(
+  countryCode?: string,
+): SupportedLocale {
   return countryCode === 'pl' ? 'pl' : 'en'
 }
 

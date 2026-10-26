@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import type {
-  DisplayHeadingSize,
   HeadingLevel,
+  HeadingSize,
   HeadingVariant,
   SectionTone,
 } from '~/types/ui'
@@ -13,25 +13,35 @@ const {
 } = defineProps<{
   as: HeadingLevel
   variant?: HeadingVariant
-  size?: DisplayHeadingSize
+  // `title` has `sm` | `md` (`TitleHeadingSize`), `display` has `md` | `lg` |
+  // `hero` (`DisplayHeadingSize`); a size the variant doesn't have falls back
+  // to `md`. The size is chosen here, never through `class`.
+  size?: HeadingSize
   tone?: SectionTone
 }>()
 
-const displaySizes: Record<DisplayHeadingSize, string> = {
-  md: 'text-4xl leading-[1.05] md:text-[48px]',
-  lg: 'text-4xl leading-[1.05] md:text-[56px]',
-  hero: 'text-5xl leading-[0.94] sm:text-6xl lg:text-[88px]',
+const sizes: Record<HeadingVariant, Partial<Record<HeadingSize, string>>> = {
+  title: {
+    sm: 'text-lg',
+    md: 'text-3xl',
+  },
+  display: {
+    md: 'text-4xl leading-[1.05] md:text-[48px]',
+    lg: 'text-4xl leading-[1.05] md:text-[56px]',
+    hero: 'text-5xl leading-[0.94] sm:text-6xl lg:text-[88px]',
+  },
 }
 
-const classes = computed(() =>
-  variant === 'display'
+const classes = computed(() => {
+  const sizeClass = sizes[variant][size] ?? sizes[variant].md
+  return variant === 'display'
     ? [
         'font-serif',
-        displaySizes[size],
+        sizeClass,
         tone === 'dark' ? 'text-color-paper' : 'text-color-ink',
       ]
-    : 'text-3xl font-medium text-color-highlighted',
-)
+    : [sizeClass, 'font-medium text-color-highlighted']
+})
 </script>
 
 <template>

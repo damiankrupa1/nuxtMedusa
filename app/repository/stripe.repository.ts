@@ -2,15 +2,10 @@ import { loadStripe } from '@stripe/stripe-js'
 import type {
   PaymentIntent,
   PaymentIntentResult,
-  PaymentMethodCreateParams,
   Stripe,
   StripeCardElement,
 } from '@stripe/stripe-js'
-
-/** Przelewy24 requires the email, the other methods take it as well. */
-export type StripeBillingDetails = PaymentMethodCreateParams.BillingDetails & {
-  email: string
-}
+import type { StripeBillingDetails } from '~/types/stripe'
 
 // Declines and invalid card details are the customer's to fix, not ours
 const CUSTOMER_ERROR_TYPES = ['card_error', 'validation_error']
@@ -18,7 +13,7 @@ const CUSTOMER_ERROR_TYPES = ['card_error', 'validation_error']
 export function stripeRepository() {
   const config = useRuntimeConfig()
   // Elements must be confirmed with the Stripe instance that created them
-  let stripePromise: Promise<Stripe | null> | undefined
+  let stripePromise: Promise<Stripe | null> | null = null
 
   async function getStripe(): Promise<Stripe> {
     if (!config.public.stripeKey) {

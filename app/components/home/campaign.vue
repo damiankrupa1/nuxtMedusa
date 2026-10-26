@@ -49,9 +49,7 @@ watch(slides, () => {
       </div>
 
       <div class="flex flex-col gap-6 lg:gap-[26px]">
-        <h1
-          class="font-serif text-5xl leading-[0.94] text-color-ink sm:text-6xl lg:text-[88px]"
-        >
+        <AppHeading as="h1" variant="display" size="hero">
           <span class="block">{{
             activeSlide?.headlineLine1 ??
             $t('pages.home.campaign.headlineLine1')
@@ -60,30 +58,22 @@ watch(slides, () => {
             activeSlide?.headlineLine2 ??
             $t('pages.home.campaign.headlineLine2')
           }}</span>
-        </h1>
+        </AppHeading>
         <p class="max-w-[370px] text-sm leading-[1.7] text-color-muted">
           {{
             activeSlide?.description ?? $t('pages.home.campaign.description')
           }}
         </p>
         <div class="flex items-center gap-6">
-          <AppLink
-            to="/store"
-            class="flex h-12 items-center gap-7 bg-color-ink px-6 text-xs font-medium text-color-paper"
-          >
+          <AppButtonPrimary to="/store" trailing-icon="i-lucide-arrow-right">
             {{ activeSlide?.shopCtaLabel ?? $t('pages.home.campaign.shopCta') }}
-            <UIcon name="i-lucide-arrow-right" class="size-[18px]" />
-          </AppLink>
-          <AppLink
-            :to="secondaryDepartmentLink"
-            class="flex items-center gap-4 border-b border-color-ink pb-2 text-[13px] text-color-ink"
-          >
+          </AppButtonPrimary>
+          <AppLinkButton :to="secondaryDepartmentLink">
             {{
               activeSlide?.secondaryCtaLabel ??
               $t('pages.home.campaign.secondaryCta')
             }}
-            <UIcon name="i-lucide-arrow-up-right" class="size-4" />
-          </AppLink>
+          </AppLinkButton>
         </div>
       </div>
 

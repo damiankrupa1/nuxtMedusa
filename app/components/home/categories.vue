@@ -37,16 +37,10 @@ const cms = computed(() => categoryTiles.value ?? null)
     <div
       class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end"
     >
-      <div class="flex flex-col gap-3">
-        <p class="text-[10px] text-color-muted">
-          {{ cms?.eyebrow ?? $t('pages.home.categories.eyebrow') }}
-        </p>
-        <h2
-          class="font-serif text-4xl leading-[1.05] text-color-ink md:text-[48px]"
-        >
-          {{ cms?.heading ?? $t('pages.home.categories.heading') }}
-        </h2>
-      </div>
+      <AppSectionIntro
+        :eyebrow="cms?.eyebrow ?? $t('pages.home.categories.eyebrow')"
+        :heading="cms?.heading ?? $t('pages.home.categories.heading')"
+      />
       <p class="max-w-[320px] text-[13px] leading-[1.7] text-color-muted">
         {{ cms?.description ?? $t('pages.home.categories.description') }}
       </p>
