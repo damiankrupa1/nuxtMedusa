@@ -19,16 +19,12 @@ const cms = computed(() => brands.value ?? null)
 <template>
   <section class="flex flex-col gap-8 border-b border-color-line px-6 py-10 md:px-16 md:py-[52px]">
     <div class="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <p class="text-[10px] text-color-muted">
-        {{ cms?.eyebrow ?? $t('pages.home.brands.eyebrow') }}
-      </p>
-      <AppLink
-        :to="cms?.viewAllUrl ?? '/store'"
-        class="flex items-center gap-4 border-b border-color-ink pb-2 text-[13px] text-color-ink"
-      >
+      <AppSectionIntro
+        :eyebrow="cms?.eyebrow ?? $t('pages.home.brands.eyebrow')"
+      />
+      <AppLinkButton :to="cms?.viewAllUrl ?? '/store'">
         {{ cms?.viewAllLabel ?? $t('pages.home.brands.viewAll') }}
-        <UIcon name="i-lucide-arrow-up-right" class="size-4" />
-      </AppLink>
+      </AppLinkButton>
     </div>
     <div class="flex flex-wrap items-center justify-between gap-x-8 gap-y-4 text-color-ink">
       <p class="text-2xl font-medium">{{ title }}</p>
