@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const { title } = useAppConfig()
 
-// No blog/CMS exists in this codebase — fully static, see
-// missing-cms-content skill.
-const articles = [
+// Falls back to the i18n content below when Payload has no JournalSection
+// global yet (or is unreachable) — see missing-cms-content skill.
+const fallbackArticles = [
   {
     key: 'capsuleWardrobe',
     image: '/images/home/journal-capsule-wardrobe.jpg',
@@ -17,6 +17,9 @@ const articles = [
     image: '/images/home/journal-autumn-walk.jpg',
   },
 ]
+
+const { data: journalSection } = useFetchJournalSection()
+const cms = computed(() => journalSection.value ?? null)
 </script>
 
 <template>
@@ -27,24 +30,52 @@ const articles = [
     <div class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
       <div class="flex flex-col gap-3">
         <p class="text-[10px] text-color-muted">
-          {{ $t('pages.home.journal.eyebrow', { title }) }}
+          {{ cms?.eyebrow ?? $t('pages.home.journal.eyebrow', { title }) }}
         </p>
         <h2 class="font-serif text-4xl leading-[1.05] text-color-ink md:text-[48px]">
-          {{ $t('pages.home.journal.heading') }}
+          {{ cms?.heading ?? $t('pages.home.journal.heading') }}
         </h2>
       </div>
       <AppLink
-        to="/store"
+        :to="cms?.viewAllUrl ?? '/store'"
         class="flex items-center gap-4 border-b border-color-ink pb-2 text-[13px] text-color-ink"
       >
-        {{ $t('pages.home.journal.viewAll') }}
+        {{ cms?.viewAllLabel ?? $t('pages.home.journal.viewAll') }}
         <UIcon name="i-lucide-arrow-up-right" class="size-4" />
       </AppLink>
     </div>
 
-    <div class="grid grid-cols-1 gap-7 sm:grid-cols-3">
+    <div v-if="cms" class="grid grid-cols-1 gap-7 sm:grid-cols-3">
       <AppLink
-        v-for="article in articles"
+        v-for="article in cms.articles"
+        :key="article.title"
+        :to="article.url"
+        class="flex flex-col gap-[17px]"
+      >
+        <div class="h-[284px] w-full overflow-hidden">
+          <img
+            :src="article.image.url"
+            :alt="article.image.alt"
+            class="size-full object-cover"
+            loading="lazy"
+          >
+        </div>
+        <div class="flex items-start justify-between text-color-muted">
+          <p class="text-[9px]">{{ article.category }}</p>
+          <p class="text-[10px]">{{ article.readingTime }}</p>
+        </div>
+        <div class="flex items-start gap-5">
+          <p class="flex-1 font-serif text-[29px] leading-[1.1] text-color-ink">
+            {{ article.title }}
+          </p>
+          <UIcon name="i-lucide-arrow-up-right" class="size-[18px] shrink-0 text-color-ink" />
+        </div>
+        <p class="text-xs leading-[1.6] text-color-muted">{{ article.summary }}</p>
+      </AppLink>
+    </div>
+    <div v-else class="grid grid-cols-1 gap-7 sm:grid-cols-3">
+      <AppLink
+        v-for="article in fallbackArticles"
         :key="article.key"
         to="/store"
         class="flex flex-col gap-[17px]"

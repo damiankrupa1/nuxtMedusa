@@ -1,5 +1,12 @@
 <script lang="ts" setup>
 const { title } = useAppConfig()
+
+// Falls back to the i18n placeholders below when Payload has no
+// FooterContent global yet (or is unreachable) — see missing-cms-content
+// skill.
+const { data: footerContent } = useFetchFooterContent()
+const contact = computed(() => footerContent.value?.contact ?? null)
+const social = computed(() => footerContent.value?.social ?? null)
 </script>
 
 <template>
@@ -16,9 +23,16 @@ const { title } = useAppConfig()
       {{ $t('app.footer.tagline') }}
     </p>
     <div class="flex flex-col gap-y-2 text-color-sage text-xs">
-      <p>{{ $t('app.footer.contact.email') }}</p>
-      <p>{{ $t('app.footer.contact.phone') }}</p>
-      <p class="text-[10px]">{{ $t('app.footer.contact.hours') }}</p>
+      <template v-if="contact">
+        <p>{{ contact.email }}</p>
+        <p>{{ contact.phone }}</p>
+        <p class="text-[10px]">{{ contact.hours }}</p>
+      </template>
+      <template v-else>
+        <p>{{ $t('app.footer.contact.email') }}</p>
+        <p>{{ $t('app.footer.contact.phone') }}</p>
+        <p class="text-[10px]">{{ $t('app.footer.contact.hours') }}</p>
+      </template>
     </div>
     <div class="flex items-center gap-x-5">
       <UIcon
@@ -30,7 +44,7 @@ const { title } = useAppConfig()
         class="size-[18px] text-color-paper"
       />
       <span class="text-[11px] text-color-sage">
-        {{ $t('app.footer.social.handle') }}
+        {{ social?.handle ?? $t('app.footer.social.handle') }}
       </span>
     </div>
   </div>
