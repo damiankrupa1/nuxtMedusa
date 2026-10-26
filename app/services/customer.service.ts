@@ -1,4 +1,4 @@
-import { customerRepository } from '../repository/customer.repository'
+import { customerRepository } from '~/repository/customer.repository'
 import type {
   LoginCustomerData,
   RegisterCustomerData,

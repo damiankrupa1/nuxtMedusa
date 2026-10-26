@@ -1,5 +1,5 @@
-import { customerRepository } from '../repository/customer.repository'
-import { useCustomerService } from '../services/customer.service'
+import { customerRepository } from '~/repository/customer.repository'
+import { useCustomerService } from '~/services/customer.service'
 import type {
   CustomerResponse,
   LoginCustomerData,

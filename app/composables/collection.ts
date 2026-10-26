@@ -1,4 +1,4 @@
-import { collectionRepository } from '../repository/collection.repository'
+import { collectionRepository } from '~/repository/collection.repository'
 
 export const useFetchCollectionByHandle = (handle: string) => {
   const { locale } = useI18n()

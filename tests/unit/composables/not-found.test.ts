@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals'
 import { nextTick, ref } from 'vue'
 
-import { useNotFoundWhenMissing } from '../../../app/composables/not-found'
+import { useNotFoundWhenMissing } from '~/composables/not-found'
 
 type Status = 'idle' | 'pending' | 'success' | 'error'
 
