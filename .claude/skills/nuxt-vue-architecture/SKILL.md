@@ -93,7 +93,7 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
   ```vue
   <UForm v-slot="formSlot" :schema="schema" :state="state" @submit="onSubmit">
     ...
-    <AppFormError :show="!!formSlot?.errors?.length" :message="formSlot?.errors?.[0]?.message" />
+    <AppStatusMessage type="error" :message="formSlot?.errors?.[0]?.message ?? null" />
   </UForm>
   ```
 
