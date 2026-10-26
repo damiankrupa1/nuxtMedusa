@@ -3,9 +3,9 @@ import { useFetchProductByHandle } from '~/composables/product'
 
 definePageMeta({ cdnCache: true })
 
-const route = useRoute()
+const route = useRoute('countryCode-products-handle')
 
-const handle = computed(() => route.params.handle as string)
+const handle = computed(() => route.params.handle)
 const { data: product, status } = await useFetchProductByHandle(handle.value)
 useNotFoundWhenMissing(product, status, 'Product not found')
 

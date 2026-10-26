@@ -65,6 +65,7 @@ export default defineNuxtConfig({
 
   experimental: {
     payloadExtraction: true,
+    typedPages: true,
   },
 
   compatibilityDate: '2026-07-25',
