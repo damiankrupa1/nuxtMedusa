@@ -5,9 +5,9 @@ export const useCountry = () => {
   const countryCodeFromCookie = useCookie('country_code', {
     maxAge: 60 * 60 * 24 * 365,
   })
-  const country = useState<BaseRegionCountryWithRegionId | undefined>(
+  const country = useState<BaseRegionCountryWithRegionId | null>(
     'country',
-    () => undefined,
+    () => null,
   )
 
   const setCountry = (newCountry?: BaseRegionCountryWithRegionId) => {
