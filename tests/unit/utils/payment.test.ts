@@ -41,9 +41,9 @@ describe('payment utils', () => {
   })
 
   it('ignores providers the review step cannot confirm', () => {
-    expect(getStripePaymentMethod('pp_stripe-ideal_stripe')).toBeUndefined()
-    expect(getStripePaymentMethod('pp_system_default')).toBeUndefined()
-    expect(getStripePaymentMethod(undefined)).toBeUndefined()
+    expect(getStripePaymentMethod('pp_stripe-ideal_stripe')).toBeNull()
+    expect(getStripePaymentMethod('pp_system_default')).toBeNull()
+    expect(getStripePaymentMethod(undefined)).toBeNull()
   })
 
   it('builds Stripe billing details from the cart', () => {

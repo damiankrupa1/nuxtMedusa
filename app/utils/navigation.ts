@@ -1,7 +1,4 @@
-export interface PrimaryNavItem {
-  labelKey: string
-  to: string
-}
+import type { PrimaryNavItem } from '~/types/navigation'
 
 // TODO: point each entry at its real category/collection route once the
 // matching Medusa categories/collections exist in the connected backend.

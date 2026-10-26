@@ -1,4 +1,5 @@
 import type { StoreCart } from '@medusajs/types'
+import type { StripePaymentMethod } from '~/types/payment'
 
 export const providers = [
   {
@@ -38,9 +39,6 @@ export const providers = [
   },
 ]
 
-/** Stripe methods the review step knows how to confirm. */
-export type StripePaymentMethod = 'card' | 'blik' | 'p24'
-
 /**
  * Medusa registers the Stripe card provider as `pp_stripe_<id>` and every
  * other Stripe method as `pp_stripe-<method>_<id>`, so matching on "stripe"
@@ -48,11 +46,11 @@ export type StripePaymentMethod = 'card' | 'blik' | 'p24'
  */
 export function getStripePaymentMethod(
   providerId?: string,
-): StripePaymentMethod | undefined {
+): StripePaymentMethod | null {
   if (providerId?.startsWith('pp_stripe_')) return 'card'
   if (providerId?.startsWith('pp_stripe-blik_')) return 'blik'
   if (providerId?.startsWith('pp_stripe-przelewy24_')) return 'p24'
-  return undefined
+  return null
 }
 
 /** Billing details Stripe attaches to the payment, from the cart. */

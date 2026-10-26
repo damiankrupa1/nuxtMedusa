@@ -7,13 +7,7 @@ import type {
 import type { StripeCardElement } from '@stripe/stripe-js'
 import { paymentRepository } from '~/repository/payment.repository'
 import { stripeRepository } from '~/repository/stripe.repository'
-
-/**
- * `paid` once Stripe has the payment, `redirected` while the customer pays
- * with Przelewy24, `unpaid` when Stripe finished without it (e.g. a BLIK
- * payment that wasn't approved).
- */
-export type StripePaymentOutcome = 'paid' | 'unpaid' | 'redirected'
+import type { StripePaymentOutcome } from '~/types/payment'
 
 export const usePaymentService = () => {
   const { listPaymentProviders, initiatePaymentSession } = paymentRepository()
@@ -49,7 +43,10 @@ export const usePaymentService = () => {
   const payWithStripe = async (
     cart: StoreCart,
     session: StorePaymentSession,
-    { card, blikCode = '' }: { card?: StripeCardElement; blikCode?: string },
+    {
+      card,
+      blikCode = '',
+    }: { card?: StripeCardElement | null; blikCode?: string },
   ): Promise<StripePaymentOutcome> => {
     const clientSecret = getClientSecret(session)
     const billingDetails = toStripeBillingDetails(cart)
@@ -83,7 +80,7 @@ export const usePaymentService = () => {
   }
 
   /**
-   * Outcome of the payment Przelewy24 redirected back from, or undefined
+   * Outcome of the payment Przelewy24 redirected back from, or null
    * when it isn't one of the cart's. Matched by PaymentIntent rather than
    * status: Stripe's webhook may have completed the cart, and authorized the
    * session, before the customer is back.
@@ -91,11 +88,11 @@ export const usePaymentService = () => {
   const getRedirectedPaymentOutcome = async (
     cart: StoreCart,
     paymentIntentId: string,
-  ): Promise<StripePaymentOutcome | undefined> => {
+  ): Promise<StripePaymentOutcome | null> => {
     const session = cart.payment_collection?.payment_sessions?.find(
       (paymentSession) => paymentSession.data?.id === paymentIntentId,
     )
-    if (!session) return undefined
+    if (!session) return null
 
     const paymentIntent = await retrievePaymentIntent(getClientSecret(session))
     return paymentIntent.status === 'succeeded' ? 'paid' : 'unpaid'

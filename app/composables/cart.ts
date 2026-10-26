@@ -13,13 +13,13 @@ export const useUserCart = () => {
     maxAge: 60 * 60 * 24 * 90,
   })
 
+  // Without an id the cookie is removed
   const setCartId = (cartId?: string) => {
-    if (!cartId) cartIdCookie.value = null
     cartIdCookie.value = cartId
   }
 
   return {
-    cartId: computed(() => cartIdCookie.value || undefined),
+    cartId: computed(() => cartIdCookie.value || null),
     setCartId,
   }
 }
@@ -121,7 +121,7 @@ export const useDeleteLineItem = () => {
   const { deleteLineItem } = useCartService()
 
   const loading = ref(false)
-  const data = ref<boolean>()
+  const data = ref<boolean | null>(null)
 
   const mutate = async (itemId: string) => {
     loading.value = true
@@ -144,7 +144,7 @@ export const useSetShippingMethod = () => {
   const { addShippingMethod } = useCartService()
 
   const loading = ref(false)
-  const data = ref<StoreCart>()
+  const data = ref<StoreCart | null>(null)
 
   const mutate = async (
     optionId: StoreCartShippingOption['id'],
@@ -172,7 +172,7 @@ export const usePlaceOrder = () => {
   const { country } = useCountry()
 
   const loading = ref(false)
-  const data = ref<StoreOrder | StoreCart>()
+  const data = ref<StoreOrder | StoreCart | null>(null)
 
   const mutate = async () => {
     loading.value = true

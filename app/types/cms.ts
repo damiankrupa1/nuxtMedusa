@@ -1,3 +1,5 @@
+import type { StoreProduct } from '@medusajs/types'
+
 export interface CmsNavLink {
   label: string
   url: string
@@ -118,4 +120,8 @@ export interface CmsShopTheLook {
   sizeHint: string
   productHandles: string[]
   image: CmsImage
+}
+
+export interface ResolvedShopTheLook extends CmsShopTheLook {
+  products: StoreProduct[]
 }

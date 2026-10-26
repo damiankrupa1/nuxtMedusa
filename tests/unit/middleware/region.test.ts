@@ -9,8 +9,8 @@ import {
 import { ref } from 'vue'
 
 import { getCountryFromCountryCode } from '~/utils/country'
-import type { BaseRegionCountryWithRegionId } from '~/utils/country'
 import { getLocaleFromCountryCode } from '~/utils/locale'
+import type { BaseRegionCountryWithRegionId } from '~/types/country'
 
 type Middleware = (to: { path: string; fullPath: string }) => Promise<unknown>
 
