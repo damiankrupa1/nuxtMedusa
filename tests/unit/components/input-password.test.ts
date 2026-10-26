@@ -6,7 +6,8 @@ import InputPassword from '../../../app/components/app/input/password.vue'
 describe('input password component', () => {
   const stubs = {
     UInput: {
-      template: '<input :type="type" :value="modelValue" /><slot />',
+      inheritAttrs: false,
+      template: '<input v-bind="$attrs" :type="type" :value="modelValue" /><slot />',
       props: ['modelValue', 'type', 'placeholder', 'name', 'autocomplete', 'size', 'ui'],
     },
     UIcon: {
@@ -19,6 +20,16 @@ describe('input password component', () => {
     },
   }
   const mocks = { $t: (key: string) => key }
+
+  it('marks a required field for assistive tech, hiding the asterisk', () => {
+    const wrapper = mount(InputPassword, {
+      props: { modelValue: '', name: 'password', label: 'Password', required: true },
+      global: { stubs, mocks },
+    })
+
+    expect(wrapper.find('input').attributes('aria-required')).toBe('true')
+    expect(wrapper.find('[aria-hidden="true"]').text()).toBe('*')
+  })
 
   it('masks the value as a password by default', () => {
     const wrapper = mount(InputPassword, {
