@@ -27,6 +27,25 @@ describe('heading component', () => {
     expect(wrapper.classes()).not.toContain('font-serif')
   })
 
+  it('picks the smaller title size through the size prop', () => {
+    const wrapper = mount(Heading, { props: { as: 'h1', size: 'sm' } })
+
+    expect(wrapper.classes()).toEqual(
+      expect.arrayContaining(['text-lg', 'font-medium']),
+    )
+    expect(wrapper.classes()).not.toContain('text-3xl')
+  })
+
+  it('falls back to md for a size the variant does not have', () => {
+    const title = mount(Heading, { props: { as: 'h2', size: 'hero' } })
+    const display = mount(Heading, {
+      props: { as: 'h2', variant: 'display', size: 'sm' },
+    })
+
+    expect(title.classes()).toContain('text-3xl')
+    expect(display.classes()).toContain('md:text-[48px]')
+  })
+
   it('renders the serif display look at the requested size', () => {
     const wrapper = mount(Heading, {
       props: { as: 'h2', variant: 'display', size: 'lg' },
