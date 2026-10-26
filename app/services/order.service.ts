@@ -1,4 +1,4 @@
-import { orderRepository } from '../repository/order.repository'
+import { orderRepository } from '~/repository/order.repository'
 
 // TODO: unused (composables call orderRepository directly) — remove if no logic is added here
 

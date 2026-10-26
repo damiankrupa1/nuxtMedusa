@@ -44,7 +44,6 @@
     "lodash": "^4.17.21",
     "nuxt": "^3.16.0",
     "vue": "latest",
-    "vue-router": "latest",
     "zod": "^4.4.3"
   },
   "packageManager": "pnpm@11.5.0",

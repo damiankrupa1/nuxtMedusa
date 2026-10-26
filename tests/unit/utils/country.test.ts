@@ -4,7 +4,7 @@ import { describe, expect, it } from '@jest/globals'
 import {
   getCountriesFromRegions,
   getCountryFromCountryCode,
-} from '../../../app/utils/country'
+} from '~/utils/country'
 
 describe('country utils', () => {
   const makeCountry = (

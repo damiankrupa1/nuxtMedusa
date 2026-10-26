@@ -1,5 +1,5 @@
 import type { StoreProduct, StoreProductListParams } from '@medusajs/types'
-import { productRepository } from '../repository/product.repository'
+import { productRepository } from '~/repository/product.repository'
 
 export const useFetchProducts = (
   query: MaybeRef<StoreProductListParams>,
