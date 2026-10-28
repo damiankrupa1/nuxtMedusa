@@ -21,7 +21,7 @@ pnpm format:check  # prettier --check .
 pnpm test          # jest --runInBand
 ```
 
-The Jest unit tests live under `tests/unit/` and are run by CI together with `pnpm lint` and `pnpm build` on pushes to `main` and pull requests. Run one test file with `pnpm exec jest tests/unit/utils/product.test.ts --runInBand`.
+The Jest unit tests live under `tests/unit/` and are run by CI together with `pnpm lint`, `pnpm format:check` and `pnpm build` on pushes to `main` and pull requests. Run one test file with `pnpm exec jest tests/unit/utils/product.test.ts --runInBand`.
 
 ### Environment
 
