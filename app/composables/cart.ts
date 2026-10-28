@@ -181,9 +181,9 @@ export const usePlaceOrder = () => {
       const orderResponse = await completeOrder()
       if (orderResponse.type === 'order') {
         setCartId()
-        refreshNuxtData(`cart`)
+        void refreshNuxtData(`cart`)
         data.value = orderResponse.order
-        navigateTo(
+        void navigateTo(
           toCountryLink(
             {
               name: 'countryCode-order-orderId-confirmed',

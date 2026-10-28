@@ -29,7 +29,7 @@ export const useCartService = () => {
       cartResponse.cart &&
       cartResponse.cart?.region_id !== country.value?.region_id
     ) {
-      updateCart({ region_id: country.value?.region_id })
+      void updateCart({ region_id: country.value?.region_id })
     }
 
     return cartResponse
@@ -58,7 +58,7 @@ export const useCartService = () => {
       )
 
     const cart = await repositoryUpdateCart(cartId.value, data)
-    refreshNuxtData(`cart`)
+    void refreshNuxtData(`cart`)
     return cart
   }
 
@@ -69,7 +69,7 @@ export const useCartService = () => {
       )
 
     const cart = await repositoryCreateLineItem(cartId.value, item)
-    refreshNuxtData(`cart`)
+    void refreshNuxtData(`cart`)
     return cart
   }
 
@@ -83,7 +83,7 @@ export const useCartService = () => {
       )
 
     const cart = await repositoryUpdateLineItem(cartId.value, lineItemId, data)
-    refreshNuxtData(`cart`)
+    void refreshNuxtData(`cart`)
     return cart
   }
 
@@ -115,7 +115,7 @@ export const useCartService = () => {
       )
 
     const deleted = await repositoryDeleteLineItem(cartId.value, lineItemId)
-    refreshNuxtData(`cart`)
+    void refreshNuxtData(`cart`)
     return deleted
   }
 
@@ -129,7 +129,7 @@ export const useCartService = () => {
       )
 
     const cart = await repositoryAddShippingMethod(cartId.value, optionId, data)
-    refreshNuxtData(`cart`)
+    void refreshNuxtData(`cart`)
     return cart
   }
 

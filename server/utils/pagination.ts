@@ -12,6 +12,8 @@ export async function listAllPages<T>(
   let offset = 0
 
   while (true) {
+    // Sequential on purpose: the next offset depends on this page's length.
+    // eslint-disable-next-line no-await-in-loop
     const page = await fetchPage({ limit, offset })
     items.push(...page.items)
     offset += page.items.length
