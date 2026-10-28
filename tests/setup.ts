@@ -13,10 +13,7 @@ import {
 
 import { captureError } from '~/utils/capture-error'
 import { formatInpostPointAddress } from '~/utils/inpost'
-import {
-  getStripePaymentMethod,
-  toStripeBillingDetails,
-} from '~/utils/payment'
+import { getStripePaymentMethod, toStripeBillingDetails } from '~/utils/payment'
 import { getPercentageDiff } from '~/utils/percentage-diff'
 
 Object.assign(globalThis, {

@@ -21,8 +21,18 @@ describe('input component', () => {
     UInput: {
       // Like UInput, passes extra attributes (aria-required) to the <input>.
       inheritAttrs: false,
-      template: '<input v-bind="$attrs" :id="id" :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" /><slot />',
-      props: ['id', 'modelValue', 'placeholder', 'type', 'name', 'autocomplete', 'size', 'ui'],
+      template:
+        '<input v-bind="$attrs" :id="id" :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" /><slot />',
+      props: [
+        'id',
+        'modelValue',
+        'placeholder',
+        'type',
+        'name',
+        'autocomplete',
+        'size',
+        'ui',
+      ],
     },
   }
 
@@ -64,7 +74,9 @@ describe('input component', () => {
 
     await wrapper.find('input').setValue('test@example.com')
 
-    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['test@example.com'])
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([
+      'test@example.com',
+    ])
   })
 
   it('names the input with its label outside a form field', () => {
@@ -80,7 +92,10 @@ describe('input component', () => {
 
   it('reuses the form field input id, so the field keeps its wiring', () => {
     const wrapper = mount(FormFieldStub, {
-      slots: { default: () => h(AppInput, { modelValue: '', name: 'email', label: 'Email' }) },
+      slots: {
+        default: () =>
+          h(AppInput, { modelValue: '', name: 'email', label: 'Email' }),
+      },
       global: { stubs },
     })
 

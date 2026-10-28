@@ -34,7 +34,12 @@ describe('product price component', () => {
 
   it('shows the percentage discount when extended', () => {
     const wrapper = mount(ProductPrice, {
-      props: { originalPrice: 100, currentPrice: 80, currencyCode: 'usd', extended: true },
+      props: {
+        originalPrice: 100,
+        currentPrice: 80,
+        currencyCode: 'usd',
+        extended: true,
+      },
       global: { stubs, mocks },
     })
 

@@ -17,7 +17,11 @@ const productsSorted = computed(() => sortProducts(products, sortBy))
     class="grid grid-cols-2 w-full sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-8"
   >
     <li v-for="product in productsSorted" :key="product.id">
-      <ProductCard :product="product" :badge="badge" :with-save-icon="withSaveIcon" />
+      <ProductCard
+        :product="product"
+        :badge="badge"
+        :with-save-icon="withSaveIcon"
+      />
     </li>
   </ul>
 </template>

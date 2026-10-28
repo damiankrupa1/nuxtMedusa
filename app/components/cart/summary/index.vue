@@ -14,10 +14,7 @@ const isCartUndefined = computed(() => cart === undefined)
 </script>
 
 <template>
-  <div
-    v-if="isCartUndefined || !isCartEmpty"
-    class="flex flex-col gap-y-4"
-  >
+  <div v-if="isCartUndefined || !isCartEmpty" class="flex flex-col gap-y-4">
     <AppHeading as="h2">
       {{ title }}
     </AppHeading>

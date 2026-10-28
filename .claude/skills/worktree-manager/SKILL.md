@@ -84,6 +84,7 @@ Jeśli branch jest już przypisany do innego worktree, katalog istnieje lub repo
 ## Format odpowiedzi
 
 Zwięźle przedstaw:
+
 - co sprawdziłeś,
 - co proponujesz,
 - jakie polecenia wykonasz,
