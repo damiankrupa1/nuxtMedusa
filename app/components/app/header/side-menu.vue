@@ -4,6 +4,8 @@ const { title } = useAppConfig()
 const { country } = useCountry()
 const { t } = useI18n()
 
+const { data: navigation } = useFetchNavigation()
+
 const currentYear = new Date().getFullYear()
 </script>
 
@@ -17,20 +19,30 @@ const currentYear = new Date().getFullYear()
     <template #body>
       <div class="h-full min-h-48 flex flex-col justify-between">
         <div class="flex flex-col space-y-4">
+          <template v-if="navigation?.primaryNav.length">
+            <AppLink
+              v-for="item in navigation.primaryNav"
+              :key="item.url"
+              :to="item.url"
+              @click="isOpen = false"
+            >
+              {{ item.label }}
+            </AppLink>
+            <div class="h-px bg-color-line my-2" />
+          </template>
           <AppLink
-            v-for="item in primaryNav"
-            :key="item.labelKey"
-            :to="item.to"
+            to="/account"
+            class="flex items-center gap-x-2"
             @click="isOpen = false"
           >
-            {{ $t(item.labelKey) }}
-          </AppLink>
-          <div class="h-px bg-color-line my-2" />
-          <AppLink to="/account" class="flex items-center gap-x-2" @click="isOpen = false">
             <UIcon name="i-lucide-user-round" class="size-4" />
             {{ $t('app.header.account') }}
           </AppLink>
-          <AppLink to="/cart" class="flex items-center gap-x-2" @click="isOpen = false">
+          <AppLink
+            to="/cart"
+            class="flex items-center gap-x-2"
+            @click="isOpen = false"
+          >
             <UIcon name="i-lucide-shopping-bag" class="size-4" />
             {{ $t('app.header.cart') }}
           </AppLink>

@@ -1,57 +1,30 @@
 <script setup lang="ts">
 // Curated feature grid, not a raw category listing — card copy/images are
-// editorial. Falls back to the cards below when Payload has no
-// CategoryTiles global yet, none of its categoryHandles still resolve to a
-// real Medusa category, or it's unreachable — see missing-cms-content
-// skill. Link targets are always real categories from the connected
-// Medusa catalog either way.
-const fallbackCards = [
-  {
-    key: 'knitwear',
-    handle: 'sweaters-cardigans',
-    image: '/images/home/category-knitwear.jpg',
-  },
-  {
-    key: 'shirts',
-    handle: 'shirts',
-    image: '/images/home/category-shirts.jpg',
-  },
-  {
-    key: 'coats',
-    handle: 'jackets-coats',
-    image: '/images/home/category-coats.jpg',
-  },
-  {
-    key: 'accessories',
-    handle: 'accessories',
-    image: '/images/home/category-accessories.jpg',
-  },
-]
-
+// editorial. Cards whose categoryHandle no longer resolves to a real Medusa
+// category are dropped by the CMS service, so every link is a real category.
 const { data: categoryTiles } = useFetchCategoryTiles()
-const cms = computed(() => categoryTiles.value ?? null)
 </script>
 
 <template>
-  <section class="flex flex-col gap-8 px-6 py-16 md:px-16 md:py-[88px]">
+  <section
+    v-if="categoryTiles"
+    class="flex flex-col gap-8 px-6 py-16 md:px-16 md:py-[88px]"
+  >
     <div
       class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-end"
     >
       <AppSectionIntro
-        :eyebrow="cms?.eyebrow ?? $t('pages.home.categories.eyebrow')"
-        :heading="cms?.heading ?? $t('pages.home.categories.heading')"
+        :eyebrow="categoryTiles.eyebrow"
+        :heading="categoryTiles.heading"
       />
       <p class="max-w-[320px] text-[13px] leading-[1.7] text-color-muted">
-        {{ cms?.description ?? $t('pages.home.categories.description') }}
+        {{ categoryTiles.description }}
       </p>
     </div>
 
-    <div
-      v-if="cms"
-      class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
-    >
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
       <AppLink
-        v-for="card in cms.cards"
+        v-for="card in categoryTiles.cards"
         :key="card.categoryHandle"
         :to="{
           name: 'countryCode-categories-handle',
@@ -76,41 +49,6 @@ const cms = computed(() => categoryTiles.value ?? null)
           />
         </div>
         <p class="text-xs text-color-muted">{{ card.subtitle }}</p>
-      </AppLink>
-    </div>
-    <div v-else class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      <AppLink
-        v-for="card in fallbackCards"
-        :key="card.key"
-        :to="{
-          name: 'countryCode-categories-handle',
-          params: { handle: card.handle },
-        }"
-        class="flex flex-col gap-[18px]"
-      >
-        <div class="h-[340px] w-full overflow-hidden">
-          <NuxtImg
-            :src="card.image"
-            :alt="$t(`pages.home.categories.${card.key}.imageAlt`)"
-            width="1024"
-            height="1024"
-            sizes="100vw sm:50vw lg:25vw"
-            class="size-full object-cover"
-            loading="lazy"
-          />
-        </div>
-        <div class="flex items-center justify-between">
-          <p class="font-serif text-[28px] text-color-ink">
-            {{ $t(`pages.home.categories.${card.key}.title`) }}
-          </p>
-          <UIcon
-            name="i-lucide-arrow-up-right"
-            class="size-[19px] shrink-0 text-color-ink"
-          />
-        </div>
-        <p class="text-xs text-color-muted">
-          {{ $t(`pages.home.categories.${card.key}.subtitle`) }}
-        </p>
       </AppLink>
     </div>
   </section>

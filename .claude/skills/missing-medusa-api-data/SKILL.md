@@ -12,7 +12,7 @@ Entries are added as each home page section is implemented. Each entry notes how
 ## Header: "Ostatnie sztuki" (last pieces) nav item
 
 - **Needs**: a nav entry that filters products running low on stock.
-- **Mocked today**: `app/utils/navigation.ts` points it at `/store` like every other nav item, no filtering applied.
+- **Mocked today**: the nav entry comes from Payload's `Navigation` global (label + URL); the storefront applies no filtering to whatever URL the editor sets.
 - **Real fix would need**: `useFetchProducts` / `product.repository.ts` already request `+variants.inventory_quantity`, so the raw data exists per-variant, but there's no aggregate "low stock" query or sort option exposed by `app/composables/product.ts` or `app/types/filter.ts` (`SORT_OPTIONS`) to build a dedicated low-stock listing from.
 
 ## Header: wishlist / saved products
@@ -40,12 +40,6 @@ Entries are added as each home page section is implemented. Each entry notes how
 - **Mocked today**: `app/components/app/footer/payment-delivery.vue`, two static string arrays.
 - **Verified live** (2026-10-24, against `medusaDemo/apps/backend/medusa-config.ts` — the actual backend this storefront's `.env` points at; see `storefront-env-is-production` memory): the `[Modules.PAYMENT]` config lists exactly **one** provider, `@medusajs/medusa/payment-stripe` (id `stripe`) — BLIK/Przelewy24 are payment method types handled _inside_ Stripe's own confirmation flow (matches `stripe.repository.ts`), not separate Medusa-level providers a generic "list payment providers" call could enumerate; VISA/Mastercard are card networks, not providers at all. **PayPo is not configured anywhere in this backend.** The `[Modules.FULFILLMENT]` config lists `inpost` (real — same integration as the checkout parcel-locker picker) and `manual` (generic fallback). **DPD is not configured anywhere in this backend.**
 - **Real fix would need**: for payment, a composable wired to Medusa's `payment-providers` listing would today return only `["stripe"]` — not the five-badge breakdown — so matching the Figma design needs either badges driven by what Stripe itself has enabled (not a Medusa concept) or accepting the mismatch; PayPo needs a real provider added to `medusa-config.ts` first. For delivery, same story — DPD needs a real fulfillment provider added before it can be anything but a static label.
-
-## Home: "Shop by category" card images
-
-- **Needs**: a photo per featured category tile.
-- **Mocked today**: `app/components/home/categories.vue` pairs each real category handle with a local downloaded image (`public/images/home/category-*.jpg`, real Figma artwork, not placeholders) via a static array in the component — `StoreProductCategory`/`BaseProductCategory` (`@medusajs/types`) has no image/thumbnail field, confirmed by `category.repository.ts`'s `fields: 'handle,name,*parent_category,*category_children'`.
-- **Real fix would need**: a `metadata.image` convention on categories (nobody currently reads `metadata` anywhere in this codebase) or a real image field added to the category model.
 
 ## Home: "New arrivals" card badge, brand line and material/color text
 

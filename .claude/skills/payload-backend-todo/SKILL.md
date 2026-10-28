@@ -5,7 +5,7 @@ description: 'Tracks the Payload CMS backend contract (Collections/Globals, fiel
 
 # Payload backend TODO
 
-This repo only contains the Nuxt-side consumption layer for Payload CMS (`app/repository/cms.repository.ts`, `app/composables/cms.ts`, `app/types/cms.ts`) — see "Payload CMS integration" in `CLAUDE.md`. No Payload backend is configured here. Each entry below is a Global/Collection that `cms.repository.ts` already calls and that a connected Payload instance must provide with this exact REST shape for the storefront to show real content instead of its static i18n fallback.
+This repo only contains the Nuxt-side consumption layer for Payload CMS (`app/repository/cms.repository.ts`, `app/composables/cms.ts`, `app/types/cms.ts`) — see "Payload CMS integration" in `CLAUDE.md`. No Payload backend is configured here. Each entry below is a Global/Collection that `cms.repository.ts` already calls and that a connected Payload instance must provide with this exact REST shape for the storefront to show that content. The storefront has no static fallback: a missing or unreachable Global means that section is not rendered.
 
 Conventions used throughout:
 
@@ -13,7 +13,7 @@ Conventions used throughout:
 - Every text field listed must have `localized: true` and the Payload instance's `localization` config must declare exactly `{ locales: ['en', 'pl'], defaultLocale: 'en' }` to match this app's `i18n.locales`.
 - `access.read: () => true` on each (public read-only) — matches the "publiczny read-only REST" transport decision; no API key is sent from this app.
 - A field named `url`/`to` should be a storefront-relative path (e.g. `/store`) or an absolute URL — `cms.repository.ts` doesn't rewrite it.
-- `nuxt.config.ts` adds `NUXT_PUBLIC_PAYLOAD_URL`'s hostname to `image.domains` at build/start time so `@nuxt/image`'s `NuxtImg` (used for every `image.url`/`image.alt` field below, same as the rest of the app) actually optimizes Payload-hosted images instead of silently serving them unoptimized. Changing `NUXT_PUBLIC_PAYLOAD_URL` to a different host needs a restart (dev) or redeploy (prod) to pick up the new domain — it isn't runtime-reactive.
+- `nuxt.config.ts` adds `NUXT_PUBLIC_PAYLOAD_URL`'s hostname, plus any hostnames listed in `NUXT_PUBLIC_PAYLOAD_IMAGE_HOSTS` (e.g. the bucket host of Payload's `S3_FILE_URL`), to `image.domains` at build/start time so `@nuxt/image`'s `NuxtImg` (used for every `image.url`/`image.alt` field below, same as the rest of the app) actually optimizes Payload-hosted images instead of silently serving them unoptimized. Changing `NUXT_PUBLIC_PAYLOAD_URL` to a different host needs a restart (dev) or redeploy (prod) to pick up the new domain — it isn't runtime-reactive.
 
 ## `Navigation` (Global) — implemented
 
@@ -38,7 +38,7 @@ Conventions used throughout:
 - **Fields**: `eyebrow`, `headlineLine1`, `headlineLine2`, `paragraph1`, `paragraph2` — localized text; `values` — array of localized text (3 short value markers); `signatureLabel`, `signatureTagline` — localized text; `collectionLinkLabel` — localized text; `collectionUrl` — text (storefront-relative path); `image` — upload relationship to `Media`, resolved with `depth=1`+ so `image.url`/`image.alt` come back populated (plain strings, not a `Media` id).
 - **Consumed by**: `useFetchStudioStory()` → `app/components/home/studio-story.vue`.
 - **Type**: `CmsStudioStory` in `app/types/cms.ts`.
-- **Note**: all editorial copy here is final, localized text written by an editor — it does not need `{title}` brand-name interpolation the way the i18n fallback does, since Payload content is never a template.
+- **Note**: all editorial copy here is final, localized text written by an editor — it does not need `{title}` brand-name interpolation, since Payload content is never a template.
 
 ## `Brands` (Global) — implemented
 
