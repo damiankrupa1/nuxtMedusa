@@ -3,18 +3,19 @@ import type {
   CmsCampaignSlides,
   CmsCategoryTiles,
   CmsFooterContent,
+  CmsGlobalSlug,
   CmsJournalSection,
   CmsNavigation,
   CmsShopTheLook,
   CmsStudioStory,
 } from '~/types/cms'
 
-// Payload's REST API is public read-only today (see the Navigation/
-// FooterContent globals' `access.read`), so this fetches it directly. If that
-// ever moves behind a server/api/cms proxy (an API key, draft previews), only
-// this function's fetch target changes — callers below don't.
+// Payload's REST API is public read-only today, but it sends no CORS headers
+// for the storefront, so the browser can't call it. The request goes through
+// the server/api/cms proxy, which forwards it to Payload (and is where an API
+// key or draft-preview secret would go); callers below don't care.
 async function fetchGlobal<T>(
-  slug: string,
+  slug: CmsGlobalSlug,
   locale: string,
   // depth 0 leaves relationships (e.g. an image upload) as a bare Media id;
   // callers whose type includes a CmsImage/upload relationship must pass a
@@ -27,7 +28,7 @@ async function fetchGlobal<T>(
   if (!payloadUrl) return null
 
   try {
-    return await $fetch<T>(`${payloadUrl}/api/globals/${slug}`, {
+    return await $fetch<T>(`/api/cms/${slug}`, {
       query: { locale, depth },
     })
   } catch (error) {
@@ -53,10 +54,14 @@ export function cmsRepository() {
     async fetchBrands(locale: string): Promise<CmsBrands | null> {
       return fetchGlobal<CmsBrands>('brands', locale)
     },
-    async fetchJournalSection(locale: string): Promise<CmsJournalSection | null> {
+    async fetchJournalSection(
+      locale: string,
+    ): Promise<CmsJournalSection | null> {
       return fetchGlobal<CmsJournalSection>('journal-section', locale, 1)
     },
-    async fetchCampaignSlides(locale: string): Promise<CmsCampaignSlides | null> {
+    async fetchCampaignSlides(
+      locale: string,
+    ): Promise<CmsCampaignSlides | null> {
       return fetchGlobal<CmsCampaignSlides>('campaign-slides', locale, 1)
     },
     async fetchCategoryTiles(locale: string): Promise<CmsCategoryTiles | null> {

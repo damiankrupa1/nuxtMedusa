@@ -47,9 +47,9 @@ export default defineNuxtConfig({
       stripeKey: process.env.NUXT_PUBLIC_STRIPE_KEY || '',
       inpostGeowidgetToken:
         process.env.NUXT_PUBLIC_INPOST_GEOWIDGET_TOKEN || '',
-      // Payload CMS base URL. Its Navigation/FooterContent globals are
-      // public read-only today, so this is safe to expose; an admin/API key
-      // would instead go server-only and behind a server/api/cms proxy.
+      // Payload CMS base URL. Its globals are public read-only today, so this
+      // is safe to expose; an admin/API key would instead go in private
+      // runtimeConfig, used only by the server/api/cms proxy.
       payloadUrl: process.env.NUXT_PUBLIC_PAYLOAD_URL || '',
     },
   },
