@@ -20,6 +20,33 @@ import {
   cmsShopTheLookSchema,
   cmsStudioStorySchema,
 } from '~/types/cms'
+import { shouldReportOnce } from '~/utils/report-once'
+
+// A global that doesn't match its schema fails on every render and every
+// client-side navigation until someone fixes it in Payload, so each distinct
+// failure is reported once per server instance / page load. The event carries
+// the zod issues as paths, codes and messages only (zod leaves the received
+// values out), so it says which field is wrong without carrying any content.
+function reportInvalidGlobal(slug: CmsGlobalSlug, error: z.ZodError) {
+  const issues = error.issues.map(({ code, path, message }) => ({
+    code,
+    path: path.join('.') || '(root)',
+    message,
+  }))
+  const signature = issues.map(({ path, code }) => `${path}:${code}`).join('|')
+  if (!shouldReportOnce(`payload:${slug}:${signature}`)) {
+    return
+  }
+
+  const first = issues[0]
+  captureError(
+    new Error(
+      `Payload global "${slug}" doesn't match its schema (${first?.path}: ${first?.message})`,
+      { cause: error },
+    ),
+    { source: 'payload', global: slug, type: 'invalid_response', issues },
+  )
+}
 
 // Payload's REST API is public read-only today, but it sends no CORS headers
 // for the storefront, so the browser can't call it. The request goes through
@@ -55,11 +82,7 @@ async function fetchGlobal<Schema extends z.ZodType>(
 
   const result = schema.safeParse(response)
   if (!result.success) {
-    captureError(result.error, {
-      source: 'payload',
-      global: slug,
-      type: 'invalid_response',
-    })
+    reportInvalidGlobal(slug, result.error)
     return null
   }
 

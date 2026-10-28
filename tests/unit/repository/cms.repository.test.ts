@@ -3,6 +3,7 @@ import { ZodError } from 'zod'
 
 import { cmsRepository } from '~/repository/cms.repository'
 import type { CmsGlobalSlug } from '~/types/cms'
+import { resetReportedOnce } from '~/utils/report-once'
 import { payloadGlobals, payloadImage } from '~~/tests/fixtures/cms'
 
 type Repository = ReturnType<typeof cmsRepository>
@@ -20,6 +21,7 @@ describe('cms repository', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    resetReportedOnce()
     config.public.payloadUrl = 'https://cms.example.com'
   })
 
@@ -93,11 +95,66 @@ describe('cms repository', () => {
 
     expect(result).toBeNull()
     expect(captureError).toHaveBeenCalledTimes(1)
-    expect(captureError).toHaveBeenCalledWith(expect.any(ZodError), {
+    const [error, context] = captureError.mock.calls[0] as [Error, object]
+    expect(error.message).toContain('Payload global "navigation"')
+    expect(error.cause).toBeInstanceOf(ZodError)
+    expect(context).toEqual({
       source: 'payload',
       global: 'navigation',
       type: 'invalid_response',
+      issues: expect.arrayContaining([
+        expect.objectContaining({
+          code: expect.any(String),
+          path: expect.any(String),
+          message: expect.any(String),
+        }),
+      ]),
     })
+  })
+
+  it('reports the same broken global once, not on every render', async () => {
+    fetchMock.mockResolvedValue({})
+
+    await cmsRepository().fetchNavigation('pl')
+    await cmsRepository().fetchNavigation('pl')
+    await cmsRepository().fetchNavigation('en')
+
+    expect(captureError).toHaveBeenCalledTimes(1)
+  })
+
+  it('reports a different broken global, and a different failure of the same one', async () => {
+    fetchMock.mockResolvedValue({})
+    await cmsRepository().fetchNavigation('pl')
+    await cmsRepository().fetchBrands('pl')
+    fetchMock.mockResolvedValue({ primaryNav: [{ label: 'New in', url: 5 }] })
+    await cmsRepository().fetchNavigation('pl')
+
+    expect(captureError).toHaveBeenCalledTimes(3)
+    expect(captureError.mock.calls.map(([, context]) => context)).toEqual([
+      expect.objectContaining({ global: 'navigation' }),
+      expect.objectContaining({ global: 'brands' }),
+      expect.objectContaining({
+        global: 'navigation',
+        issues: [expect.objectContaining({ path: 'primaryNav.0.url' })],
+      }),
+    ])
+  })
+
+  it('says which field is wrong without carrying the received content', async () => {
+    fetchMock.mockResolvedValue({
+      primaryNav: [{ label: 'secret@example.com', url: 5 }],
+    })
+
+    await cmsRepository().fetchNavigation('pl')
+
+    const [error, context] = captureError.mock.calls[0] as [Error, object]
+    const everything = JSON.stringify([
+      error.message,
+      (error.cause as Error).message,
+      context,
+    ])
+    expect(everything).toContain('primaryNav.0.url')
+    expect(everything).not.toContain('secret@example.com')
   })
 
   it('rejects an image fetched without depth (a bare Media id)', async () => {
@@ -110,8 +167,11 @@ describe('cms repository', () => {
 
     expect(result).toBeNull()
     expect(captureError).toHaveBeenCalledWith(
-      expect.any(ZodError),
-      expect.objectContaining({ global: 'studio-story' }),
+      expect.any(Error),
+      expect.objectContaining({
+        global: 'studio-story',
+        type: 'invalid_response',
+      }),
     )
   })
 

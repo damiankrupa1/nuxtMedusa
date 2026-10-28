@@ -15,6 +15,46 @@ const makeEvent = (event: Partial<ErrorEvent>): ErrorEvent => ({
 })
 
 describe('sentry utils', () => {
+  describe('an invalid Payload response (zod issues)', () => {
+    // What cms.repository.ts passes to captureError()
+    const context = {
+      source: 'payload',
+      global: 'footer-content',
+      type: 'invalid_response',
+      issues: [
+        {
+          code: 'invalid_type',
+          path: 'contact.phone',
+          message: 'Invalid input: expected string, received number',
+        },
+      ],
+    }
+    const error = new Error('Payload global "footer-content" is invalid')
+
+    it('is an alert, not an expected error', () => {
+      expect(isExpectedError(error, context)).toBe(false)
+    })
+
+    it('becomes searchable tags plus the issues in extra', () => {
+      expect(toSentryContext(context)).toEqual({
+        tags: {
+          source: 'payload',
+          cms_global: 'footer-content',
+          error_type: 'invalid_response',
+        },
+        extra: { issues: context.issues },
+      })
+    })
+
+    it('keeps the issues readable through the privacy filter', () => {
+      const event = scrubSentryEvent(
+        makeEvent({ extra: toSentryContext(context).extra }),
+      )
+
+      expect(event.extra).toEqual({ issues: context.issues })
+    })
+  })
+
   describe('isExpectedError', () => {
     it('treats 4xx statuses on status, statusCode and response as expected', () => {
       expect(isExpectedError({ status: 404 })).toBe(true)
