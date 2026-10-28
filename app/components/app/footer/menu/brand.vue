@@ -1,12 +1,7 @@
 <script lang="ts" setup>
 const { title } = useAppConfig()
 
-// Falls back to the i18n placeholders below when Payload has no
-// FooterContent global yet (or is unreachable) — see missing-cms-content
-// skill.
 const { data: footerContent } = useFetchFooterContent()
-const contact = computed(() => footerContent.value?.contact ?? null)
-const social = computed(() => footerContent.value?.social ?? null)
 </script>
 
 <template>
@@ -22,17 +17,13 @@ const social = computed(() => footerContent.value?.social ?? null)
     >
       {{ $t('app.footer.tagline') }}
     </p>
-    <div class="flex flex-col gap-y-2 text-color-sage text-xs">
-      <template v-if="contact">
-        <p>{{ contact.email }}</p>
-        <p>{{ contact.phone }}</p>
-        <p class="text-[10px]">{{ contact.hours }}</p>
-      </template>
-      <template v-else>
-        <p>{{ $t('app.footer.contact.email') }}</p>
-        <p>{{ $t('app.footer.contact.phone') }}</p>
-        <p class="text-[10px]">{{ $t('app.footer.contact.hours') }}</p>
-      </template>
+    <div
+      v-if="footerContent?.contact"
+      class="flex flex-col gap-y-2 text-color-sage text-xs"
+    >
+      <p>{{ footerContent.contact.email }}</p>
+      <p>{{ footerContent.contact.phone }}</p>
+      <p class="text-[10px]">{{ footerContent.contact.hours }}</p>
     </div>
     <div class="flex items-center gap-x-5">
       <UIcon
@@ -43,8 +34,8 @@ const social = computed(() => footerContent.value?.social ?? null)
         name="i-simple-icons-facebook"
         class="size-[18px] text-color-paper"
       />
-      <span class="text-[11px] text-color-sage">
-        {{ social?.handle ?? $t('app.footer.social.handle') }}
+      <span v-if="footerContent?.social" class="text-[11px] text-color-sage">
+        {{ footerContent.social.handle }}
       </span>
     </div>
   </div>

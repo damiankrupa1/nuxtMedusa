@@ -17,16 +17,6 @@
       "announcement": {
         "promise": "WELL CHOSEN. FOR LONGER.",
         "shipping": "Free shipping from 399 zł · 30-day returns"
-      },
-      "nav": {
-        "newIn": "New in",
-        "clothing": "Clothing",
-        "shoes": "Shoes",
-        "bagsAndAccessories": "Bags & accessories",
-        "brands": "Brands",
-        "studio": "Fashion Studio",
-        "inspiration": "Inspiration",
-        "lastPieces": "Last pieces"
       }
     },
     "sideMenu": {
@@ -74,14 +64,6 @@
     },
     "footer": {
       "tagline": "Well chosen. For longer.",
-      "contact": {
-        "email": "hello{'@'}fashion.store",
-        "phone": "+48 22 104 20 20",
-        "hours": "Mon.–Fri. 9:00–17:00"
-      },
-      "social": {
-        "handle": "{'@'}fashion.store"
-      },
       "shopping": {
         "heading": "SHOPPING",
         "newIn": "New in",
@@ -89,26 +71,10 @@
         "giftCards": "Gift cards"
       },
       "help": {
-        "heading": "HOW CAN WE HELP?",
-        "shippingAndPayments": "Shipping & payments",
-        "returns": "Returns & complaints",
-        "sizeGuide": "Size guide",
-        "trackOrder": "Track your order",
-        "faq": "FAQ"
+        "heading": "HOW CAN WE HELP?"
       },
       "world": {
-        "heading": "THE FASHION WORLD",
-        "about": "About us",
-        "studio": "Fashion Studio",
-        "journal": "Journal",
-        "materials": "Materials & care",
-        "careers": "Join the team"
-      },
-      "legal": {
-        "terms": "Terms",
-        "privacy": "Privacy policy",
-        "cookies": "Cookie settings",
-        "accessibility": "Accessibility"
+        "heading": "THE FASHION WORLD"
       },
       "paymentLabel": "Secure payments",
       "deliveryLabel": "Your delivery",
@@ -122,44 +88,6 @@
     },
     "home": {
       "title": "Fashion",
-      "campaign": {
-        "seasonLabel": "AUTUMN — WINTER 2026",
-        "editionLabel": "THE EVERYDAY EDIT",
-        "headlineLine1": "Fewer things.",
-        "headlineLine2": "More you.",
-        "description": "Selected brands. Noble materials. Clothes you return to — no matter the season.",
-        "shopCta": "Discover the collection",
-        "secondaryCta": "For him",
-        "tagline": "Everyday, done well.",
-        "captionEyebrow": "A NEW DEFINITION OF CLASSIC",
-        "captionHeadline": "Pieces for more than one season.",
-        "imageAlt": "A model in a wool coat standing on stone steps in an autumn city scene"
-      },
-      "categories": {
-        "eyebrow": "YOUR WARDROBE",
-        "heading": "A good base. Your own style.",
-        "description": "Timeless shapes and new favourite details. Find what fits your everyday.",
-        "knitwear": {
-          "title": "Knitwear",
-          "subtitle": "Softness that stays.",
-          "imageAlt": "A model wearing an oatmeal knit sweater"
-        },
-        "shirts": {
-          "title": "Shirts & T-shirts",
-          "subtitle": "The start of every outfit.",
-          "imageAlt": "A model in a white linen shirt"
-        },
-        "coats": {
-          "title": "Coats & jackets",
-          "subtitle": "Shape for colder days.",
-          "imageAlt": "A model walking in a long camel coat"
-        },
-        "accessories": {
-          "title": "Shoes & accessories",
-          "subtitle": "Considered down to the last detail.",
-          "imageAlt": "Leather loafers and a handbag styled on a stone ledge"
-        }
-      },
       "newArrivals": {
         "eyebrow": "A FRESH TAKE ON EVERYDAY",
         "heading": "New, but built to last.",
@@ -168,62 +96,6 @@
         "tabMen": "For him",
         "tabStudio": "Fashion Studio",
         "badge": "New"
-      },
-      "shopTheLook": {
-        "captionLabel": "{title} SILHOUETTES / 01",
-        "imageAlt": "A woman in a camel coat standing in a sunlit apartment",
-        "bottomTagline": "MONDAY IN THE CITY. WEEKEND ANYWHERE.",
-        "eyebrow": "READY-MADE COMBINATIONS",
-        "headlineLine1": "One base.",
-        "headlineLine2": "Many possibilities.",
-        "description": "Soft knit, the right proportions, and a good coat. A set that fits your rhythm.",
-        "shopSetCta": "Shop this set",
-        "totalLabel": "Total",
-        "sizeHint": "Choose your size on each product's page."
-      },
-      "brands": {
-        "eyebrow": "DIFFERENT BRANDS. A SHARED APPROACH TO QUALITY.",
-        "viewAll": "Discover all brands"
-      },
-      "studioStory": {
-        "imageAlt": "A tailor's hands folding a knit garment in a workshop",
-        "signatureLabel": "{title} STUDIO",
-        "signatureTagline": "Designed and made in Poland.",
-        "eyebrow": "OUR OWN LABEL / {title} STUDIO",
-        "headlineLine1": "What matters",
-        "headlineLine2": "stays close.",
-        "paragraph1": "We believe a good wardrobe doesn't need to rush. That's why, alongside selected brands, we create {title} Studio — original clothing made in Poland, with care for fabric, cut and every seam.",
-        "paragraph2": "No unnecessary extras. No seasonal expiry date. Made for how you actually live.",
-        "valueMade": "Made in Poland",
-        "valueMaterials": "Natural materials",
-        "valueBatches": "Short runs",
-        "collectionLink": "Discover the {title} Studio story"
-      },
-      "journal": {
-        "eyebrow": "{title} JOURNAL",
-        "heading": "Beyond the wardrobe.",
-        "viewAll": "More from the journal",
-        "capsuleWardrobe": {
-          "category": "WARDROBE",
-          "readingTime": "5 min read",
-          "title": "Less, but better. Your capsule wardrobe.",
-          "summary": "12 pieces, dozens of combinations. Where do you start?",
-          "imageAlt": "A clothing rack with coats, shirts and trousers by a sunlit window"
-        },
-        "merinoWool": {
-          "category": "MATERIALS",
-          "readingTime": "4 min read",
-          "title": "Wool you'll actually feel. Meet merino.",
-          "summary": "On natural softness and the quality that makes a difference.",
-          "imageAlt": "Close-up of a folded cream merino wool knit sweater"
-        },
-        "autumnWalk": {
-          "category": "INSPIRATION",
-          "readingTime": "3 min read",
-          "title": "The city, at your pace. An autumn walk.",
-          "summary": "Easy layers for days with no big plans.",
-          "imageAlt": "A man walking down a cobblestone street in a city in autumn"
-        }
       }
     },
     "store": {

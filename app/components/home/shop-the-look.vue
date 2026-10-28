@@ -1,27 +1,12 @@
 <script setup lang="ts">
 import type { AppLinkTarget } from '~/types/link'
 
-const { title, shopTheLookProductHandles } = useAppConfig()
-
-// Hand-picked handles resolved to real products — see app.config.ts and the
-// missing-cms-content skill for why this grouping is editorial curation.
-// Falls back to this static list when Payload has no ShopTheLook global
-// yet, none of its productHandles still resolve to a real Medusa product,
-// or it's unreachable. Both are fetched in parallel (3 products either
-// way) so neither path adds extra latency to the other.
+// Payload supplies the editorial copy, image and product handles; the
+// products themselves (prices, totals) are resolved live from Medusa by the
+// CMS service, which drops handles that no longer match a real product.
 const { data: shopTheLook } = useFetchShopTheLook()
-const cms = computed(() => shopTheLook.value ?? null)
 
-const fallbackResults = await Promise.all(
-  (shopTheLookProductHandles as string[]).map((handle) =>
-    useFetchProductByHandle(handle),
-  ),
-)
-const fallbackProducts = computed(() =>
-  fallbackResults.map((result) => result.data.value).filter((p) => p !== null),
-)
-
-const products = computed(() => cms.value?.products ?? fallbackProducts.value)
+const products = computed(() => shopTheLook.value?.products ?? [])
 
 const total = computed(() =>
   products.value.reduce(
@@ -49,24 +34,13 @@ const shopSetLink = computed<AppLinkTarget>(() =>
 </script>
 
 <template>
-  <section class="flex flex-col lg:flex-row">
+  <section v-if="shopTheLook" class="flex flex-col lg:flex-row">
     <div
       class="relative h-[420px] w-full lg:h-[760px] lg:w-[740px] lg:shrink-0"
     >
       <NuxtImg
-        v-if="cms"
-        :src="cms.image.url"
-        :alt="cms.image.alt"
-        sizes="100vw lg:51vw"
-        class="size-full object-cover"
-        loading="lazy"
-      />
-      <NuxtImg
-        v-else
-        src="/images/home/shop-the-look.jpg"
-        :alt="$t('pages.home.shopTheLook.imageAlt')"
-        width="1024"
-        height="1024"
+        :src="shopTheLook.image.url"
+        :alt="shopTheLook.image.alt"
         sizes="100vw lg:51vw"
         class="size-full object-cover"
         loading="lazy"
@@ -76,34 +50,23 @@ const shopSetLink = computed<AppLinkTarget>(() =>
       >
         <span class="h-px w-[30px] bg-color-ink" />
         <p class="text-[10px] text-color-ink">
-          {{
-            cms?.captionLabel ??
-            $t('pages.home.shopTheLook.captionLabel', { title })
-          }}
+          {{ shopTheLook.captionLabel }}
         </p>
       </div>
       <p class="absolute bottom-10 left-8 text-[10px] text-color-ink">
-        {{ cms?.bottomTagline ?? $t('pages.home.shopTheLook.bottomTagline') }}
+        {{ shopTheLook.bottomTagline }}
       </p>
     </div>
 
     <div
       class="flex flex-1 flex-col gap-6 bg-color-accent px-6 py-10 lg:gap-[25px] lg:px-16 lg:py-[52px]"
     >
-      <AppSectionIntro
-        :eyebrow="cms?.eyebrow ?? $t('pages.home.shopTheLook.eyebrow')"
-        size="lg"
-        tone="dark"
-      >
+      <AppSectionIntro :eyebrow="shopTheLook.eyebrow" size="lg" tone="dark">
         <template #heading>
-          <span class="block">{{
-            cms?.headlineLine1 ?? $t('pages.home.shopTheLook.headlineLine1')
-          }}</span>
-          <span class="block">{{
-            cms?.headlineLine2 ?? $t('pages.home.shopTheLook.headlineLine2')
-          }}</span>
+          <span class="block">{{ shopTheLook.headlineLine1 }}</span>
+          <span class="block">{{ shopTheLook.headlineLine2 }}</span>
         </template>
-        {{ cms?.description ?? $t('pages.home.shopTheLook.description') }}
+        {{ shopTheLook.description }}
       </AppSectionIntro>
 
       <div class="flex flex-col">
@@ -140,11 +103,11 @@ const shopSetLink = computed<AppLinkTarget>(() =>
           inverted
           trailing-icon="i-lucide-arrow-right"
         >
-          {{ cms?.shopSetCtaLabel ?? $t('pages.home.shopTheLook.shopSetCta') }}
+          {{ shopTheLook.shopSetCtaLabel }}
         </AppButtonPrimary>
         <div class="flex flex-col items-end gap-1 text-right">
           <p class="text-[10px] text-color-sage">
-            {{ cms?.totalLabel ?? $t('pages.home.shopTheLook.totalLabel') }}
+            {{ shopTheLook.totalLabel }}
           </p>
           <StoreLocalizedPrice
             :amount="total"
@@ -155,7 +118,7 @@ const shopSetLink = computed<AppLinkTarget>(() =>
       </div>
 
       <p class="text-[10px] text-color-sage">
-        {{ cms?.sizeHint ?? $t('pages.home.shopTheLook.sizeHint') }}
+        {{ shopTheLook.sizeHint }}
       </p>
     </div>
   </section>

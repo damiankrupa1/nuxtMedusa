@@ -1,13 +1,22 @@
 // Payload's image URLs are on a separate host from this app; @nuxt/image
 // needs it allow-listed to run them through its own image optimizer —
 // without this, NuxtImg silently falls back to serving them unoptimized.
-const payloadImageDomain = (() => {
-  if (!process.env.NUXT_PUBLIC_PAYLOAD_URL) return undefined
-  try {
-    return new URL(process.env.NUXT_PUBLIC_PAYLOAD_URL).hostname
-  } catch {
-    return undefined
+// Payload can serve files from a bucket (its S3_FILE_URL) instead of its own
+// origin, so NUXT_PUBLIC_PAYLOAD_IMAGE_HOSTS lists extra hostnames
+// (comma-separated) next to the Payload host itself.
+const payloadImageDomains = (() => {
+  const domains = (process.env.NUXT_PUBLIC_PAYLOAD_IMAGE_HOSTS ?? '')
+    .split(',')
+    .map((host) => host.trim())
+    .filter(Boolean)
+  if (process.env.NUXT_PUBLIC_PAYLOAD_URL) {
+    try {
+      domains.push(new URL(process.env.NUXT_PUBLIC_PAYLOAD_URL).hostname)
+    } catch {
+      // An invalid Payload URL is reported where it is used (fetchGlobal).
+    }
   }
+  return domains
 })()
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -112,7 +121,7 @@ export default defineNuxtConfig({
   },
 
   image: {
-    domains: payloadImageDomain ? [payloadImageDomain] : [],
+    domains: payloadImageDomains,
   },
 
   medusa: {
