@@ -1,5 +1,21 @@
 import type { StoreProduct } from '@medusajs/types'
 
+// Payload globals the storefront reads. cms.repository.ts only accepts these,
+// and the server/api/cms proxy only forwards these, so a new fetcher can't be
+// added without allow-listing its global.
+export const CMS_GLOBAL_SLUGS = [
+  'navigation',
+  'footer-content',
+  'studio-story',
+  'brands',
+  'journal-section',
+  'campaign-slides',
+  'category-tiles',
+  'shop-the-look',
+] as const
+
+export type CmsGlobalSlug = (typeof CMS_GLOBAL_SLUGS)[number]
+
 export interface CmsNavLink {
   label: string
   url: string

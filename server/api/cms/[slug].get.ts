@@ -1,25 +1,18 @@
+import { isCmsGlobalSlug, parseCmsGlobalQuery } from '~~/server/utils/cms'
+
 // Payload doesn't send CORS headers for this storefront's origin, so the
 // browser can't read it directly (server renders can, which hid this until a
 // client-side navigation refetched). Proxying through Nitro keeps the request
 // same-origin and lets the response be cached instead of hitting Payload on
-// every page view.
-const globalSlugs = new Set([
-  'navigation',
-  'footer-content',
-  'studio-story',
-  'brands',
-  'journal-section',
-  'campaign-slides',
-  'category-tiles',
-  'shop-the-look',
-])
-
+// every page view. Not wrapped in defineWrappedResponseHandler: that one maps
+// Medusa errors and would turn the status codes below into 500s. A Payload
+// failure is reported once, by cms.repository.ts, which receives the 502.
 export default defineCachedEventHandler(
   async (event) => {
     const slug = getRouterParam(event, 'slug')
     const { payloadUrl } = useRuntimeConfig(event).public
 
-    if (!slug || !globalSlugs.has(slug)) {
+    if (!isCmsGlobalSlug(slug)) {
       throw createError({ statusCode: 404, message: 'Unknown CMS global' })
     }
     if (!payloadUrl) {
@@ -29,27 +22,18 @@ export default defineCachedEventHandler(
       })
     }
 
-    const { locale, depth } = getQuery(event)
-    const localeParam = typeof locale === 'string' ? locale : ''
-    const depthParam = Number(depth)
-
-    if (!/^[a-z]{2}(-[A-Za-z]{2})?$/.test(localeParam)) {
-      throw createError({ statusCode: 400, message: 'Invalid locale' })
+    const query = parseCmsGlobalQuery(getQuery(event))
+    if (!query) {
+      throw createError({ statusCode: 400, message: 'Invalid CMS query' })
     }
 
     try {
-      return await $fetch(`${payloadUrl}/api/globals/${slug}`, {
-        query: {
-          locale: localeParam,
-          depth:
-            Number.isInteger(depthParam) && depthParam >= 0 ? depthParam : 0,
-        },
-      })
-    } catch (err) {
-      console.error('Error while fetching Payload global', slug, err)
+      return await $fetch(`${payloadUrl}/api/globals/${slug}`, { query })
+    } catch (error) {
+      const upstreamStatus = (error as { statusCode?: number }).statusCode
       throw createError({
         statusCode: 502,
-        message: 'Payload CMS request failed',
+        message: `Payload CMS request failed (${upstreamStatus ?? 'no response'})`,
       })
     }
   },

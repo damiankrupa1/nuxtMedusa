@@ -3,6 +3,7 @@ import type {
   CmsCampaignSlides,
   CmsCategoryTiles,
   CmsFooterContent,
+  CmsGlobalSlug,
   CmsJournalSection,
   CmsNavigation,
   CmsShopTheLook,
@@ -14,7 +15,7 @@ import type {
 // the server/api/cms proxy, which forwards it to Payload (and is where an API
 // key or draft-preview secret would go); callers below don't care.
 async function fetchGlobal<T>(
-  slug: string,
+  slug: CmsGlobalSlug,
   locale: string,
   // depth 0 leaves relationships (e.g. an image upload) as a bare Media id;
   // callers whose type includes a CmsImage/upload relationship must pass a
