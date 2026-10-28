@@ -27,6 +27,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/eslint',
     '@nuxtjs/i18n',
+    '@sentry/nuxt/module',
     '@nuxtjs/sitemap',
   ],
 
@@ -51,6 +52,23 @@ export default defineNuxtConfig({
       // is safe to expose; an admin/API key would instead go in private
       // runtimeConfig, used only by the server/api/cms proxy.
       payloadUrl: process.env.NUXT_PUBLIC_PAYLOAD_URL || '',
+      // Read by sentry.client.config.ts (the server init reads the same
+      // variables from process.env). No DSN, no Sentry. The DSN is public by
+      // design; the auth token for the source map upload is not and never
+      // goes in here.
+      sentry: {
+        dsn: process.env.NUXT_PUBLIC_SENTRY_DSN || '',
+        environment:
+          process.env.NUXT_PUBLIC_SENTRY_ENVIRONMENT ||
+          process.env.VERCEL_ENV ||
+          '',
+        release:
+          process.env.NUXT_PUBLIC_SENTRY_RELEASE ||
+          process.env.VERCEL_GIT_COMMIT_SHA ||
+          '',
+        tracesSampleRate:
+          process.env.NUXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE || '',
+      },
     },
   },
 
@@ -128,6 +146,22 @@ export default defineNuxtConfig({
     baseUrl: process.env.NUXT_PUBLIC_MEDUSA_BACKEND_URL,
     publishableKey: process.env.NUXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
     server: true,
+  },
+
+  // Build-time Sentry settings. The org, project and auth token come from
+  // SENTRY_ORG, SENTRY_PROJECT and SENTRY_AUTH_TOKEN (build secrets, never
+  // NUXT_PUBLIC_*). Source maps are only generated and uploaded when a token
+  // is set; the module then deletes them from .output after the upload, so
+  // they are never served. The release is the commit the build is for, the
+  // same value the runtime inits report.
+  sentry: {
+    sourcemaps: { disable: !process.env.SENTRY_AUTH_TOKEN },
+    release: {
+      name:
+        process.env.NUXT_PUBLIC_SENTRY_RELEASE ||
+        process.env.VERCEL_GIT_COMMIT_SHA ||
+        undefined,
+    },
   },
 
   // /sitemap.xml lists only the Medusa-backed catalog pages of every country
