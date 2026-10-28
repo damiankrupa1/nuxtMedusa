@@ -32,7 +32,7 @@ export const useFilters = () => {
     set: (newPage: number) => {
       const newQuery = { ...route.query }
       setOrDeleteQueryParam(newQuery, 'page', newPage.toString(), newPage === 1)
-      router.push({ query: newQuery })
+      void router.push({ query: newQuery })
     },
   })
 
@@ -40,7 +40,7 @@ export const useFilters = () => {
     get: () => {
       return (route.query.sortBy as SortOptionsType) || SORT_OPTIONS.CREATED_AT
     },
-    set: async (newSortBy: SortOptionsType) => {
+    set: (newSortBy: SortOptionsType) => {
       const newQuery = { ...route.query }
       setOrDeleteQueryParam(
         newQuery,
@@ -48,26 +48,24 @@ export const useFilters = () => {
         newSortBy,
         newSortBy === SORT_OPTIONS.CREATED_AT,
       )
-      await router.push({ query: newQuery })
-      nextTick(() => {
-        pageNumber.value = 1
-      })
+      void router
+        .push({ query: newQuery })
+        .then(() => nextTick(() => (pageNumber.value = 1)))
     },
   })
 
   const searchQuery = computed<string>({
     get: () => (route.query.q as string) || '',
-    set: async (newQuery: string) => {
+    set: (newQuery: string) => {
       const newQueryParams = { ...route.query }
       if (newQuery) {
         newQueryParams.q = newQuery
       } else {
         delete newQueryParams.q
       }
-      await router.push({ query: newQueryParams })
-      nextTick(() => {
-        pageNumber.value = 1
-      })
+      void router
+        .push({ query: newQueryParams })
+        .then(() => nextTick(() => (pageNumber.value = 1)))
     },
   })
 

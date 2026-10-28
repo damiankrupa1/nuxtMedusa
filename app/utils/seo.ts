@@ -64,31 +64,32 @@ export function buildCountryLinks({
   const urlFor = (countryCode: string) =>
     `${origin}${toCountryPath(countryCode, countryPath)}${query}`
 
-  const links: SeoLink[] = [
-    { key: 'canonical', rel: 'canonical', href: urlFor(currentCountry) },
-  ]
-
   const uniqueCountryCodes = [...new Set(countryCodes)]
-  for (const countryCode of uniqueCountryCodes) {
+  const alternates = uniqueCountryCodes.map((countryCode): SeoLink => {
     const hreflang = getHreflang(countryCode)
-    links.push({
+    return {
       key: `alternate:${hreflang}`,
       rel: 'alternate',
       hreflang,
       href: urlFor(countryCode),
-    })
-  }
+    }
+  })
+  const xDefault: SeoLink[] = uniqueCountryCodes.includes(defaultCountry)
+    ? [
+        {
+          key: 'alternate:x-default',
+          rel: 'alternate',
+          hreflang: 'x-default',
+          href: urlFor(defaultCountry),
+        },
+      ]
+    : []
 
-  if (uniqueCountryCodes.includes(defaultCountry)) {
-    links.push({
-      key: 'alternate:x-default',
-      rel: 'alternate',
-      hreflang: 'x-default',
-      href: urlFor(defaultCountry),
-    })
-  }
-
-  return links
+  return [
+    { key: 'canonical', rel: 'canonical', href: urlFor(currentCountry) },
+    ...alternates,
+    ...xDefault,
+  ]
 }
 
 function toItemUrls(
