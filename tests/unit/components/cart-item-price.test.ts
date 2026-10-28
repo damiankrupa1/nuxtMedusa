@@ -27,7 +27,10 @@ describe('cart item price component', () => {
       props: {
         item: makeItem({
           total: 100,
-          adjustments: [{ amount: 10 }, { amount: 5 }] as StoreCartLineItem['adjustments'],
+          adjustments: [
+            { amount: 10 },
+            { amount: 5 },
+          ] as StoreCartLineItem['adjustments'],
         }),
         currencyCode: 'usd',
       },

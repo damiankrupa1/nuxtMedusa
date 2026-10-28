@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { InpostPoint, InpostGeowidgetInitDetail  } from '~/types/inpost'
+import type { InpostPoint, InpostGeowidgetInitDetail } from '~/types/inpost'
 
 const emit = defineEmits<{
   select: [point: InpostPoint]

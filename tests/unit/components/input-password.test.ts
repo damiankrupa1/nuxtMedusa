@@ -20,8 +20,18 @@ describe('input password component', () => {
   const stubs = {
     UInput: {
       inheritAttrs: false,
-      template: '<input v-bind="$attrs" :id="id" :type="type" :value="modelValue" /><slot />',
-      props: ['id', 'modelValue', 'type', 'placeholder', 'name', 'autocomplete', 'size', 'ui'],
+      template:
+        '<input v-bind="$attrs" :id="id" :type="type" :value="modelValue" /><slot />',
+      props: [
+        'id',
+        'modelValue',
+        'type',
+        'placeholder',
+        'name',
+        'autocomplete',
+        'size',
+        'ui',
+      ],
     },
     UIcon: {
       template: '<i :data-icon="name" />',
@@ -36,7 +46,12 @@ describe('input password component', () => {
 
   it('marks a required field for assistive tech, hiding the asterisk', () => {
     const wrapper = mount(InputPassword, {
-      props: { modelValue: '', name: 'password', label: 'Password', required: true },
+      props: {
+        modelValue: '',
+        name: 'password',
+        label: 'Password',
+        required: true,
+      },
       global: { stubs, mocks },
     })
 
@@ -77,7 +92,14 @@ describe('input password component', () => {
 
   it('reuses the form field input id, so the field keeps its wiring', () => {
     const wrapper = mount(FormFieldStub, {
-      slots: { default: () => h(InputPassword, { modelValue: '', name: 'password', label: 'Password' }) },
+      slots: {
+        default: () =>
+          h(InputPassword, {
+            modelValue: '',
+            name: 'password',
+            label: 'Password',
+          }),
+      },
       global: { stubs, mocks },
     })
 

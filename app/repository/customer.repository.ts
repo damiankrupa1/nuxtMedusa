@@ -42,9 +42,7 @@ export function customerRepository() {
       )
     },
 
-    async updateCustomer(
-      data: UpdateCustomerData,
-    ): Promise<CustomerResponse> {
+    async updateCustomer(data: UpdateCustomerData): Promise<CustomerResponse> {
       return await request(
         $fetch<CustomerResponse>('/api/customers/me', {
           method: 'POST',

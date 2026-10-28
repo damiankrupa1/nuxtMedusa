@@ -93,9 +93,7 @@ describe('cms service', () => {
     it('returns null when Payload has no CategoryTiles global', async () => {
       fetchCategoryTiles.mockResolvedValue(null)
 
-      expect(
-        await useCmsService().getResolvedCategoryTiles('en'),
-      ).toBeNull()
+      expect(await useCmsService().getResolvedCategoryTiles('en')).toBeNull()
       expect(fetchCategoryByHandle).not.toHaveBeenCalled()
     })
 
@@ -104,13 +102,13 @@ describe('cms service', () => {
         eyebrow: '',
         heading: '',
         description: '',
-        cards: [{ title: 'Stale', subtitle: '', categoryHandle: 'gone', image }],
+        cards: [
+          { title: 'Stale', subtitle: '', categoryHandle: 'gone', image },
+        ],
       })
       fetchCategoryByHandle.mockResolvedValue(null)
 
-      expect(
-        await useCmsService().getResolvedCategoryTiles('en'),
-      ).toBeNull()
+      expect(await useCmsService().getResolvedCategoryTiles('en')).toBeNull()
     })
   })
 

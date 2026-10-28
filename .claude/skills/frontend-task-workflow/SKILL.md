@@ -6,9 +6,11 @@ description: Plan and execute frontend tasks with risk-based validation and mini
 # Frontend Task Workflow
 
 ## Goal
+
 Deliver the smallest correct change, with validation proportional to risk. Do not turn every task into a full-project verification run.
 
 ## Before editing
+
 1. Inspect the relevant files, nearby patterns, package scripts, and current git diff.
 2. Restate the task briefly and identify likely affected areas.
 3. Classify risk:
@@ -19,6 +21,7 @@ Deliver the smallest correct change, with validation proportional to risk. Do no
 5. Identify the narrowest useful validation command from the actual `package.json` scripts and workspace. Never invent script names.
 
 ## Implementation
+
 - Follow existing repository conventions unless they are clearly broken.
 - Prefer a focused change over unrelated cleanup.
 - Do not add dependencies, new abstractions, or broad refactors without a concrete need.
@@ -26,7 +29,9 @@ Deliver the smallest correct change, with validation proportional to risk. Do no
 - Do not edit generated files or lockfiles manually.
 
 ## Validation policy
+
 Choose checks based on changed files and risk:
+
 - Low risk: inspect the diff; run a targeted check only if useful.
 - Medium risk: run the relevant lint, typecheck, or focused test.
 - High risk: run focused tests plus the relevant broader checks available in the repository.
@@ -35,6 +40,7 @@ Choose checks based on changed files and risk:
 - Do not run the same check repeatedly if no relevant code changed since the last successful run.
 
 ## Before finishing
+
 1. Review `git diff` for accidental changes, dead code, secrets, and scope creep.
 2. Report: what changed, checks actually run and their results, and checks not run.
 3. Never claim a test/build passed unless it was actually executed and passed.

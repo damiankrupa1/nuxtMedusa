@@ -6,24 +6,29 @@ description: Review frontend changes for correctness, maintainability, accessibi
 # Frontend Quality Review
 
 ## Review the actual diff
+
 - Inspect changed files and relevant surrounding code; do not review only the summary.
 - Prioritize concrete defects and regressions over subjective preferences.
 - Preserve unrelated user changes. Do not silently modify files during a review-only task.
 
 ## Review checklist
+
 ### Correctness
+
 - Are loading, empty, error, and success states handled?
 - Are async operations and promises handled correctly?
 - Can stale or missing data break the UI?
 - Are types accurate and unsafe casts justified?
 
 ### Vue/Nuxt
+
 - Could this cause SSR errors, hydration mismatch, duplicate fetching, or reactive loops?
 - Are composables used in valid Nuxt/Vue contexts?
 - Are props/emits and keys correct?
 - Is shared state actually necessary?
 
 ### Accessibility
+
 - Is semantic HTML used?
 - Can controls be reached and operated by keyboard?
 - Are labels, accessible names, focus states, and error messages present?
@@ -31,6 +36,7 @@ description: Review frontend changes for correctness, maintainability, accessibi
 - Consider WCAG 2.2 AA where applicable.
 
 ### Security and privacy
+
 - Are secrets or privileged credentials exposed to client code?
 - Is untrusted content rendered safely?
 - Are URL parameters, user input, and external links handled safely?
@@ -38,12 +44,14 @@ description: Review frontend changes for correctness, maintainability, accessibi
 - Do not treat CORS as authentication or authorization.
 
 ### Maintainability
+
 - Is the change focused?
 - Is logic duplicated or unnecessarily abstracted?
 - Were dependencies added without need?
 - Are naming and repository conventions followed?
 
 ## Findings format
+
 - List findings first, ordered by severity: critical, high, medium, low.
 - Include file and line references when available, explain impact, and suggest a concrete fix.
 - Separate confirmed defects from risks or suggestions.

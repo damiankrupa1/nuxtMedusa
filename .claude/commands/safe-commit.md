@@ -93,6 +93,7 @@ Do not remove or replace other changes already in the index. If the user's chang
 ## Stage 5: Commit
 
 Run `git commit` only when:
+
 - the user has approved the specific scope and message;
 - the branch and the staged diff have been verified again;
 - there are no unresolved issues with the scope of the commit.
@@ -104,6 +105,7 @@ If a Git hook rejects the commit, present the error and ask how to proceed. Do n
 ## Stage 6: Summary
 
 When done, report:
+
 - the commit hash;
 - the commit message;
 - the branch;
