@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, jest } from '@jest/globals'
+import { ZodError } from 'zod'
 
 import { cmsRepository } from '~/repository/cms.repository'
+import type { CmsGlobalSlug } from '~/types/cms'
+import { payloadGlobals, payloadImage } from '~~/tests/fixtures/cms'
+
+type Repository = ReturnType<typeof cmsRepository>
 
 describe('cms repository', () => {
   const fetchMock = jest.fn<(...args: unknown[]) => Promise<unknown>>()
@@ -18,86 +23,48 @@ describe('cms repository', () => {
     config.public.payloadUrl = 'https://cms.example.com'
   })
 
-  it('fetches the navigation global for the given locale', async () => {
-    fetchMock.mockResolvedValue({
-      primaryNav: [{ label: 'New in', url: '/new' }],
-    })
+  const fetchers: [keyof Repository, CmsGlobalSlug, string, number][] = [
+    ['fetchNavigation', 'navigation', 'pl', 0],
+    ['fetchFooterContent', 'footer-content', 'en', 0],
+    ['fetchStudioStory', 'studio-story', 'pl', 1],
+    ['fetchBrands', 'brands', 'en', 0],
+    ['fetchJournalSection', 'journal-section', 'pl', 1],
+    ['fetchCampaignSlides', 'campaign-slides', 'pl', 1],
+    ['fetchCategoryTiles', 'category-tiles', 'pl', 1],
+    ['fetchShopTheLook', 'shop-the-look', 'en', 1],
+  ]
+
+  it.each(fetchers)(
+    '%s fetches the %s global with locale %s and depth %d',
+    async (fetcher, slug, locale, depth) => {
+      fetchMock.mockResolvedValue(payloadGlobals[slug])
+
+      const result = await cmsRepository()[fetcher](locale)
+
+      expect(fetchMock).toHaveBeenCalledWith(`/api/cms/${slug}`, {
+        query: { locale, depth },
+      })
+      expect(result).not.toBeNull()
+      expect(captureError).not.toHaveBeenCalled()
+    },
+  )
+
+  it('returns only the contract fields, without Payload ids and timestamps', async () => {
+    fetchMock.mockResolvedValue(payloadGlobals.navigation)
 
     const result = await cmsRepository().fetchNavigation('pl')
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/cms/navigation', {
-      query: { locale: 'pl', depth: 0 },
-    })
-    expect(result).toEqual({ primaryNav: [{ label: 'New in', url: '/new' }] })
+    expect(result).toEqual({ primaryNav: [{ label: 'New in', url: '/store' }] })
   })
 
-  it('fetches the footer content global for the given locale', async () => {
-    fetchMock.mockResolvedValue({ helpLinks: [] })
+  it('populates images with their url and alt only', async () => {
+    fetchMock.mockResolvedValue(payloadGlobals['studio-story'])
 
-    await cmsRepository().fetchFooterContent('en')
+    const result = await cmsRepository().fetchStudioStory('pl')
 
-    expect(fetchMock).toHaveBeenCalledWith('/api/cms/footer-content', {
-      query: { locale: 'en', depth: 0 },
-    })
-  })
-
-  it('fetches the studio story global for the given locale', async () => {
-    fetchMock.mockResolvedValue({ eyebrow: 'The Studio' })
-
-    await cmsRepository().fetchStudioStory('pl')
-
-    expect(fetchMock).toHaveBeenCalledWith('/api/cms/studio-story', {
-      query: { locale: 'pl', depth: 1 },
-    })
-  })
-
-  it('fetches the brands global for the given locale', async () => {
-    fetchMock.mockResolvedValue({ otherBrands: [] })
-
-    await cmsRepository().fetchBrands('en')
-
-    expect(fetchMock).toHaveBeenCalledWith('/api/cms/brands', {
-      query: { locale: 'en', depth: 0 },
-    })
-  })
-
-  it('fetches the journal section global for the given locale', async () => {
-    fetchMock.mockResolvedValue({ articles: [] })
-
-    await cmsRepository().fetchJournalSection('pl')
-
-    expect(fetchMock).toHaveBeenCalledWith('/api/cms/journal-section', {
-      query: { locale: 'pl', depth: 1 },
-    })
-  })
-
-  it('fetches the campaign slides global for the given locale', async () => {
-    fetchMock.mockResolvedValue({ slides: [] })
-
-    await cmsRepository().fetchCampaignSlides('pl')
-
-    expect(fetchMock).toHaveBeenCalledWith('/api/cms/campaign-slides', {
-      query: { locale: 'pl', depth: 1 },
-    })
-  })
-
-  it('fetches the category tiles global for the given locale', async () => {
-    fetchMock.mockResolvedValue({ cards: [] })
-
-    await cmsRepository().fetchCategoryTiles('pl')
-
-    expect(fetchMock).toHaveBeenCalledWith('/api/cms/category-tiles', {
-      query: { locale: 'pl', depth: 1 },
-    })
-  })
-
-  it('fetches the shop the look global for the given locale', async () => {
-    fetchMock.mockResolvedValue({ productHandles: [] })
-
-    await cmsRepository().fetchShopTheLook('en')
-
-    expect(fetchMock).toHaveBeenCalledWith('/api/cms/shop-the-look', {
-      query: { locale: 'en', depth: 1 },
+    expect(result?.image).toEqual({
+      url: payloadImage.url,
+      alt: payloadImage.alt,
     })
   })
 
@@ -112,6 +79,40 @@ describe('cms repository', () => {
       source: 'payload',
       global: 'navigation',
     })
+  })
+
+  it.each([
+    ['a renamed field', { mainNav: [{ label: 'New in', url: '/store' }] }],
+    ['a null field', { primaryNav: [{ label: null, url: '/store' }] }],
+    ['an empty global', {}],
+    ['an HTML error page', '<html>Bad gateway</html>'],
+  ])('reports %s and treats the global as missing', async (_case, body) => {
+    fetchMock.mockResolvedValue(body)
+
+    const result = await cmsRepository().fetchNavigation('pl')
+
+    expect(result).toBeNull()
+    expect(captureError).toHaveBeenCalledTimes(1)
+    expect(captureError).toHaveBeenCalledWith(expect.any(ZodError), {
+      source: 'payload',
+      global: 'navigation',
+      type: 'invalid_response',
+    })
+  })
+
+  it('rejects an image fetched without depth (a bare Media id)', async () => {
+    fetchMock.mockResolvedValue({
+      ...payloadGlobals['studio-story'],
+      image: payloadImage.id,
+    })
+
+    const result = await cmsRepository().fetchStudioStory('pl')
+
+    expect(result).toBeNull()
+    expect(captureError).toHaveBeenCalledWith(
+      expect.any(ZodError),
+      expect.objectContaining({ global: 'studio-story' }),
+    )
   })
 
   it('returns null without calling Payload when no URL is configured', async () => {

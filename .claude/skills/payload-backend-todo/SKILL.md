@@ -10,6 +10,7 @@ This repo only contains the Nuxt-side consumption layer for Payload CMS (`app/re
 Conventions used throughout:
 
 - Base contract: `GET {NUXT_PUBLIC_PAYLOAD_URL}/api/globals/<slug>?locale=<en|pl>&depth=<n>` for Globals (standard Payload REST, no custom endpoints). The browser never calls it: Payload sends no CORS headers for the storefront, so `cms.repository.ts` goes through the same-origin `server/api/cms/[slug]` proxy, which forwards `locale` and `depth` (0–2) to that URL. A new Global's slug must be added to `CMS_GLOBAL_SLUGS` in `app/types/cms.ts`, or the proxy answers 404. `cms.repository.ts`'s `fetchGlobal()` defaults `depth` to `0`; any Global with an upload/relationship field (an `image`) is fetched with `depth=1` instead, so `image.url`/`image.alt` come back populated rather than a bare Media id — check each entry below for which it uses.
+- Every field listed is **required** (`required: true` in Payload) unless its entry says it is optional. `cms.repository.ts` parses each Global with its zod schema in `app/types/cms.ts` (the **Type** named in each entry is inferred from it): a Global with a missing, renamed or `null` required field is reported (`captureError`, `type: 'invalid_response'`) and its section is not rendered at all, so one empty field hides the whole section. An untranslated localized field is `null` too, so keep Payload's localization `fallback` on (the default) or translate every field. Optional today: every Media `alt` (missing = decorative image, `''`) and all of `FooterContent`'s `contact`/`social` fields. Extra fields Payload adds (ids, `globalType`, timestamps, array row ids) are ignored. Changing a field here means changing its schema in the same change.
 - Every text field listed must have `localized: true` and the Payload instance's `localization` config must declare exactly `{ locales: ['en', 'pl'], defaultLocale: 'en' }` to match this app's `i18n.locales`.
 - `access.read: () => true` on each (public read-only) — matches the "publiczny read-only REST" transport decision; no API key is sent from this app.
 - A field named `url`/`to` should be a storefront-relative path (e.g. `/store`) or an absolute URL — `cms.repository.ts` doesn't rewrite it.
@@ -27,8 +28,8 @@ Conventions used throughout:
 - **Slug**: `footer-content`
 - **Fields**:
   - `helpLinks`, `worldLinks`, `legalLinks` — each an array of `{ label: text (localized), url: text }`.
-  - `contact` — group `{ email: text, phone: text, hours: text (localized) }`.
-  - `social` — group `{ handle: text }`.
+  - `contact` — group `{ email: text, phone: text, hours: text (localized) }`, all **optional**: an empty one is left out of the footer, and the block is hidden when none is entered.
+  - `social` — group `{ handle: text }`, **optional** (hidden when empty).
 - **Consumed by**: `useFetchFooterContent()` → `app/components/app/footer/menu/help.vue`, `menu/world.vue`, `menu/brand.vue`, `copyright.vue`.
 - **Type**: `CmsFooterContent` in `app/types/cms.ts`.
 

@@ -8,6 +8,10 @@ export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D>(
     try {
       return await handler(event)
     } catch (err) {
+      // Already an HTTP error (e.g. parseRequestInput's 400): keep its status
+      // and issues instead of remapping it to a 500 below
+      if (isError(err)) throw err
+
       console.error('Error while handling event', err)
 
       // Handle Medusa errors with appropriate status codes

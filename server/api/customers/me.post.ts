@@ -1,8 +1,14 @@
 import { serverMedusaClient } from '#medusa/server'
+import { updateCustomerRequestSchema } from '~/types/customer'
+import { parseRequestInput } from '~~/server/utils/validation'
 
 export default defineWrappedResponseHandler(async (event) => {
   const medusa = serverMedusaClient(event)
-  const body = await readBody(event)
+  const body = parseRequestInput(
+    updateCustomerRequestSchema,
+    await readBody(event),
+    'body',
+  )
 
   const token = getCookie(event, 'medusa_jwt')
 

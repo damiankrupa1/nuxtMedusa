@@ -1,12 +1,18 @@
 import { serverMedusaClient } from '#medusa/server'
+import { signinRequestSchema } from '~/types/customer'
+import { parseRequestInput } from '~~/server/utils/validation'
 
 export default defineWrappedResponseHandler(async (event) => {
   const medusa = serverMedusaClient(event)
-  const body = await readBody(event)
+  const { email, password } = parseRequestInput(
+    signinRequestSchema,
+    await readBody(event),
+    'body',
+  )
 
   const token = await medusa.auth.login('customer', 'emailpass', {
-    email: body.email,
-    password: body.password,
+    email,
+    password,
   })
 
   if (typeof token !== 'string') {

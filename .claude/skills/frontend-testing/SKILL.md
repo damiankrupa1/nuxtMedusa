@@ -28,6 +28,12 @@ description: Choose and implement proportionate tests for Vue/Nuxt frontend chan
 - Mock at the boundary, not every internal function.
 - Avoid snapshots as the only evidence for complex behavior.
 
+## Server code (`server/utils`)
+
+- Nitro auto-imports h3 (`createError`, `isError`, `defineEventHandler`) into server code; Jest doesn't. Assign the real ones from `h3` to `globalThis` in the test (see `tests/unit/server/validation.test.ts`, `handler.test.ts`), so status codes and `isError()` behave as in Nitro.
+- A test that imports `h3` needs `/** @jest-environment node */` at the top: under the default `jsdom` environment h3's `uncrypto` dependency resolves to its browser ESM build and Jest can't parse it.
+- Payload answers used by several tests are in `tests/fixtures/cms.ts` (one complete global per slug, with Payload's own ids and timestamps).
+
 ## Mounting components that use Nuxt UI or `app/` wrapper children
 
 - `@vue/test-utils`'s `mount` in a Jest unit test does not run Nuxt's auto-import/global component registration. Any `app/components/app/*.vue` wrapper (e.g. `AppIconButton`) or Nuxt UI component (`UButton`, `UInput`, ...) rendered by the component under test must be stubbed explicitly in `global.stubs`, or it resolves as an unknown element and `wrapper.find(...)` silently finds nothing (e.g. a stub-less `<AppIconButton>` wrapping `<UButton>` never renders an actual `<button>`).
