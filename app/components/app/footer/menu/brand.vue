@@ -21,9 +21,15 @@ const { data: footerContent } = useFetchFooterContent()
       v-if="footerContent?.contact"
       class="flex flex-col gap-y-2 text-color-sage text-xs"
     >
-      <p>{{ footerContent.contact.email }}</p>
-      <p>{{ footerContent.contact.phone }}</p>
-      <p class="text-[10px]">{{ footerContent.contact.hours }}</p>
+      <p v-if="footerContent.contact.email">
+        {{ footerContent.contact.email }}
+      </p>
+      <p v-if="footerContent.contact.phone">
+        {{ footerContent.contact.phone }}
+      </p>
+      <p v-if="footerContent.contact.hours" class="text-[10px]">
+        {{ footerContent.contact.hours }}
+      </p>
     </div>
     <div class="flex items-center gap-x-5">
       <UIcon

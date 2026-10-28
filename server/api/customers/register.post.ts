@@ -1,8 +1,14 @@
 import { serverMedusaClient } from '#medusa/server'
+import { registerRequestSchema } from '~/types/customer'
+import { parseRequestInput } from '~~/server/utils/validation'
 
 export default defineWrappedResponseHandler(async (event) => {
   const medusa = serverMedusaClient(event)
-  const body = await readBody(event)
+  const body = parseRequestInput(
+    registerRequestSchema,
+    await readBody(event),
+    'body',
+  )
 
   // Step 1: Get an authentication token via the auth.register method
   const token = await medusa.auth.register('customer', 'emailpass', {

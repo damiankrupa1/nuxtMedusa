@@ -1,6 +1,12 @@
 import { describe, expect, it } from '@jest/globals'
 
-import { buildRegisterSchema, buildSigninSchema } from '~/types/customer'
+import {
+  buildRegisterSchema,
+  buildSigninSchema,
+  registerRequestSchema,
+  signinRequestSchema,
+  updateCustomerRequestSchema,
+} from '~/types/customer'
 
 const t = (key: string) => key
 
@@ -53,5 +59,69 @@ describe('register schema', () => {
 
     expect(result.success).toBe(false)
     expect(result.error?.issues[0]?.message).toBe(message)
+  })
+})
+
+// The same schemas, built without `t`, validate server/api/customers/**
+describe('customer request schemas', () => {
+  it('answer with zod messages instead of i18n keys', () => {
+    const result = signinRequestSchema.safeParse({ email: 'a@', password: '' })
+
+    expect(result.success).toBe(false)
+    expect(result.error?.issues.map((issue) => issue.message)).toEqual([
+      'Invalid email address',
+      'Too small: expected string to have >=1 characters',
+    ])
+  })
+
+  it('apply the registration form rules', () => {
+    const result = registerRequestSchema.safeParse({
+      first_name: 'Jan',
+      last_name: 'Kowalski',
+      email: 'jan@example.com',
+      password: '12345',
+    })
+
+    expect(result.success).toBe(false)
+    expect(result.error?.issues[0]?.path).toEqual(['password'])
+  })
+
+  it('reject a body that is not an object', () => {
+    expect(signinRequestSchema.safeParse(undefined).success).toBe(false)
+  })
+
+  it('do not forward fields the form does not collect', () => {
+    expect(
+      signinRequestSchema.parse({
+        email: 'jan@example.com',
+        password: 'x',
+        actor_type: 'user',
+      }),
+    ).toEqual({ email: 'jan@example.com', password: 'x' })
+  })
+})
+
+describe('update customer request schema', () => {
+  it('accepts a partial profile update', () => {
+    expect(updateCustomerRequestSchema.parse({ first_name: 'Janek' })).toEqual({
+      first_name: 'Janek',
+    })
+  })
+
+  it('drops fields Medusa does not let a customer change here', () => {
+    expect(
+      updateCustomerRequestSchema.parse({
+        last_name: 'Nowak',
+        email: 'other@example.com',
+        password: 'secret1',
+        metadata: { vip: true },
+      }),
+    ).toEqual({ last_name: 'Nowak' })
+  })
+
+  it('keeps the registration rules for the fields it accepts', () => {
+    expect(
+      updateCustomerRequestSchema.safeParse({ first_name: 'J' }).success,
+    ).toBe(false)
   })
 })
