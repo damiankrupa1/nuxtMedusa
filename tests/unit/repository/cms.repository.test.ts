@@ -25,10 +25,9 @@ describe('cms repository', () => {
 
     const result = await cmsRepository().fetchNavigation('pl')
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      'https://cms.example.com/api/globals/navigation',
-      { query: { locale: 'pl', depth: 0 } },
-    )
+    expect(fetchMock).toHaveBeenCalledWith('/api/cms/navigation', {
+      query: { locale: 'pl', depth: 0 },
+    })
     expect(result).toEqual({ primaryNav: [{ label: 'New in', url: '/new' }] })
   })
 
@@ -37,10 +36,9 @@ describe('cms repository', () => {
 
     await cmsRepository().fetchFooterContent('en')
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      'https://cms.example.com/api/globals/footer-content',
-      { query: { locale: 'en', depth: 0 } },
-    )
+    expect(fetchMock).toHaveBeenCalledWith('/api/cms/footer-content', {
+      query: { locale: 'en', depth: 0 },
+    })
   })
 
   it('fetches the studio story global for the given locale', async () => {
@@ -48,10 +46,9 @@ describe('cms repository', () => {
 
     await cmsRepository().fetchStudioStory('pl')
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      'https://cms.example.com/api/globals/studio-story',
-      { query: { locale: 'pl', depth: 1 } },
-    )
+    expect(fetchMock).toHaveBeenCalledWith('/api/cms/studio-story', {
+      query: { locale: 'pl', depth: 1 },
+    })
   })
 
   it('fetches the brands global for the given locale', async () => {
@@ -59,10 +56,9 @@ describe('cms repository', () => {
 
     await cmsRepository().fetchBrands('en')
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      'https://cms.example.com/api/globals/brands',
-      { query: { locale: 'en', depth: 0 } },
-    )
+    expect(fetchMock).toHaveBeenCalledWith('/api/cms/brands', {
+      query: { locale: 'en', depth: 0 },
+    })
   })
 
   it('fetches the journal section global for the given locale', async () => {
@@ -70,10 +66,9 @@ describe('cms repository', () => {
 
     await cmsRepository().fetchJournalSection('pl')
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      'https://cms.example.com/api/globals/journal-section',
-      { query: { locale: 'pl', depth: 1 } },
-    )
+    expect(fetchMock).toHaveBeenCalledWith('/api/cms/journal-section', {
+      query: { locale: 'pl', depth: 1 },
+    })
   })
 
   it('fetches the campaign slides global for the given locale', async () => {
@@ -81,10 +76,9 @@ describe('cms repository', () => {
 
     await cmsRepository().fetchCampaignSlides('pl')
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      'https://cms.example.com/api/globals/campaign-slides',
-      { query: { locale: 'pl', depth: 1 } },
-    )
+    expect(fetchMock).toHaveBeenCalledWith('/api/cms/campaign-slides', {
+      query: { locale: 'pl', depth: 1 },
+    })
   })
 
   it('fetches the category tiles global for the given locale', async () => {
@@ -92,10 +86,9 @@ describe('cms repository', () => {
 
     await cmsRepository().fetchCategoryTiles('pl')
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      'https://cms.example.com/api/globals/category-tiles',
-      { query: { locale: 'pl', depth: 1 } },
-    )
+    expect(fetchMock).toHaveBeenCalledWith('/api/cms/category-tiles', {
+      query: { locale: 'pl', depth: 1 },
+    })
   })
 
   it('fetches the shop the look global for the given locale', async () => {
@@ -103,10 +96,9 @@ describe('cms repository', () => {
 
     await cmsRepository().fetchShopTheLook('en')
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      'https://cms.example.com/api/globals/shop-the-look',
-      { query: { locale: 'en', depth: 1 } },
-    )
+    expect(fetchMock).toHaveBeenCalledWith('/api/cms/shop-the-look', {
+      query: { locale: 'en', depth: 1 },
+    })
   })
 
   it('reports and swallows a Payload failure instead of breaking the page', async () => {
