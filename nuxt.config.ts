@@ -20,16 +20,20 @@ const payloadImageDomains = (() => {
 })()
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
+const testModules = process.env.NUXT_TEST_UTILS === 'true'
+
 export default defineNuxtConfig({
-  modules: [
-    '@nuxtjs/medusa',
-    '@nuxt/ui',
-    '@nuxt/image',
-    '@nuxt/eslint',
-    '@nuxtjs/i18n',
-    '@sentry/nuxt/module',
-    '@nuxtjs/sitemap',
-  ],
+  modules: testModules
+    ? ['@nuxt/ui', '@nuxtjs/i18n']
+    : [
+        '@nuxtjs/medusa',
+        '@nuxt/ui',
+        '@nuxt/image',
+        '@nuxt/eslint',
+        '@nuxtjs/i18n',
+        '@sentry/nuxt/module',
+        '@nuxtjs/sitemap',
+      ],
 
   devtools: { enabled: true },
 
