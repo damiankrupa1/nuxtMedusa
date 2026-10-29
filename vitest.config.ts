@@ -15,6 +15,12 @@ export default defineConfig({
         plugins: [vue()],
         resolve: {
           alias: [
+            {
+              find: '#medusa/server',
+              replacement: fileURLToPath(
+                new URL('./tests/mocks/medusa-server.ts', import.meta.url),
+              ),
+            },
             { find: /^~\//, replacement: appDirectory },
             { find: /^~~\//, replacement: rootDirectory },
           ],

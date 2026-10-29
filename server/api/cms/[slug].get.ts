@@ -1,5 +1,7 @@
 import { isCmsGlobalSlug, parseCmsGlobalQuery } from '~~/server/utils/cms'
 
+const PAYLOAD_REQUEST_TIMEOUT_MS = 5_000
+
 // Payload doesn't send CORS headers for this storefront's origin, so the
 // browser can't read it directly (server renders can, which hid this until a
 // client-side navigation refetched). Proxying through Nitro keeps the request
@@ -26,7 +28,11 @@ export default defineCachedEventHandler(
     const query = parseCmsGlobalQuery(getQuery(event))
 
     try {
-      return await $fetch(`${payloadUrl}/api/globals/${slug}`, { query })
+      const normalizedPayloadUrl = payloadUrl.replace(/\/+$/, '')
+      return await $fetch(`${normalizedPayloadUrl}/api/globals/${slug}`, {
+        query,
+        signal: AbortSignal.timeout(PAYLOAD_REQUEST_TIMEOUT_MS),
+      })
     } catch (error) {
       const upstreamStatus = (error as { statusCode?: number }).statusCode
       throw createError({
