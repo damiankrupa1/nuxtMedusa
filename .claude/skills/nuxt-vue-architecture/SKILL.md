@@ -54,7 +54,7 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 
 - Link inside the store through `AppLink`/`AppLinkButton`, which add the country prefix. Never build `` `/${country.iso_2}/...` `` by hand: use `useCountryLink()` for a `UButton :to` and `toCountryLink(to, countryCode)` for `navigateTo` (see "Internal links" in root `CLAUDE.md`).
 - A route with params (`products/[handle]`, `categories/[handle]`, `collections/[handle]`, `order/[orderId]/confirmed`) is linked as a named route without `countryCode` — `{ name: 'countryCode-categories-handle', params: { handle } }` — so `typedPages` checks the name and params. A static page (`/store`, `/cart`, `/account`) and every CMS-provided URL stay path strings.
-- A computed link that is either form is typed `AppLinkTarget`; a prop that only takes a named route is `AppRoute` (both in `~/types/link`). Don't type them with `RouteLocationRaw` from `'vue-router'` — it doesn't carry the generated route names here.
+- A computed link that is either form is typed `AppLinkTarget`; a prop that only takes a named route is `AppRoute` (both in `~/types/link`). Nuxt 4.6.3 uses Vue Router 5.4 while `@nuxt/ui` 3.0.0 brings Vue Router 4.5 to the root, so do not pass root `RouteLocationRaw` across this boundary; `AppRoute` also deliberately omits `countryCode`.
 - A page reads its params with the route name, `useRoute('countryCode-products-handle').params.handle`, not `route.params.handle as string`.
 
 ## Page meta
@@ -62,7 +62,7 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 - Per-page configuration read by the layout, a plugin or middleware is declared in `definePageMeta` (route meta), never set in a store from the page's `setup`. A page's setup runs before the new page has loaded, so a store flag would switch the layout under the old page, and every page would have to reset it on leave. Current keys — keep this list up to date when adding one:
   - `cdnCache` — share the server render through the CDN cache (read by `app/plugins/cdn-cache.server.ts`, see root `CLAUDE.md`).
   - `prefooter` — show `AppBenefitsBar` + `AppNewsletter` above the footer (read by `app/layouts/default.vue`).
-- These keys are untyped (`unknown`) and stay that way. Nuxt's documented `declare module '#app' { interface PageMeta { ... } }` does not reach `definePageMeta` or `route.meta` in this project (Nuxt 3.16, TypeScript 5.8, pnpm): `#app` only re-exports `PageMeta` through `export type` chains, and the augmentation never merges into the original in `nuxt/dist/pages/runtime/composables`. `declare module 'nuxt/app'` and the `node_modules/nuxt/...` path fail the same way. The only target that works is the pnpm-hashed real path, which stops working silently on the next dependency update. Even a working augmentation would not catch a misspelled key, because `PageMeta` has a `[key: string]: unknown` index signature. So read the flags by truthiness (`v-if="route.meta.prefooter"`), and re-check after the Nuxt 4 upgrade.
+- Read custom flags by truthiness (`v-if="route.meta.prefooter"`). Nuxt 4.6 generates `PageMeta` augmentations for its modules, so do not carry forward the Nuxt 3.16 workaround that targeted a pnpm-hashed declaration path. This project has no standalone typecheck command; verify any custom `PageMeta` augmentation with an actual typecheck before relying on it, and keep the flags readable even if added because indexed metadata cannot catch misspelled custom keys.
 
 ## Imports
 

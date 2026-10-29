@@ -83,10 +83,6 @@ export default defineNuxtConfig({
     '/**/checkout': { ssr: true },
   },
 
-  future: {
-    compatibilityVersion: 4,
-  },
-
   experimental: {
     payloadExtraction: true,
     typedPages: true,
