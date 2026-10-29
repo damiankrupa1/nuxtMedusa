@@ -1,5 +1,5 @@
 import type { StoreProduct } from '@medusajs/types'
-import { describe, expect, it } from '@jest/globals'
+import { describe, expect, it } from 'vitest'
 
 import { buildProductJsonLd, serializeJsonLd } from '~/utils/structured-data'
 

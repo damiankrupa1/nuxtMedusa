@@ -1,5 +1,5 @@
 /**
- * @jest-environment node
+ * @vitest-environment node
  */
 import {
   beforeAll,
@@ -7,8 +7,8 @@ import {
   describe,
   expect,
   it,
-  jest,
-} from '@jest/globals'
+  vi,
+} from 'vitest'
 import type { H3Event } from 'h3'
 import { createError, isError } from 'h3'
 
@@ -41,9 +41,9 @@ const run = async (error: unknown) => {
 
 describe('defineWrappedResponseHandler', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
-    jest.spyOn(console, 'error').mockImplementation(() => undefined)
-    jest.mocked(Sentry.isEnabled).mockReturnValue(true)
+    vi.clearAllMocks()
+    vi.spyOn(console, 'error').mockImplementation(() => undefined)
+    vi.mocked(Sentry.isEnabled).mockReturnValue(true)
   })
 
   it('returns what the handler returns', async () => {

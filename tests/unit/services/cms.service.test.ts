@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { StoreProduct, StoreProductCategory } from '@medusajs/types'
 
 import { useCmsService } from '~/services/cms.service'
@@ -7,30 +7,30 @@ import { categoryRepository } from '~/repository/category.repository'
 import { productRepository } from '~/repository/product.repository'
 import type { CmsCategoryTiles, CmsShopTheLook } from '~/types/cms'
 
-jest.mock('~/repository/cms.repository', () => ({
-  cmsRepository: jest.fn(),
+vi.mock('~/repository/cms.repository', () => ({
+  cmsRepository: vi.fn(),
 }))
-jest.mock('~/repository/category.repository', () => ({
-  categoryRepository: jest.fn(),
+vi.mock('~/repository/category.repository', () => ({
+  categoryRepository: vi.fn(),
 }))
-jest.mock('~/repository/product.repository', () => ({
-  productRepository: jest.fn(),
+vi.mock('~/repository/product.repository', () => ({
+  productRepository: vi.fn(),
 }))
 
 describe('cms service', () => {
   const fetchCategoryTiles =
-    jest.fn<(locale: string) => Promise<CmsCategoryTiles | null>>()
+    vi.fn<(locale: string) => Promise<CmsCategoryTiles | null>>()
   const fetchShopTheLook =
-    jest.fn<(locale: string) => Promise<CmsShopTheLook | null>>()
+    vi.fn<(locale: string) => Promise<CmsShopTheLook | null>>()
   const fetchCategoryByHandle =
-    jest.fn<
+    vi.fn<
       (
         handle: string,
         medusaLocale?: string,
       ) => Promise<StoreProductCategory | null>
     >()
   const fetchProductByHandle =
-    jest.fn<
+    vi.fn<
       (
         handle: string,
         query?: unknown,
@@ -41,23 +41,23 @@ describe('cms service', () => {
   const image = { url: 'https://cms.example.com/media/x.jpg', alt: '' }
 
   beforeEach(() => {
-    jest.clearAllMocks()
-    jest.mocked(cmsRepository).mockReturnValue({
-      fetchNavigation: jest.fn(),
-      fetchFooterContent: jest.fn(),
-      fetchStudioStory: jest.fn(),
-      fetchBrands: jest.fn(),
-      fetchJournalSection: jest.fn(),
-      fetchCampaignSlides: jest.fn(),
+    vi.clearAllMocks()
+    vi.mocked(cmsRepository).mockReturnValue({
+      fetchNavigation: vi.fn(),
+      fetchFooterContent: vi.fn(),
+      fetchStudioStory: vi.fn(),
+      fetchBrands: vi.fn(),
+      fetchJournalSection: vi.fn(),
+      fetchCampaignSlides: vi.fn(),
       fetchCategoryTiles,
       fetchShopTheLook,
     })
-    jest.mocked(categoryRepository).mockReturnValue({
-      listCategories: jest.fn(),
+    vi.mocked(categoryRepository).mockReturnValue({
+      listCategories: vi.fn(),
       fetchCategoryByHandle,
     })
-    jest.mocked(productRepository).mockReturnValue({
-      listProducts: jest.fn(),
+    vi.mocked(productRepository).mockReturnValue({
+      listProducts: vi.fn(),
       fetchProductByHandle,
     })
   })

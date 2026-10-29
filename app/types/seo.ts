@@ -1,10 +1,16 @@
 // A <link> in the page head: the canonical URL or a country version of it
-export type SeoLink = {
-  key: string
-  rel: 'canonical' | 'alternate'
-  href: string
-  hreflang?: string
-}
+export type SeoLink =
+  | {
+      key: string
+      rel: 'canonical'
+      href: string
+    }
+  | {
+      key: string
+      rel: 'alternate'
+      href: string
+      hreflang: string
+    }
 
 export type CountryLinksInput = {
   // Absolute origin of the site, e.g. https://shop.example.com

@@ -4,8 +4,8 @@ import {
   describe,
   expect,
   it,
-  jest,
-} from '@jest/globals'
+  vi,
+} from 'vitest'
 import * as Sentry from '@sentry/nuxt'
 
 import { captureError } from '~/utils/capture-error'
@@ -14,13 +14,13 @@ import { captureError } from '~/utils/capture-error'
 
 describe('captureError', () => {
   const originalEnv = process.env.NODE_ENV
-  const consoleError = jest
+  const consoleError = vi
     .spyOn(console, 'error')
     .mockImplementation(() => undefined)
 
   beforeEach(() => {
-    jest.clearAllMocks()
-    jest.mocked(Sentry.isEnabled).mockReturnValue(true)
+    vi.clearAllMocks()
+    vi.mocked(Sentry.isEnabled).mockReturnValue(true)
   })
 
   afterEach(() => {
@@ -29,7 +29,7 @@ describe('captureError', () => {
 
   describe('without a Sentry DSN', () => {
     beforeEach(() => {
-      jest.mocked(Sentry.isEnabled).mockReturnValue(false)
+      vi.mocked(Sentry.isEnabled).mockReturnValue(false)
     })
 
     it('only logs to the console', () => {

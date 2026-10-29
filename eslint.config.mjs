@@ -31,6 +31,10 @@ export default withNuxt(
               message:
                 "Use a root alias instead of a relative path: '~/' for app/ (also from tests/), '~~/' for the project root (e.g. '~~/server/...').",
             },
+            {
+              group: ['@jest/*'],
+              message: 'Import test APIs from vitest; Jest is no longer used.',
+            },
           ],
         },
       ],

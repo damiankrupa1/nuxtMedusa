@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ZodError } from 'zod'
 
 import { cmsRepository } from '~/repository/cms.repository'
@@ -9,8 +9,8 @@ import { payloadGlobals, payloadImage } from '~~/tests/fixtures/cms'
 type Repository = ReturnType<typeof cmsRepository>
 
 describe('cms repository', () => {
-  const fetchMock = jest.fn<(...args: unknown[]) => Promise<unknown>>()
-  const captureError = jest.fn()
+  const fetchMock = vi.fn<(...args: unknown[]) => Promise<unknown>>()
+  const captureError = vi.fn()
   const config = { public: { payloadUrl: 'https://cms.example.com' } }
 
   Object.assign(globalThis, {
@@ -20,7 +20,7 @@ describe('cms repository', () => {
   })
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     resetReportedOnce()
     config.public.payloadUrl = 'https://cms.example.com'
   })

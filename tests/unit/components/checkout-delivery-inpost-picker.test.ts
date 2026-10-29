@@ -4,8 +4,8 @@ import {
   describe,
   expect,
   it,
-  jest,
-} from '@jest/globals'
+  vi,
+} from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 
 import AppStatusMessage from '~/components/app/status-message.vue'
@@ -40,7 +40,7 @@ describe('checkout delivery inpost picker component', () => {
 
   beforeEach(() => {
     token = 'geowidget-token'
-    jest.spyOn(console, 'error').mockImplementation(() => {})
+    vi.spyOn(console, 'error').mockImplementation(() => {})
   })
 
   afterEach(() => {

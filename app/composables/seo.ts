@@ -1,6 +1,6 @@
 import type { StoreProduct } from '@medusajs/types'
 import type { MaybeRefOrGetter, Ref } from 'vue'
-import type { BaseRegionCountryWithRegionId } from '~/utils/country'
+import type { BaseRegionCountryWithRegionId } from '~/types/country'
 
 // Canonical URL + one hreflang alternate per country (from the regions the
 // region middleware already loaded) for an indexable page. The site URL comes
@@ -33,7 +33,13 @@ export const useCountrySeoLinks = (
     () => links.value.find((link) => link.rel === 'canonical')?.href,
   )
 
-  useHead({ link: links })
+  useHead({
+    link: computed(() =>
+      links.value.map((link) =>
+        link.rel === 'alternate' ? { ...link, type: 'text/html' } : link,
+      ),
+    ),
+  })
   useSeoMeta({ ogUrl: canonicalUrl })
 
   return { canonicalUrl }

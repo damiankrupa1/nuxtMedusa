@@ -4,8 +4,8 @@ import {
   describe,
   expect,
   it,
-  jest,
-} from '@jest/globals'
+  vi,
+} from 'vitest'
 import { ref } from 'vue'
 
 import { getCountryFromCountryCode } from '~/utils/country'
@@ -20,9 +20,9 @@ describe('region middleware', () => {
 
   const countries = ref<BaseRegionCountryWithRegionId[]>()
   const savedCountryCode = ref<string>()
-  const setCountry = jest.fn()
-  const setLocale = jest.fn<(locale: string) => Promise<void>>()
-  const navigateTo = jest.fn((path: string) => path)
+  const setCountry = vi.fn()
+  const setLocale = vi.fn<(locale: string) => Promise<void>>()
+  const navigateTo = vi.fn((path: string) => path)
 
   Object.assign(globalThis, {
     defineNuxtRouteMiddleware: (middleware: Middleware) => middleware,
@@ -45,7 +45,7 @@ describe('region middleware', () => {
     middleware({ path: fullPath.split('?')[0] ?? fullPath, fullPath })
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     countries.value = [country('de'), country('pl')]
     savedCountryCode.value = undefined
   })

@@ -18,10 +18,10 @@ pnpm lint          # eslint .
 pnpm lint:fix      # eslint . --fix
 pnpm format        # prettier --write .
 pnpm format:check  # prettier --check .
-pnpm test          # jest --runInBand
+pnpm test          # vitest run --typecheck
 ```
 
-The Jest unit tests live under `tests/unit/` and are run by CI together with `pnpm lint`, `pnpm format:check` and `pnpm build` on pushes to `main` and pull requests. Run one test file with `pnpm exec jest tests/unit/utils/product.test.ts --runInBand`.
+The Vitest unit tests live under `tests/unit/`; `pnpm test` runs them and Vitest’s TypeScript checker against the project `tsconfig.json`, covering the test files, their imported source graph and Nuxt-generated auto-import types. CI runs them together with `pnpm lint`, `pnpm format:check` and `pnpm build` on pushes to `main` and pull requests. Run one test file with `pnpm exec vitest run --typecheck tests/unit/utils/product.test.ts`.
 
 ### Environment
 

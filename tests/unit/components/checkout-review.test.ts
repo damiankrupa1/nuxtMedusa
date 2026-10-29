@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { loadStripe } from '@stripe/stripe-js'
 import type { Stripe } from '@stripe/stripe-js'
@@ -8,16 +8,16 @@ import AppStatusMessage from '~/components/app/status-message.vue'
 import CheckoutReview from '~/components/checkout/review/index.vue'
 import { useCartPayment } from '~/composables/payment'
 
-jest.mock('@stripe/stripe-js', () => ({ loadStripe: jest.fn() }))
+vi.mock('@stripe/stripe-js', () => ({ loadStripe: vi.fn() }))
 
 // Runs the real payment composable, service and repositories; only Stripe.js
 // and Nuxt's auto-imports are mocked.
 describe('checkout review component', () => {
-  const asyncMock = () => jest.fn<(...args: unknown[]) => Promise<unknown>>()
+  const asyncMock = () => vi.fn<(...args: unknown[]) => Promise<unknown>>()
 
-  const card = { mount: jest.fn(), on: jest.fn(), destroy: jest.fn() }
+  const card = { mount: vi.fn(), on: vi.fn(), destroy: vi.fn() }
   const stripe = {
-    elements: jest.fn(() => ({ create: jest.fn(() => card) })),
+    elements: vi.fn(() => ({ create: vi.fn(() => card) })),
     confirmCardPayment: asyncMock(),
     confirmBlikPayment: asyncMock(),
     confirmP24Payment: asyncMock(),
@@ -27,7 +27,7 @@ describe('checkout review component', () => {
   const cartResponse = ref<{ cart: unknown }>()
   const route = { query: {} as Record<string, string> }
   const replace = asyncMock()
-  const placeOrder = jest.fn(async () => {})
+  const placeOrder = vi.fn(async () => {})
 
   Object.assign(globalThis, {
     useCartPayment,
@@ -101,9 +101,9 @@ describe('checkout review component', () => {
   }
 
   beforeEach(() => {
-    jest.clearAllMocks()
-    jest.mocked(loadStripe).mockResolvedValue(stripe as unknown as Stripe)
-    jest.spyOn(console, 'error').mockImplementation(() => {})
+    vi.clearAllMocks()
+    vi.mocked(loadStripe).mockResolvedValue(stripe as unknown as Stripe)
+    vi.spyOn(console, 'error').mockImplementation(() => {})
   })
 
   it('pays by card before placing the order', async () => {

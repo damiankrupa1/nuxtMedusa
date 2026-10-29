@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick, ref } from 'vue'
 
 import { useNotFoundWhenMissing } from '~/composables/not-found'
@@ -6,7 +6,7 @@ import { useNotFoundWhenMissing } from '~/composables/not-found'
 type Status = 'idle' | 'pending' | 'success' | 'error'
 
 describe('useNotFoundWhenMissing', () => {
-  const showError = jest.fn()
+  const showError = vi.fn()
   Object.assign(globalThis, { showError })
 
   beforeEach(() => {

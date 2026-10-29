@@ -1,5 +1,5 @@
 import type { StoreCartShippingOption } from '@medusajs/types'
-import { describe, expect, it } from '@jest/globals'
+import { describe, expect, it } from 'vitest'
 
 import {
   formatInpostPointAddress,
