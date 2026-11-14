@@ -6,7 +6,8 @@ import { useCookie, useNuxtApp, useState } from 'nuxt/app'
 import regionMiddleware from '~/middleware/region.global'
 
 const mocks = vi.hoisted(() => ({
-  countries: undefined as Array<{ iso_2: string; region_id: string }> | undefined,
+  countries: undefined as
+    Array<{ iso_2: string; region_id: string }> | undefined,
   navigateTo: vi.fn((path: string) => path),
 }))
 
@@ -44,7 +45,8 @@ describe('region middleware in Nuxt', () => {
           } as Parameters<typeof regionMiddleware>[0],
           {} as Parameters<typeof regionMiddleware>[1],
         )
-        selectedCountry = useState<{ iso_2: string } | null>('country').value?.iso_2
+        selectedCountry = useState<{ iso_2: string } | null>('country').value
+          ?.iso_2
         locale = $i18n.locale.value
 
         return () => h('output', String(result ?? 'continued'))

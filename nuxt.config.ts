@@ -100,6 +100,15 @@ export default defineNuxtConfig({
     },
   },
 
+  // @nuxtjs/medusa transpiles @medusajs/js-sdk, so Vite serves it unbundled in
+  // dev and its CommonJS `qs` import has no named exports: the client script
+  // throws on load and nothing hydrates (no button reacts). Pre-bundle `qs`.
+  vite: {
+    optimizeDeps: {
+      include: ['qs'],
+    },
+  },
+
   eslint: {
     config: {
       stylistic: true,
