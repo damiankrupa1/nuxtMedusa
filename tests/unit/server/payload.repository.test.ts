@@ -25,6 +25,8 @@ beforeAll(() => {
 
 beforeEach(() => {
   vi.clearAllMocks()
+  vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  vi.mocked(Sentry.isEnabled).mockReturnValue(true)
   fetchPayload.mockResolvedValue({ primaryNav: [] })
 })
 
@@ -118,18 +120,81 @@ describe('payloadRepository().fetchGlobal', () => {
     )
   })
 
-  it('does not report failures itself', async () => {
-    fetchPayload.mockRejectedValue(
-      Object.assign(new Error('upstream'), { statusCode: 500 }),
-    )
-
-    await expect(
+  describe('reporting a failure', () => {
+    const fetchNavigation = () =>
       payloadRepository('https://cms.example.com').fetchGlobal(
         'navigation',
         query,
-      ),
-    ).rejects.toBeDefined()
-    expect(Sentry.captureException).not.toHaveBeenCalled()
-    expect(Sentry.addBreadcrumb).not.toHaveBeenCalled()
+      )
+
+    const failWith = async (upstream: unknown) => {
+      fetchPayload.mockRejectedValue(upstream)
+      try {
+        await fetchNavigation()
+      } catch (thrown) {
+        return thrown as Error
+      }
+      throw new Error('Expected fetchGlobal() to throw')
+    }
+
+    it('reports once with source and global, and links the reported error as the cause of the 502', async () => {
+      const upstream = Object.assign(new Error('upstream'), {
+        statusCode: 500,
+      })
+
+      const error = await failWith(upstream)
+
+      expect(Sentry.captureException).toHaveBeenCalledTimes(1)
+      const [reported, options] = vi.mocked(Sentry.captureException).mock
+        .calls[0] as [Error, unknown]
+      // The same object: captureError() marks it as captured, and Sentry's
+      // Nitro error hook skips an H3 error whose cause carries that mark
+      expect(error.cause).toBe(reported)
+      expect(reported.message).toBe('Payload CMS request failed (500)')
+      expect(reported.cause).toBe(upstream)
+      expect(error).toMatchObject({
+        statusCode: 502,
+        message: 'Payload CMS request failed (500)',
+      })
+      expect(options).toEqual({
+        tags: { source: 'payload', cms_global: 'navigation' },
+        extra: {},
+      })
+    })
+
+    it('reports an upstream 404 as an event, not as a breadcrumb: a missing global is ours to fix', async () => {
+      await failWith(Object.assign(new Error('Not Found'), { statusCode: 404 }))
+
+      expect(Sentry.captureException).toHaveBeenCalledTimes(1)
+      expect(Sentry.addBreadcrumb).not.toHaveBeenCalled()
+    })
+
+    it('reports a timeout', async () => {
+      const timeoutSignal = AbortSignal.abort(
+        new DOMException('The operation timed out', 'TimeoutError'),
+      )
+      vi.spyOn(AbortSignal, 'timeout').mockReturnValue(timeoutSignal)
+      fetchPayload.mockImplementation((_url, { signal }) =>
+        Promise.reject(signal.reason),
+      )
+
+      const error = await fetchNavigation().catch((thrown: Error) => thrown)
+
+      expect(error).toMatchObject({
+        statusCode: 502,
+        message: 'Payload CMS request failed (no response)',
+      })
+      expect(Sentry.captureException).toHaveBeenCalledTimes(1)
+      expect(vi.mocked(Sentry.captureException).mock.calls[0]?.[0]).toBe(
+        (error as Error).cause,
+      )
+    })
+
+    it('does not report a successful request', async () => {
+      await fetchNavigation()
+
+      expect(Sentry.captureException).not.toHaveBeenCalled()
+      expect(Sentry.addBreadcrumb).not.toHaveBeenCalled()
+    })
   })
 })

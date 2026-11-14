@@ -9,7 +9,8 @@ import { isCmsGlobalSlug, parseCmsGlobalQuery } from '~~/server/utils/cms'
 // Medusa errors, and there are none here. The handler only does HTTP (slug,
 // config, query, cache); the Payload call, its timeout and the 502 mapping
 // live in server/repository/payload.repository.ts. A Payload failure is
-// reported once, by cms.repository.ts, which receives the 502.
+// reported once, there, and its 502 carries the reported error as `cause` so
+// Sentry's Nitro hook doesn't report it again.
 export default defineCachedEventHandler(
   async (event) => {
     const slug = getRouterParam(event, 'slug')
