@@ -1,14 +1,7 @@
 /**
  * @vitest-environment node
  */
-import {
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { H3Event } from 'h3'
 import { createError, isError } from 'h3'
 
