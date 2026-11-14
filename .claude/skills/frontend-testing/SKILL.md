@@ -8,7 +8,7 @@ description: Choose and implement proportionate tests for Vue/Nuxt frontend chan
 ## Discover the test setup
 
 - Inspect package scripts, test configuration, existing tests, and installed dependencies first.
-- Use the project's established runner and conventions (for example, Vitest or Playwright only if actually configured).
+- Use the project's established runners and conventions: Vitest for unit and Nuxt-context tests, Playwright for real-browser e2e.
 - Do not install a testing framework without discussing it when the project has none.
 
 ## Match tests to risk
@@ -49,9 +49,18 @@ description: Choose and implement proportionate tests for Vue/Nuxt frontend chan
 - In the plain `unit` project, `@vue/test-utils`'s `mount` does not run Nuxt's auto-import/global component registration. Stub `App*` wrappers or Nuxt UI components (`UButton`, `UInput`, ...) explicitly when the plain test intentionally isolates the parent; otherwise put the test in `tests/nuxt/` and use `mountSuspended` so the real components, plugins and injections are present.
 - In a plain mount, mock `$t` via `global.mocks` (`{ $t: (key: string) => key }`) whenever the component template calls it directly. In Nuxt tests, use the actual i18n plugin instead of a `$t` stub unless translation output itself is the boundary under test.
 
-## E2E runner decision
+## E2E tests (Playwright)
 
-Use `@nuxt/test-utils` only for Nuxt-context Vitest tests. If issue #45 is resumed, choose Playwright for genuine browser e2e: it provides the intended multi-browser matrix, traces and independent server lifecycle. This decision does not start an e2e suite; keep e2e tests outside both Vitest projects.
+Use `@nuxt/test-utils` only for Nuxt-context Vitest tests. Genuine browser e2e runs on `@playwright/test` (`pnpm test:e2e`, `tests/e2e/`), outside both Vitest projects. Add an e2e spec only for what no unit or Nuxt-project test can see: real navigation, hydration, cookies, headers, CORS and the production build's rules. Full detail is in "Test runner boundary" in `CLAUDE.md`; the rules that matter when writing a spec:
+
+- Put it in `tests/e2e/specs/<area>/<topic>.spec.ts`, import `test`/`expect` from `~~/tests/e2e/support/fixtures` (not from `@playwright/test`) and use the `gotoHydrated` fixture before interacting. Helpers are plain functions in `tests/e2e/support/`; no page-object classes.
+- No `waitForTimeout` (ESLint error) and no `networkidle`: assert on something observable. Select with `getByRole`/`getByLabel`/`getByText`, using copy from `i18n/locales/*.json` or from the Payload stub; add a `data-testid` (in its own commit) only when no semantic selector is stable. Don't select by Tailwind classes.
+- Tag a spec that needs Medusa with `{ tag: '@medusa' }` (needs Stripe: `@stripe`). Untagged specs must pass with no backend at all; `playwright.config.ts` leaves tagged specs out while `E2E_MEDUSA_BACKEND_URL`/`E2E_STRIPE_KEY` is unset. Catalog handles come from `tests/e2e/support/test-data.ts`, never hard-coded in a spec; keep that file, the Payload stub and the Medusa e2e seed in sync.
+- Each test makes its own data (its own cart, its own customer) so tests can run in parallel in any order. Don't depend on another test's state.
+- Editorial content comes from the local Payload stub (`tests/e2e/support/payload-stub.ts`), which has no CORS headers on purpose; don't add them, and don't call Payload from a spec's page directly. Use `trackPayloadRequests(page)` to assert the browser only reaches it through `/api/cms`.
+- Never use production services or keys: the run refuses a `pk_live_` key, production Medusa/Payload hosts and a Sentry DSN (`tests/e2e/support/safety.ts`, unit tested in `tests/unit/e2e/safety.test.ts`). Stripe is test mode only, InPost the sandbox.
+- A regression spec must be shown to fail without the fix: revert the fix locally, run it, restore the fix (the #42 spec does, by changing `fetchGlobal()` back to a direct Payload call).
+- Run one spec with `pnpm test:e2e tests/e2e/specs/seo/robots.spec.ts`. Every run rebuilds the app (about a minute); set `E2E_SKIP_BUILD=1` to reuse `.output` while you iterate on specs only, and rebuild after any change to `app/` or `server/`.
 
 ## Execution policy
 

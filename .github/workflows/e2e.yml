@@ -1,0 +1,101 @@
+name: E2E
+
+# Real-browser tests (Playwright), kept apart from the CI workflow so a slow or
+# flaky browser run never blocks lint, unit tests and the build. The job is
+# deliberately not a required check yet: make it required in the branch
+# protection rules once the suite has been stable for a while.
+#
+# Without E2E_MEDUSA_BACKEND_URL (not set here yet) the specs tagged @medusa
+# are left out, so the job runs the backend-free part: robots.txt, the CMS
+# proxy against the local Payload stub and the test helpers. The ephemeral
+# Medusa (PostgreSQL, Redis, migrations and the e2e seed from the medusaDemo
+# repository) is added to this job in a later change.
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      all_browsers:
+        description: Also run Firefox and WebKit
+        type: boolean
+        default: false
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # Pull requests and pushes run Chromium only
+      E2E_ALL_BROWSERS: ${{ inputs.all_browsers && '1' || '' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # pnpm must be on PATH before setup-node, whose `cache: pnpm` runs it
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Latest Node 22.x satisfies Nuxt 4.6.3's ^22.22.3 engine requirement.
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Get the installed Playwright version
+        id: playwright
+        run: echo "version=$(pnpm exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}-${{ inputs.all_browsers && 'all' || 'chromium' }}
+
+      - name: Install browsers and their system dependencies
+        if: steps.browsers.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps ${{ inputs.all_browsers && 'chromium firefox webkit' || 'chromium' }}
+
+      # A cache hit restores the browsers but not the system packages
+      - name: Install system dependencies
+        if: steps.browsers.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps ${{ inputs.all_browsers && 'chromium firefox webkit' || 'chromium' }}
+
+      # Builds the app with the e2e environment (tests/e2e/support/env.ts),
+      # serves it with `nuxt preview` and starts the Payload stub
+      - name: E2E tests
+        run: pnpm test:e2e
+
+      - name: Upload the report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+          if-no-files-found: ignore
+
+      # Traces (kept for the first retry of a failing test) and screenshots
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results/
+          retention-days: 7
+          if-no-files-found: ignore
