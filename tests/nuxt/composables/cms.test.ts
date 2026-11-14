@@ -50,16 +50,21 @@ describe('CMS composables in Nuxt', () => {
     vi.fn<(locale: string) => Promise<CmsCategoryTiles | null>>()
   const fetchShopTheLook =
     vi.fn<(locale: string) => Promise<CmsShopTheLook | null>>()
-  const getResolvedCategoryTiles = vi.fn<
-    (locale: string, medusaLocale?: string) => Promise<CmsCategoryTiles | null>
-  >()
-  const getResolvedShopTheLook = vi.fn<
-    (
-      locale: string,
-      query?: unknown,
-      medusaLocale?: string,
-    ) => Promise<ResolvedShopTheLook | null>
-  >()
+  const getResolvedCategoryTiles =
+    vi.fn<
+      (
+        locale: string,
+        medusaLocale?: string,
+      ) => Promise<CmsCategoryTiles | null>
+    >()
+  const getResolvedShopTheLook =
+    vi.fn<
+      (
+        locale: string,
+        query?: unknown,
+        medusaLocale?: string,
+      ) => Promise<ResolvedShopTheLook | null>
+    >()
 
   beforeEach(() => {
     vi.clearAllMocks()

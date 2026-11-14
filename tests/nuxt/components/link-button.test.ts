@@ -5,7 +5,11 @@ import { mountWithCountry } from '~~/tests/nuxt/components/mount-with-country'
 
 describe('link-button component in Nuxt', () => {
   it('uses the current country for an internal link', async () => {
-    const wrapper = await mountWithCountry(LinkButton, { to: '/store' }, 'View all')
+    const wrapper = await mountWithCountry(
+      LinkButton,
+      { to: '/store' },
+      'View all',
+    )
     const link = wrapper.get('a')
 
     expect(link.attributes('href')).toBe('/pl/store')
