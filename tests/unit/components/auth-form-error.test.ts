@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { ref } from 'vue'
 
@@ -7,14 +7,14 @@ import RegisterForm from '~/components/auth/register-form.vue'
 import SigninForm from '~/components/auth/signin-form.vue'
 
 const apiError = ref<string | null>(null)
-const mutate = jest.fn<() => Promise<void>>()
+const mutate = vi.fn<() => Promise<void>>()
 const mockCustomerMutation = () => ({
   mutate,
   loading: ref(false),
   error: apiError,
 })
 
-jest.mock('~/composables/customer', () => ({
+vi.mock('~/composables/customer', () => ({
   useLoginCustomer: () => mockCustomerMutation(),
   useRegisterCustomer: () => mockCustomerMutation(),
 }))
@@ -22,7 +22,7 @@ jest.mock('~/composables/customer', () => ({
 Object.assign(globalThis, {
   useI18n: () => ({ t: (key: string) => key }),
   useRegisterCustomer: () => mockCustomerMutation(),
-  refreshNuxtData: jest.fn(async () => {}),
+  refreshNuxtData: vi.fn(async () => {}),
 })
 
 const stubs = {

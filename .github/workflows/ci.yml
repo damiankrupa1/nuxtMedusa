@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Test
+      - name: Unit tests and imported-source typecheck
         run: pnpm test
 
       - name: Lint

@@ -1,18 +1,18 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { loadStripe } from '@stripe/stripe-js'
 import type { Stripe, StripeCardElement } from '@stripe/stripe-js'
 
 import { stripeRepository } from '~/repository/stripe.repository'
 
-jest.mock('@stripe/stripe-js', () => ({ loadStripe: jest.fn() }))
+vi.mock('@stripe/stripe-js', () => ({ loadStripe: vi.fn() }))
 
 describe('stripe repository', () => {
   const stripe = {
     confirmCardPayment:
-      jest.fn<(...args: unknown[]) => Promise<Record<string, unknown>>>(),
+      vi.fn<(...args: unknown[]) => Promise<Record<string, unknown>>>(),
   }
   const config = { public: { stripeKey: 'pk_test' } }
-  const captureError = jest.fn()
+  const captureError = vi.fn()
   const card = {} as StripeCardElement
   const billingDetails = { email: 'jan@example.com' }
 
@@ -22,9 +22,9 @@ describe('stripe repository', () => {
   })
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     config.public.stripeKey = 'pk_test'
-    jest.mocked(loadStripe).mockResolvedValue(stripe as unknown as Stripe)
+    vi.mocked(loadStripe).mockResolvedValue(stripe as unknown as Stripe)
   })
 
   it('throws card declines without reporting them', async () => {

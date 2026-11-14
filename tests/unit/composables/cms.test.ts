@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, jest } from '@jest/globals'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ref } from 'vue'
 
 import { cmsRepository } from '~/repository/cms.repository'
@@ -26,45 +26,45 @@ import type {
 } from '~/types/cms'
 import { toMedusaLocale } from '~/utils/locale'
 
-jest.mock('~/repository/cms.repository', () => ({
-  cmsRepository: jest.fn(),
+vi.mock('~/repository/cms.repository', () => ({
+  cmsRepository: vi.fn(),
 }))
-jest.mock('~/services/cms.service', () => ({
-  useCmsService: jest.fn(),
+vi.mock('~/services/cms.service', () => ({
+  useCmsService: vi.fn(),
 }))
 
 describe('cms composables', () => {
   const fetchNavigation =
-    jest.fn<(locale: string) => Promise<CmsNavigation | null>>()
+    vi.fn<(locale: string) => Promise<CmsNavigation | null>>()
   const fetchFooterContent =
-    jest.fn<(locale: string) => Promise<CmsFooterContent | null>>()
+    vi.fn<(locale: string) => Promise<CmsFooterContent | null>>()
   const fetchStudioStory =
-    jest.fn<(locale: string) => Promise<CmsStudioStory | null>>()
-  const fetchBrands = jest.fn<(locale: string) => Promise<CmsBrands | null>>()
+    vi.fn<(locale: string) => Promise<CmsStudioStory | null>>()
+  const fetchBrands = vi.fn<(locale: string) => Promise<CmsBrands | null>>()
   const fetchJournalSection =
-    jest.fn<(locale: string) => Promise<CmsJournalSection | null>>()
+    vi.fn<(locale: string) => Promise<CmsJournalSection | null>>()
   const fetchCampaignSlides =
-    jest.fn<(locale: string) => Promise<CmsCampaignSlides | null>>()
+    vi.fn<(locale: string) => Promise<CmsCampaignSlides | null>>()
   const fetchCategoryTiles =
-    jest.fn<(locale: string) => Promise<CmsCategoryTiles | null>>()
+    vi.fn<(locale: string) => Promise<CmsCategoryTiles | null>>()
   const fetchShopTheLook =
-    jest.fn<(locale: string) => Promise<CmsShopTheLook | null>>()
+    vi.fn<(locale: string) => Promise<CmsShopTheLook | null>>()
   const getResolvedCategoryTiles =
-    jest.fn<
+    vi.fn<
       (
         locale: string,
         medusaLocale?: string,
       ) => Promise<CmsCategoryTiles | null>
     >()
   const getResolvedShopTheLook =
-    jest.fn<
+    vi.fn<
       (
         locale: string,
         query?: unknown,
         medusaLocale?: string,
       ) => Promise<ResolvedShopTheLook | null>
     >()
-  const useLazyAsyncData = jest.fn(
+  const useLazyAsyncData = vi.fn(
     (key: string, handler: () => Promise<unknown>) => ({ key, handler }),
   )
   const locale = ref('pl')
@@ -78,10 +78,10 @@ describe('cms composables', () => {
   })
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     locale.value = 'pl'
     country.value = { region_id: 'reg_pl' }
-    jest.mocked(cmsRepository).mockReturnValue({
+    vi.mocked(cmsRepository).mockReturnValue({
       fetchNavigation,
       fetchFooterContent,
       fetchStudioStory,
@@ -91,7 +91,7 @@ describe('cms composables', () => {
       fetchCategoryTiles,
       fetchShopTheLook,
     })
-    jest.mocked(useCmsService).mockReturnValue({
+    vi.mocked(useCmsService).mockReturnValue({
       getResolvedCategoryTiles,
       getResolvedShopTheLook,
     })

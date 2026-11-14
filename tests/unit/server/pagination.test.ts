@@ -1,11 +1,11 @@
-import { describe, expect, it, jest } from '@jest/globals'
+import { describe, expect, it, vi } from 'vitest'
 
 import { listAllPages } from '~~/server/utils/pagination'
 
 describe('listAllPages', () => {
   it('reads every page of a list endpoint', async () => {
     const all = Array.from({ length: 5 }, (_, index) => index)
-    const fetchPage = jest.fn(
+    const fetchPage = vi.fn(
       async ({ limit, offset }: { limit: number; offset: number }) => ({
         items: all.slice(offset, offset + limit),
         count: all.length,
@@ -21,7 +21,7 @@ describe('listAllPages', () => {
   })
 
   it('stops on an empty page even if the count says there is more', async () => {
-    const fetchPage = jest.fn(async () => ({ items: [], count: 10 }))
+    const fetchPage = vi.fn(async () => ({ items: [], count: 10 }))
 
     await expect(listAllPages(fetchPage)).resolves.toEqual([])
     expect(fetchPage).toHaveBeenCalledTimes(1)

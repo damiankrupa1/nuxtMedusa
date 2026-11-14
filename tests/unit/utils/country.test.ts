@@ -1,5 +1,5 @@
 import type { StoreRegion, StoreRegionCountry } from '@medusajs/types'
-import { describe, expect, it } from '@jest/globals'
+import { describe, expect, it } from 'vitest'
 
 import {
   getCountriesFromRegions,

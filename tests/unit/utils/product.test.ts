@@ -1,5 +1,5 @@
 import type { StoreProduct, StoreProductOptionValue } from '@medusajs/types'
-import { describe, expect, it } from '@jest/globals'
+import { describe, expect, it } from 'vitest'
 
 import { SORT_OPTIONS } from '~/types/filter'
 import {
