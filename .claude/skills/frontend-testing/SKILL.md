@@ -42,6 +42,8 @@ description: Choose and implement proportionate tests for Vue/Nuxt frontend chan
 - A test that imports `h3` needs `// @vitest-environment node` at the top: under the default `jsdom` environment h3's `uncrypto` dependency resolves to its browser ESM build, so run those tests in Node.
 - A repository in `server/repository` is tested with a fake `$fetch` assigned to `globalThis` (plus the real `createError`): assert the URL, query and options, that the body passes through, and the error mapping. Pass its configuration as an argument instead of stubbing `useRuntimeConfig` (see `tests/unit/server/payload.repository.test.ts`).
 - A handler that uses a repository is tested with the repository mocked by `vi.mock('~~/server/repository/...')`: assert the statuses it owns (404, 503, 400) and what it passes on, not the upstream details (see `tests/unit/server/cms-route.test.ts`).
+- A Medusa repository takes the request's SDK client as an argument; test it with a plain object of `vi.fn()`s cast to `Medusa` (`import type Medusa from '@medusajs/js-sdk'`) and Medusa failures as the SDK's `FetchError` (see `tests/unit/server/customer.repository.test.ts`).
+- The customer session routes (authentication, high risk) are tested one level higher on purpose: `tests/unit/server/customers-routes.test.ts` sends real requests through an h3 app with h3's own body and cookie helpers and fakes only the SDK client (`serverMedusaClient`, mocked through the `#medusa/server` alias), so it pins the exact `Set-Cookie` header and the SDK calls across both layers. Extend it for any change to `server/api/customers/**`.
 - Payload answers used by several tests are in `tests/fixtures/cms.ts` (one complete global per slug, with Payload's own ids and timestamps).
 
 ## Mounting components
