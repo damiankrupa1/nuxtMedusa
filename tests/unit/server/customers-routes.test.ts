@@ -205,6 +205,19 @@ describe('POST /api/customers/login', () => {
     expect(sentryEvents()).toBe(1)
   })
 
+  it('answers an error, not `{ customer: null }`, when Medusa rejects the fresh token', async () => {
+    medusa.store.customer.retrieve.mockRejectedValue(
+      medusaError(401, 'Unauthorized'),
+    )
+
+    const response = await post('/api/customers/login', signin)
+
+    expect(response.status).toBe(401)
+    expect(response.headers.getSetCookie()).toEqual([
+      'medusa_jwt=login-token; Path=/',
+    ])
+  })
+
   it('keeps the cookie it already set when retrieving the customer fails, and reports once', async () => {
     medusa.store.customer.retrieve.mockRejectedValue(
       medusaError(500, 'Medusa is down'),
