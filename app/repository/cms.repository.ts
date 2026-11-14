@@ -68,15 +68,24 @@ async function fetchGlobal<Schema extends z.ZodType>(
 
   // CMS content is non-critical chrome (nav/footer, home sections); a Payload
   // outage or a global that doesn't match its schema must not break page
-  // rendering, so both are reported and turned into "no content" here rather
-  // than rethrown for the composable to deal with.
+  // rendering, so both are turned into "no content" here rather than rethrown
+  // for the composable to deal with.
   let response: unknown
   try {
     response = await $fetch(`/api/cms/${slug}`, {
       query: { locale, depth },
     })
   } catch (error) {
-    captureError(error, { source: 'payload', global: slug })
+    // An answer from the proxy (its 502, 400, 404, 503) was already reported
+    // by the server: payloadRepository() for a Payload failure, Sentry's
+    // Nitro hook for any other 5xx. Reporting it here too would double it.
+    // That relies on the server always reporting, so turning off
+    // `enableNitroErrorHandler` would make these failures invisible. Without
+    // an answer (network, offline, abort) the server never saw the request,
+    // so only this side can report it.
+    if ((error as { statusCode?: number }).statusCode === undefined) {
+      captureError(error, { source: 'payload', global: slug })
+    }
     return null
   }
 

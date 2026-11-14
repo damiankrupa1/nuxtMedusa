@@ -1,4 +1,5 @@
 import type { CmsGlobalQuery, CmsGlobalSlug } from '~/types/cms'
+import { captureError } from '~/utils/capture-error'
 
 export const PAYLOAD_REQUEST_TIMEOUT_MS = 5_000
 
@@ -23,10 +24,15 @@ export function payloadRepository(baseUrl: string) {
         })
       } catch (error) {
         const upstreamStatus = (error as { statusCode?: number }).statusCode
-        throw createError({
-          statusCode: 502,
-          message: `Payload CMS request failed (${upstreamStatus ?? 'no response'})`,
-        })
+        const message = `Payload CMS request failed (${upstreamStatus ?? 'no response'})`
+
+        // A plain Error without a `status`: isExpectedError() would turn an
+        // upstream 404 into a breadcrumb, but a Payload 404 is our problem
+        // (wrong URL or a missing global), not the shopper's.
+        const cause = new Error(message, { cause: error })
+        captureError(cause, { source: 'payload', global: slug })
+
+        throw createError({ statusCode: 502, message, cause })
       }
     },
   }

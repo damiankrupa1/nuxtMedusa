@@ -70,18 +70,33 @@ describe('cms repository', () => {
     })
   })
 
-  it('reports and swallows a Payload failure instead of breaking the page', async () => {
-    const error = new Error('fetch failed')
+  it('reports and swallows a failure without an answer (network, abort) instead of breaking the page', async () => {
+    const error = new TypeError('fetch failed')
     fetchMock.mockRejectedValue(error)
 
     const result = await cmsRepository().fetchNavigation('pl')
 
     expect(result).toBeNull()
+    expect(captureError).toHaveBeenCalledTimes(1)
     expect(captureError).toHaveBeenCalledWith(error, {
       source: 'payload',
       global: 'navigation',
     })
   })
+
+  it.each([502, 503, 400, 404])(
+    'swallows the proxy answering %i without reporting it again: the server already did',
+    async (statusCode) => {
+      fetchMock.mockRejectedValue(
+        Object.assign(new Error('Payload CMS request failed'), { statusCode }),
+      )
+
+      const result = await cmsRepository().fetchNavigation('pl')
+
+      expect(result).toBeNull()
+      expect(captureError).not.toHaveBeenCalled()
+    },
+  )
 
   it.each([
     ['a renamed field', { mainNav: [{ label: 'New in', url: '/store' }] }],
