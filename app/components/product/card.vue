@@ -23,9 +23,7 @@ const currencyCode = computed(
   () => cheapestVariant.value?.calculated_price?.currency_code ?? null,
 )
 
-const colorOption = computed(() =>
-  product?.options?.find((option) => /colou?r|kolor/i.test(option.title)),
-)
+const colorOption = computed(() => product?.options?.find(isColorOption))
 </script>
 
 <template>

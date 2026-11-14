@@ -87,6 +87,10 @@ body {
   background-color: var(--color-paper);
 }
 
+@utility border-color-accent {
+  border-color: var(--color-accent);
+}
+
 @utility border-color-line {
   border-color: var(--color-line);
 }

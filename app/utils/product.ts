@@ -91,3 +91,56 @@ export function isVariantInStock(
 ) {
   return getVariantAvailability(variant) !== 'OutOfStock'
 }
+
+// A product counts as new for this long after it was created. Medusa has no
+// "new" flag or tag (see missing-medusa-api-data), so the badge is derived
+// from `created_at`.
+// TODO(#58): replace with a real flag from the backend
+// (damiankrupa1/medusaDemo#25). TODO(#59): confirm the 30 days.
+export const NEW_PRODUCT_DAYS = 30
+
+export const isSizeOption = (option: { title: string }) =>
+  /size|rozmiar/i.test(option.title)
+
+export function isNewProduct(
+  product: Pick<StoreProduct, 'created_at'>,
+  now = Date.now(),
+) {
+  if (!product.created_at) return false
+  const age = now - new Date(product.created_at).getTime()
+  return age >= 0 && age <= NEW_PRODUCT_DAYS * 24 * 60 * 60 * 1000
+}
+
+const SIZE_ORDER = ['xxs', 'xs', 's', 'm', 'l', 'xl', 'xxl', '3xl', '4xl']
+
+// Clothing sizes read XS → XL, not alphabetically. Values that are not all
+// letter sizes (numbers, colors, "One size") keep the order Medusa returns.
+export function sortOptionValues(values: string[]) {
+  const ranks = values.map((value) => SIZE_ORDER.indexOf(value.toLowerCase()))
+  if (ranks.some((rank) => rank === -1)) return [...values]
+  return values
+    .map((value, index) => ({ value, rank: ranks[index]! }))
+    .sort((a, b) => a.rank - b.rank)
+    .map(({ value }) => value)
+}
+
+// Whether the value can still be bought together with what is already
+// selected in the other options: some in-stock variant has it.
+export function isOptionValueAvailable(
+  product: Pick<StoreProduct, 'variants'>,
+  selected: Record<string, string> | null,
+  optionId: string,
+  value: string,
+) {
+  return (
+    product.variants?.some((variant) => {
+      const options = optionsAsKeyMap(variant.options) ?? {}
+      if (options[optionId] !== value) return false
+      const matchesOthers = Object.entries(selected ?? {}).every(
+        ([id, selectedValue]) =>
+          id === optionId || options[id] === selectedValue,
+      )
+      return matchesOthers && isVariantInStock(variant)
+    }) ?? false
+  )
+}
