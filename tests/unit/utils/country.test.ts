@@ -4,6 +4,8 @@ import { describe, expect, it } from 'vitest'
 import {
   getCountriesFromRegions,
   getCountryFromCountryCode,
+  getCountryFromCountryCodeIgnoreCase,
+  getCountryRedirectPath,
 } from '~/utils/country'
 
 describe('country utils', () => {
@@ -28,6 +30,56 @@ describe('country utils', () => {
     expect(getCountryFromCountryCode(countries, 'fr')).toEqual(countries[1])
     expect(getCountryFromCountryCode(countries, 'xx')).toBeUndefined()
     expect(getCountryFromCountryCode(countries, undefined)).toBeUndefined()
+  })
+
+  it('finds a country by iso_2 code in any case', () => {
+    const countries = [
+      makeCountry('us', 'United States', 'region-1'),
+      makeCountry('FR', 'France', 'region-2'),
+    ]
+
+    expect(getCountryFromCountryCodeIgnoreCase(countries, 'US')).toEqual(
+      countries[0],
+    )
+    expect(getCountryFromCountryCodeIgnoreCase(countries, 'fr')).toEqual(
+      countries[1],
+    )
+    expect(getCountryFromCountryCodeIgnoreCase(countries, 'xx')).toBeUndefined()
+    expect(getCountryFromCountryCodeIgnoreCase(countries, '')).toBeUndefined()
+    expect(getCountryFromCountryCodeIgnoreCase(undefined, 'us')).toBeUndefined()
+  })
+
+  describe('getCountryRedirectPath', () => {
+    it('replaces a first segment of two ASCII letters in any case', () => {
+      expect(getCountryRedirectPath('/xx/store', 'pl')).toBe('/pl/store')
+      expect(getCountryRedirectPath('/XX/store', 'pl')).toBe('/pl/store')
+      expect(getCountryRedirectPath('/xx', 'pl')).toBe('/pl')
+      expect(getCountryRedirectPath('/xx/', 'pl')).toBe('/pl/')
+      expect(getCountryRedirectPath('/xx?x=1#h', 'pl')).toBe('/pl?x=1#h')
+      expect(getCountryRedirectPath('/xx#h', 'pl')).toBe('/pl#h')
+      expect(getCountryRedirectPath('/xx/store?x=1#h', 'pl')).toBe(
+        '/pl/store?x=1#h',
+      )
+    })
+
+    it('replaces only the first segment', () => {
+      expect(getCountryRedirectPath('/xx/yy/store', 'pl')).toBe('/pl/yy/store')
+    })
+
+    it('prefixes everything else', () => {
+      expect(getCountryRedirectPath('/', 'pl')).toBe('/pl/')
+      expect(getCountryRedirectPath('/store?page=2', 'pl')).toBe(
+        '/pl/store?page=2',
+      )
+      expect(getCountryRedirectPath('/xxx/store', 'pl')).toBe('/pl/xxx/store')
+      expect(getCountryRedirectPath('/x/store', 'pl')).toBe('/pl/x/store')
+      expect(getCountryRedirectPath('/pl-PL/store', 'pl')).toBe(
+        '/pl/pl-PL/store',
+      )
+      expect(getCountryRedirectPath('/x1/store', 'pl')).toBe('/pl/x1/store')
+      expect(getCountryRedirectPath('/ął/store', 'pl')).toBe('/pl/ął/store')
+      expect(getCountryRedirectPath('/store/xx', 'pl')).toBe('/pl/store/xx')
+    })
   })
 
   it('flattens and sorts countries from regions by name', () => {
