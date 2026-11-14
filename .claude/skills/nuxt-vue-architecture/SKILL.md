@@ -69,6 +69,7 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 - Import project files through a root alias, never a relative path (`./`, `../`) — including a sibling in the same folder (`./api.repository` → `~/repository/api.repository`). An aliased path reads the same from every file, survives moving the importing file, and can be grepped.
   - `~/` → `app/` (Nuxt `srcDir`): everything under `app/`, imported from `app/` or from `tests/`; Vitest maps `~/` to `app/`.
   - `~~/` → project root: code outside `app/`, e.g. `~~/server/types/medusa-error` inside `server/`. Nuxt generates `~~/*` in `.nuxt/tsconfig.server.json`, so Nitro resolves it.
+  - Server code that Nitro doesn't auto-import (`server/utils` is, `server/repository` is not) is imported explicitly: `import { payloadRepository } from '~~/server/repository/payload.repository'`.
   - Module/virtual aliases (`#ui/types`, `#medusa/server`) stay as they are. Use `~/`, not `@/` — the repo uses `~/` only.
 - Tests follow the same rule: `import Heading from '~/components/app/heading.vue'`, not `'../../../app/components/app/heading.vue'`. Vitest maps `~~/` to the project root (`vitest.config.ts`), so a test imports server code as `~~/server/...`. ESLint (`no-restricted-imports`) rejects relative imports, but not dynamic `import()` — write those with an alias by hand.
 
@@ -113,6 +114,7 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 - Put business rules in focused services/domain functions when they are reused or non-trivial.
 - Pinia is not installed. Shared client state lives in a composable on Nuxt's `useState` (e.g. `isCartDropdownOpen` in `app/composables/cart.ts`), plus a cookie when it must survive a reload, read client-side only on CDN-cached pages; server data goes through `useLazyAsyncData`. Don't add Pinia for a per-page flag or a single shared value — propose it only for several related stores with actions and getters, and discuss the new dependency first.
 - Introduce interfaces/adapters/repositories only when they isolate a real boundary (for example, an external API) or improve testability. Do not add layers mechanically.
+- Medusa and Payload are such real boundaries. On the server their calls live in `server/repository/*.repository.ts`, and handlers only do HTTP (see "Server layers" in `CLAUDE.md`).
 - Use dependency injection when it improves replaceability or testing; do not replace simple construction with an elaborate DI system without a reason.
 - Keep API DTOs separate from view models when transformations or domain semantics justify it.
 

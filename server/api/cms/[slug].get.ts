@@ -1,14 +1,15 @@
+import { payloadRepository } from '~~/server/repository/payload.repository'
 import { isCmsGlobalSlug, parseCmsGlobalQuery } from '~~/server/utils/cms'
-
-const PAYLOAD_REQUEST_TIMEOUT_MS = 5_000
 
 // Payload doesn't send CORS headers for this storefront's origin, so the
 // browser can't read it directly (server renders can, which hid this until a
 // client-side navigation refetched). Proxying through Nitro keeps the request
 // same-origin and lets the response be cached instead of hitting Payload on
 // every page view. Not wrapped in defineWrappedResponseHandler: that one maps
-// Medusa errors, and there are none here. A Payload failure is reported
-// once, by cms.repository.ts, which receives the 502.
+// Medusa errors, and there are none here. The handler only does HTTP (slug,
+// config, query, cache); the Payload call, its timeout and the 502 mapping
+// live in server/repository/payload.repository.ts. A Payload failure is
+// reported once, by cms.repository.ts, which receives the 502.
 export default defineCachedEventHandler(
   async (event) => {
     const slug = getRouterParam(event, 'slug')
@@ -27,19 +28,7 @@ export default defineCachedEventHandler(
     // A 400 with the zod issues for an invalid locale/depth
     const query = parseCmsGlobalQuery(getQuery(event))
 
-    try {
-      const normalizedPayloadUrl = payloadUrl.replace(/\/+$/, '')
-      return await $fetch(`${normalizedPayloadUrl}/api/globals/${slug}`, {
-        query,
-        signal: AbortSignal.timeout(PAYLOAD_REQUEST_TIMEOUT_MS),
-      })
-    } catch (error) {
-      const upstreamStatus = (error as { statusCode?: number }).statusCode
-      throw createError({
-        statusCode: 502,
-        message: `Payload CMS request failed (${upstreamStatus ?? 'no response'})`,
-      })
-    }
+    return payloadRepository(payloadUrl).fetchGlobal(slug, query)
   },
   { name: 'cms', maxAge: 60, staleMaxAge: 60 * 5, swr: true },
 )
