@@ -21,7 +21,7 @@ pnpm format:check  # prettier --check .
 pnpm test          # vitest run --typecheck
 ```
 
-The Vitest unit tests live under `tests/unit/`; `pnpm test` runs them and Vitest’s TypeScript checker against the project `tsconfig.json`, covering the test files, their imported source graph and Nuxt-generated auto-import types. CI runs them together with `pnpm lint`, `pnpm format:check` and `pnpm build` on pushes to `main` and pull requests. Run one test file with `pnpm exec vitest run --typecheck tests/unit/utils/product.test.ts`.
+Vitest has two projects. The plain `unit` project (`tests/unit/`) runs under jsdom without booting Nuxt; keep pure utilities, types, services and server helpers here. The `nuxt` project (`tests/nuxt/`) uses `@nuxt/test-utils`' Nuxt environment for composables, middleware and components that need auto-imports, plugins, injections or registered components. Use `mountSuspended` there instead of manually stubbing Nuxt UI or app components. `pnpm test` runs both projects; its TypeScript checker remains scoped to `tests/unit/` through `tsconfig.test-unit.json`, while `pnpm lint` checks both test trees. Run a specific test with `pnpm exec vitest run --project unit tests/unit/utils/product.test.ts` or `pnpm exec vitest run --project nuxt tests/nuxt/composables/cms.test.ts`. The Nuxt test app loads the real Nuxt UI and i18n modules, but excludes Medusa, Sentry, image and sitemap modules. Repository/service boundaries are mocked so tests never call Medusa, Payload or Stripe; no credentials or backend are required.
 
 ### Environment
 
@@ -91,7 +91,7 @@ Errors are reported once, where they come from an external system, through `capt
 
 `captureError(error, context)` is the only place that talks to Sentry (`@sentry/nuxt`, which supports Nuxt >= 3.7 and so Nuxt 4.6.3; `@sentry/vue` + `@sentry/node` would mean wiring the Nitro hooks by hand). Call sites don't change when the setup does.
 
-- **Off without a DSN.** `sentry.client.config.ts` / `sentry.server.config.ts` (project root, loaded by the `@sentry/nuxt/module` in `nuxt.config.ts`) call `Sentry.init` only when `buildSentryOptions()` (`app/utils/sentry.ts`) gets a DSN. Without one `captureError()` only logs to the console, as before, and so do local dev and tests (`tests/setup.ts` mocks `@sentry/nuxt`). With a DSN it logs to the console in development only.
+- **Off without a DSN.** `sentry.client.config.ts` / `sentry.server.config.ts` (project root, loaded by the `@sentry/nuxt/module` in `nuxt.config.ts`) call `Sentry.init` only when `buildSentryOptions()` (`app/utils/sentry.ts`) gets a DSN. Without one `captureError()` only logs to the console, as before, and so do local dev and tests (`tests/setup.ts` mocks `@sentry/nuxt` for the plain project; the Nuxt test configuration omits the Sentry module). With a DSN it logs to the console in development only.
 - **Context becomes tags.** `source` -> `source`, `type` -> `error_type`, `code` -> `error_code`, `declineCode` -> `decline_code`, `global` -> `cms_global`; any other key goes to `extra`. Reuse these keys in new call sites. `server/utils/handler.ts` reports with `source: 'server-api'` and passes the original error as `cause`, so Sentry's Nitro hook doesn't report the rethrown H3 error again.
 - **Expected errors don't alert.** `isExpectedError()` treats a 4xx from Medusa/h3 (except 408 and 429) and a Stripe `card_error`/`validation_error` as the shopper's to fix: they become an `info` breadcrumb on the next real event, not an event. The `@sentry/nuxt` module itself already skips Nuxt errors with a 3xx/4xx status (404 pages via `showError`) and Nitro errors below 500.
 - **What the module covers by itself:** Vue/Nuxt component errors (`vue:error`, `app:error`), unhandled exceptions and rejections in the browser, and unexpected Nitro errors (SSR render errors, 5xx). Don't add a second hook for those. An error that is both passed to `captureError()` and then left uncaught can be reported twice.
@@ -142,6 +142,10 @@ Catalog pages (the `/[countryCode]` home, `store`, `products/[handle]`, `categor
 - `server/utils/handler.ts` / `server/types/medusa-error.ts` — shared error-wrapping for API routes.
 - `server/utils/validation.ts` — `parseRequestInput()`, the zod request-input parser every handler uses (see Server API routes).
 - `server/utils/cms.ts` — slug/query validation for the Payload proxy (`robots.ts`, `pagination.ts` are the other pure, unit-tested helpers there).
+
+### Test runner boundary
+
+`@nuxt/test-utils` is used only for the Vitest Nuxt unit/integration project. For the real-browser e2e suite discussed in issue #45, retain Playwright as the runner to preserve Chromium/WebKit/Firefox coverage, independent browser tracing and a `webServer` lifecycle. This does not install or start an e2e suite; issue #45 remains parked until its environment and first flows are planned separately.
 
 ### Key modules (`nuxt.config.ts`)
 

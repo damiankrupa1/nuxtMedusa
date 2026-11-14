@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.json",
+  "exclude": ["tests/nuxt/**/*.test.ts", "tests/nuxt/**/*.vue"]
+}

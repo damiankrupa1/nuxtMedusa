@@ -28,12 +28,13 @@ description: Choose and implement proportionate tests for Vue/Nuxt frontend chan
 - Mock at the boundary, not every internal function.
 - Avoid snapshots as the only evidence for complex behavior.
 
-## Vitest conventions
+## Vitest projects
 
-- Unit tests are limited to `tests/unit/**/*.test.ts`; Playwright e2e tests stay outside this include. The Vitest config maps `~/` to `app/` and `~~/` to the project root, transforms Vue SFCs, and loads `tests/setup.ts`. Tests import APIs from `vitest` (`vi`, `describe`, `expect`, etc.) rather than relying on globals.
-- `pnpm test` runs Vitest and its TypeScript checker using the project `tsconfig.json`. This checks the test files and TypeScript module graph, including Nuxt-generated auto-import types, retaining the `ts-jest` source-checking safety net without a separate checker dependency.
-- Vitest hoists `vi.mock()` calls. If a mock factory needs a value declared in the test file, create it with `vi.hoisted()`; otherwise keep mock factories self-contained. Resolve virtual module IDs that do not exist on disk with a Vite alias before mocking them.
-- The global Sentry mock in `tests/setup.ts` keeps unit tests offline. Continue mocking external services at repository boundaries; no unit test should reach Medusa, Payload, Stripe, or another live service.
+- Keep plain tests in `tests/unit/**/*.test.ts`: the `unit` project runs in jsdom without booting Nuxt and loads `tests/setup.ts`. Use it for pure utilities, schemas, services and server helpers.
+- Put tests that need real Nuxt composables, middleware, auto-imports, plugins/injections or app-wide component registration in `tests/nuxt/**/*.test.ts`. The `nuxt` project uses `@nuxt/test-utils`' `environment: 'nuxt'`; use `mountSuspended` for components and invoke composables/middleware from a component's setup so Nuxt context is active. Use generated Nuxt imports only when needed; component source can keep its normal `~/` alias.
+- Let Nuxt register `App*` and `U*` components in Nuxt tests; do not stub them just to make a component mount. Keep explicit stubs in the plain project when the component contract is not what the test covers. Mock repositories/services at external boundaries and keep all tests offline. In the Nuxt test app, only Nuxt UI and i18n are enabled; Medusa, Sentry, image and sitemap modules are excluded.
+- `pnpm test` runs both projects. Vitest's TypeScript checker stays scoped to plain unit tests through `tsconfig.test-unit.json`; `pnpm lint` covers both test trees. Run one file with `pnpm exec vitest run --project unit tests/unit/utils/product.test.ts` or `pnpm exec vitest run --project nuxt tests/nuxt/composables/cms.test.ts`.
+- Vitest hoists `vi.mock()` calls. If a mock factory needs a value declared in the test file, create it with `vi.hoisted()`; otherwise keep mock factories self-contained. Use `mockNuxtImport()` for Nuxt auto-imports when the test needs to replace one, and use `registerEndpoint()` for same-origin fetch endpoints rather than a live service. The global Sentry mock in `tests/setup.ts` applies to the plain project; no unit or Nuxt test may call Medusa, Payload, Stripe or another live service.
 
 ## Server code (`server/utils`)
 
@@ -41,10 +42,14 @@ description: Choose and implement proportionate tests for Vue/Nuxt frontend chan
 - A test that imports `h3` needs `// @vitest-environment node` at the top: under the default `jsdom` environment h3's `uncrypto` dependency resolves to its browser ESM build, so run those tests in Node.
 - Payload answers used by several tests are in `tests/fixtures/cms.ts` (one complete global per slug, with Payload's own ids and timestamps).
 
-## Mounting components that use Nuxt UI or `app/` wrapper children
+## Mounting components
 
-- `@vue/test-utils`'s `mount` in a Vitest unit test does not run Nuxt's auto-import/global component registration. Any `app/components/app/*.vue` wrapper (e.g. `AppIconButton`) or Nuxt UI component (`UButton`, `UInput`, ...) rendered by the component under test must be stubbed explicitly in `global.stubs`, or it resolves as an unknown element and `wrapper.find(...)` silently finds nothing (e.g. a stub-less `<AppIconButton>` wrapping `<UButton>` never renders an actual `<button>`).
-- Mock `$t` via `global.mocks` (`{ $t: (key: string) => key }`) whenever the component under test calls it directly in its template — without it, mounting throws `_ctx.$t is not a function`. See `tests/unit/components/product-price.test.ts` and `tests/unit/components/input-password.test.ts` for the pattern.
+- In the plain `unit` project, `@vue/test-utils`'s `mount` does not run Nuxt's auto-import/global component registration. Stub `App*` wrappers or Nuxt UI components (`UButton`, `UInput`, ...) explicitly when the plain test intentionally isolates the parent; otherwise put the test in `tests/nuxt/` and use `mountSuspended` so the real components, plugins and injections are present.
+- In a plain mount, mock `$t` via `global.mocks` (`{ $t: (key: string) => key }`) whenever the component template calls it directly. In Nuxt tests, use the actual i18n plugin instead of a `$t` stub unless translation output itself is the boundary under test.
+
+## E2E runner decision
+
+Use `@nuxt/test-utils` only for Nuxt-context Vitest tests. If issue #45 is resumed, choose Playwright for genuine browser e2e: it provides the intended multi-browser matrix, traces and independent server lifecycle. This decision does not start an e2e suite; keep e2e tests outside both Vitest projects.
 
 ## Execution policy
 
