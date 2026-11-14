@@ -41,6 +41,9 @@ export default defineConfig({
       ? new RegExp(missingBackends.join('|'))
       : undefined,
 
+  // Starts the local Payload stub the app is built against
+  globalSetup: './tests/e2e/support/global-setup.ts',
+
   use: {
     baseURL: appUrl,
     trace: 'on-first-retry',
