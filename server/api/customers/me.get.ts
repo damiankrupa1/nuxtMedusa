@@ -1,23 +1,18 @@
-import type { MedusaError } from '~~/server/types/medusa-error'
 import { serverMedusaClient } from '#medusa/server'
+import { customerRepository } from '~~/server/repository/customer.repository'
+import type { MedusaError } from '~~/server/types/medusa-error'
 
 export default defineWrappedResponseHandler(async (event) => {
-  const medusa = serverMedusaClient(event)
-
   const token = getCookie(event, 'medusa_jwt')
 
   try {
-    // Retrieve current customer information
-    return await medusa.store.customer.retrieve(
-      {},
-      {
-        Authorization: `Bearer ${token}`,
-      },
+    return await customerRepository(serverMedusaClient(event)).retrieveCustomer(
+      token,
     )
   } catch (error) {
-    // If the error is a 401 error, the user is not logged in
-    const medusaError = error as MedusaError
-    if (medusaError.status === 401) {
+    // Medusa refused the token (expired, or no cookie at all): nobody is
+    // signed in, which is an answer, not an error, and isn't reported
+    if ((error as MedusaError).status === 401) {
       return { customer: null }
     }
 
