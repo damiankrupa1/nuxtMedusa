@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "author": "Damian Krupa",
-  "description": "Modern fashion ecommerce storefront built with Nuxt 3, Medusa and Tailwind CSS.",
+  "description": "Modern fashion ecommerce storefront built with Nuxt 4, Medusa and Tailwind CSS.",
   "keywords": [
     "nuxt",
     "medusa",
@@ -36,16 +36,16 @@
   },
   "dependencies": {
     "@medusajs/js-sdk": "2.19.0",
-    "@nuxt/image": "^1.9.0",
+    "@nuxt/image": "^2.2.0",
     "@nuxt/ui": "3.0.0",
-    "@nuxtjs/i18n": "^10",
+    "@nuxtjs/i18n": "^10.6.0",
     "@nuxtjs/medusa": "1.2.0",
-    "@nuxtjs/sitemap": "8.6.1",
-    "@sentry/nuxt": "^11.9.0",
+    "@nuxtjs/sitemap": "^9.1.0",
+    "@sentry/nuxt": "^11.10.0",
     "@stripe/stripe-js": "^6.0.0",
     "lodash": "^4.17.21",
-    "nuxt": "^3.16.0",
-    "vue": "latest",
+    "nuxt": "^4.6.3",
+    "vue": "^3.5.44",
     "zod": "^4.4.3"
   },
   "packageManager": "pnpm@11.5.0",
@@ -56,13 +56,13 @@
     "@iconify-json/lucide": "^1.2.29",
     "@iconify-json/simple-icons": "^1.2.28",
     "@medusajs/types": "2.19.0",
-    "@nuxt/eslint": "^1.2.0",
+    "@nuxt/eslint": "^1.17.0",
     "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.16",
-    "@vue/compiler-sfc": "^3.5.40",
+    "@vue/compiler-sfc": "^3.5.44",
     "@vue/test-utils": "^2.4.11",
     "@vue/vue3-jest": "^29.2.6",
-    "eslint": "^9.22.0",
+    "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "jest": "^30.4.2",
@@ -72,5 +72,8 @@
     "ts-jest": "^29.4.11",
     "typescript": "^5.8.2",
     "wrangler": "^3.109.2"
+  },
+  "engines": {
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
   }
 }
