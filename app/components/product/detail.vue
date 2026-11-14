@@ -2,26 +2,22 @@
 import type { StoreProduct } from '@medusajs/types'
 
 defineProps<{
-  product?: StoreProduct
+  product: StoreProduct
 }>()
 </script>
 
+<!--
+  TODO(#59): the design is 1440px wide only. Below `lg` the gallery stacks
+  above the panel; confirm that layout or get a mobile design.
+-->
 <template>
-  <div>
-    <UContainer class="flex flex-col sm:flex-row sm:items-start py-6 relative">
-      <div
-        class="flex flex-col sm:sticky sm:top-48 sm:py-0 sm:max-w-[300px] w-full py-8 gap-y-6"
-      >
-        <ProductInfo :product="product" />
-      </div>
-      <div class="block w-full relative">
-        <ProductGallery :product="product" />
-      </div>
-      <div
-        class="flex flex-col sm:sticky sm:top-48 sm:py-0 sm:max-w-[300px] w-full py-8 gap-y-12"
-      >
-        <ProductVariantSelector v-if="product" :product="product" />
-      </div>
-    </UContainer>
-  </div>
+  <section
+    class="flex flex-col gap-10 px-6 py-8 lg:flex-row lg:items-start lg:gap-16 lg:px-16 lg:pb-20 lg:pt-8"
+  >
+    <ProductGallery :product="product" class="min-w-0 lg:flex-1" />
+    <ProductPurchasePanel
+      :product="product"
+      class="w-full lg:sticky lg:top-8 lg:w-[480px] lg:shrink-0"
+    />
+  </section>
 </template>

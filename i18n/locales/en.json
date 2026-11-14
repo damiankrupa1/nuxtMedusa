@@ -196,6 +196,38 @@
       "selectVariant": "Select variant",
       "outOfStock": "Out of stock",
       "addToCart": "Add to cart"
+    },
+    "gallery": {
+      "thumbnails": "Product photos",
+      "show": "Show photo {index} of {count}",
+      "new": "New"
+    },
+    "priceIncludesVat": "VAT included",
+    "availability": {
+      "inStock": "In stock · ships in 1–2 working days",
+      "outOfStock": "Currently unavailable"
+    },
+    "delivery": {
+      "free": "Free delivery from 399 zł",
+      "carriers": "Courier or InPost. Choose what suits you.",
+      "returns": "30 days for an easy return",
+      "help": "Need help?",
+      "helpLink": "Write to us"
+    },
+    "brand": "Fashion Studio",
+    "fitHint": "Straight cut. Choose your usual size.",
+    "wishlist": {
+      "add": "Add to favourites",
+      "remove": "Remove from favourites"
+    },
+    "sizeGuide": {
+      "link": "Size guide",
+      "title": "Size guide",
+      "description": "Approximate body measurements in centimetres.",
+      "size": "Size",
+      "chest": "Chest",
+      "waist": "Waist",
+      "hips": "Hips"
     }
   },
   "store": {

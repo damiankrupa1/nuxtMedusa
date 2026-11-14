@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useFetchProductByHandle } from '~/composables/product'
 
+// TODO(#59): no `prefooter` (benefits bar + newsletter) here, because the
+// product screen of the design doesn't show them; confirm.
 definePageMeta({ cdnCache: true })
 
 const route = useRoute('countryCode-products-handle')

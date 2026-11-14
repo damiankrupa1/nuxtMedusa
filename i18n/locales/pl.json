@@ -196,6 +196,38 @@
       "selectVariant": "Wybierz wariant",
       "outOfStock": "Brak w magazynie",
       "addToCart": "Dodaj do koszyka"
+    },
+    "gallery": {
+      "thumbnails": "Zdjęcia produktu",
+      "show": "Pokaż zdjęcie {index} z {count}",
+      "new": "Nowość"
+    },
+    "priceIncludesVat": "Cena zawiera VAT",
+    "availability": {
+      "inStock": "Dostępny · wysyłka w 1–2 dni robocze",
+      "outOfStock": "Chwilowo niedostępny"
+    },
+    "delivery": {
+      "free": "Darmowa dostawa od 399 zł",
+      "carriers": "Kurier lub InPost. Wybierz tak, jak lubisz.",
+      "returns": "30 dni na spokojny zwrot",
+      "help": "Potrzebujesz pomocy?",
+      "helpLink": "Napisz do nas"
+    },
+    "brand": "Fashion Studio",
+    "fitHint": "Prosty krój. Wybierz swój zwykły rozmiar.",
+    "wishlist": {
+      "add": "Dodaj do ulubionych",
+      "remove": "Usuń z ulubionych"
+    },
+    "sizeGuide": {
+      "link": "Tabela rozmiarów",
+      "title": "Tabela rozmiarów",
+      "description": "Orientacyjne wymiary ciała w centymetrach.",
+      "size": "Rozmiar",
+      "chest": "Klatka piersiowa",
+      "waist": "Talia",
+      "hips": "Biodra"
     }
   },
   "store": {

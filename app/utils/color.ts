@@ -26,3 +26,8 @@ const colorSwatches: Record<string, string> = {
 
 export const getSwatchColor = (name: string) =>
   colorSwatches[name.trim().toLowerCase()] || '#bdb5a6'
+
+// Medusa has no "color" option type: a product option is the color picker
+// when its title says so (English or Polish).
+export const isColorOption = (option: { title: string }) =>
+  /colou?r|kolor/i.test(option.title)
