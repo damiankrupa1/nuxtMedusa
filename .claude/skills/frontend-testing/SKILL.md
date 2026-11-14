@@ -36,10 +36,12 @@ description: Choose and implement proportionate tests for Vue/Nuxt frontend chan
 - `pnpm test` runs both projects. Vitest's TypeScript checker stays scoped to plain unit tests through `tsconfig.test-unit.json`; `pnpm lint` covers both test trees. Run one file with `pnpm exec vitest run --project unit tests/unit/utils/product.test.ts` or `pnpm exec vitest run --project nuxt tests/nuxt/composables/cms.test.ts`.
 - Vitest hoists `vi.mock()` calls. If a mock factory needs a value declared in the test file, create it with `vi.hoisted()`; otherwise keep mock factories self-contained. Use `mockNuxtImport()` for Nuxt auto-imports when the test needs to replace one, and use `registerEndpoint()` for same-origin fetch endpoints rather than a live service. The global Sentry mock in `tests/setup.ts` applies to the plain project; no unit or Nuxt test may call Medusa, Payload, Stripe or another live service.
 
-## Server code (`server/utils`)
+## Server code (`server/utils`, `server/repository`, `server/api`)
 
 - Nitro auto-imports h3 (`createError`, `isError`, `defineEventHandler`) into server code; unit tests do not. Assign the real ones from `h3` to `globalThis` in the test (see `tests/unit/server/validation.test.ts`, `handler.test.ts`), so status codes and `isError()` behave as in Nitro.
 - A test that imports `h3` needs `// @vitest-environment node` at the top: under the default `jsdom` environment h3's `uncrypto` dependency resolves to its browser ESM build, so run those tests in Node.
+- A repository in `server/repository` is tested with a fake `$fetch` assigned to `globalThis` (plus the real `createError`): assert the URL, query and options, that the body passes through, and the error mapping. Pass its configuration as an argument instead of stubbing `useRuntimeConfig` (see `tests/unit/server/payload.repository.test.ts`).
+- A handler that uses a repository is tested with the repository mocked by `vi.mock('~~/server/repository/...')`: assert the statuses it owns (404, 503, 400) and what it passes on, not the upstream details (see `tests/unit/server/cms-route.test.ts`).
 - Payload answers used by several tests are in `tests/fixtures/cms.ts` (one complete global per slug, with Payload's own ids and timestamps).
 
 ## Mounting components

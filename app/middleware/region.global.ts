@@ -21,17 +21,23 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return
   }
 
-  // Without one, continue in the country the visitor last browsed (ignored
-  // if it no longer matches a region), else the default
+  // Without a known one, redirect. `PL` for the `pl` region keeps that
+  // country; otherwise continue in the country the visitor last browsed
+  // (ignored if it no longer matches a region), else the default. Only the
+  // choice of the target depends on the cookie: the URL alone decides what a
+  // page renders.
   const country =
+    getCountryFromCountryCodeIgnoreCase(countries.value, urlCountryCode) ??
     getCountryFromCountryCode(countries.value, countryCode.value) ??
     getCountryFromCountryCode(countries.value, defaultCountryCode) ??
     countries.value?.[0]
 
   // No countries could be loaded (e.g. backend unreachable) — don't redirect
   // to `/undefined/...`.
-  if (!country) return
+  if (!country?.iso_2) return
 
   await selectCountry(country)
-  return navigateTo(`/${country.iso_2}${to.fullPath}`)
+  // The redirect target starts with the exact `iso_2` of a region, so the
+  // next run takes the branch above: no redirect loop.
+  return navigateTo(getCountryRedirectPath(to.fullPath, country.iso_2))
 })

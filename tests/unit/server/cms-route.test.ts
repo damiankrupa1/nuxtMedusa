@@ -1,20 +1,16 @@
 // @vitest-environment node
-import {
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { EventHandler, H3Event } from 'h3'
-import { createError } from 'h3'
+import { createError, isError } from 'h3'
+
+import { payloadRepository } from '~~/server/repository/payload.repository'
+
+vi.mock('~~/server/repository/payload.repository')
 
 const getRouterParam = vi.fn()
 const getQuery = vi.fn()
 const useRuntimeConfig = vi.fn()
-const fetchPayload = vi.fn()
+const fetchGlobal = vi.fn()
 const event = {} as H3Event
 
 Object.assign(globalThis, {
@@ -23,7 +19,6 @@ Object.assign(globalThis, {
   getRouterParam,
   getQuery,
   useRuntimeConfig,
-  $fetch: fetchPayload,
 })
 
 let handler: EventHandler
@@ -39,60 +34,66 @@ beforeEach(() => {
   useRuntimeConfig.mockReturnValue({
     public: { payloadUrl: 'https://cms.example.com/' },
   })
-  fetchPayload.mockResolvedValue({ primaryNav: [] })
+  fetchGlobal.mockResolvedValue({ primaryNav: [] })
+  vi.mocked(payloadRepository).mockReturnValue({ fetchGlobal })
 })
 
-afterEach(() => {
-  vi.restoreAllMocks()
-})
+const rejection = async () => {
+  try {
+    await handler(event)
+  } catch (thrown) {
+    return thrown
+  }
+  throw new Error('Expected the handler to throw')
+}
 
 describe('GET /api/cms/:slug', () => {
-  it('removes a trailing slash from the Payload URL', async () => {
-    await expect(handler(event)).resolves.toEqual({ primaryNav: [] })
-    expect(fetchPayload).toHaveBeenCalledWith(
-      'https://cms.example.com/api/globals/navigation',
-      expect.objectContaining({
-        query: { locale: 'en', depth: 1 },
-        signal: expect.any(AbortSignal),
-      }),
-    )
+  it('answers 404 for an unknown slug without calling Payload', async () => {
+    getRouterParam.mockReturnValue('secrets')
+
+    await expect(rejection()).resolves.toMatchObject({ statusCode: 404 })
+    expect(payloadRepository).not.toHaveBeenCalled()
   })
 
-  it('maps an upstream timeout to the existing 502 response', async () => {
-    const timeoutError = new DOMException(
-      'The operation timed out',
-      'TimeoutError',
-    )
-    const timeoutSignal = AbortSignal.abort(timeoutError)
-    const timeout = vi
-      .spyOn(AbortSignal, 'timeout')
-      .mockReturnValue(timeoutSignal)
+  it('answers 503 when Payload is not configured', async () => {
+    useRuntimeConfig.mockReturnValue({ public: { payloadUrl: '' } })
 
-    fetchPayload.mockImplementation((_url, { signal }) =>
-      signal.aborted
-        ? Promise.reject(signal.reason)
-        : Promise.resolve({ primaryNav: [] }),
-    )
+    await expect(rejection()).resolves.toMatchObject({ statusCode: 503 })
+    expect(payloadRepository).not.toHaveBeenCalled()
+  })
 
-    await expect(handler(event)).rejects.toMatchObject({
-      statusCode: 502,
-      message: 'Payload CMS request failed (no response)',
+  it('answers 400 with the issues for an invalid query without calling Payload', async () => {
+    getQuery.mockReturnValue({ locale: 'en', depth: '99' })
+
+    const error = await rejection()
+
+    expect(isError(error)).toBe(true)
+    expect(error).toMatchObject({ statusCode: 400 })
+    expect((error as { data?: unknown }).data).toBeDefined()
+    expect(fetchGlobal).not.toHaveBeenCalled()
+  })
+
+  it('passes the Payload URL, slug and parsed query to the repository', async () => {
+    await handler(event)
+
+    expect(payloadRepository).toHaveBeenCalledWith('https://cms.example.com/')
+    expect(fetchGlobal).toHaveBeenCalledWith('navigation', {
+      locale: 'en',
+      depth: 1,
     })
-    expect(timeout).toHaveBeenCalledWith(5_000)
-    expect(fetchPayload).toHaveBeenCalledWith(
-      'https://cms.example.com/api/globals/navigation',
-      expect.objectContaining({ signal: timeoutSignal }),
-    )
   })
 
-  it('keeps upstream 404 responses mapped to 502', async () => {
-    fetchPayload.mockRejectedValue(
-      Object.assign(new Error('Global not found'), { statusCode: 404 }),
-    )
+  it('returns what the repository returns', async () => {
+    await expect(handler(event)).resolves.toEqual({ primaryNav: [] })
+  })
 
-    await expect(handler(event)).rejects.toMatchObject({
+  it('lets the repository 502 through unchanged', async () => {
+    const upstream = createError({
       statusCode: 502,
       message: 'Payload CMS request failed (404)',
     })
+    fetchGlobal.mockRejectedValue(upstream)
+
+    await expect(rejection()).resolves.toBe(upstream)
   })
 })

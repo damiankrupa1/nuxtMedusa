@@ -66,6 +66,7 @@
     "@vue/test-utils": "^2.4.11",
     "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
+    "h3": "1.15.11",
     "husky": "^9.1.7",
     "jsdom": "^30.1.2",
     "lint-staged": "^17.0.8",
