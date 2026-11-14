@@ -49,4 +49,20 @@ export default withNuxt(
       ],
     },
   },
+  {
+    // A fixed sleep is the usual cause of a flaky e2e test: wait for an
+    // observable condition instead (a web-first assertion, waitForResponse,
+    // expect.poll).
+    files: ['tests/e2e/**/*.ts', 'playwright.config.ts'],
+    rules: {
+      'no-restricted-properties': [
+        'error',
+        {
+          property: 'waitForTimeout',
+          message:
+            'Do not sleep in e2e tests. Wait for something observable: a web-first assertion (expect(locator)...), page.waitForResponse() or expect.poll().',
+        },
+      ],
+    },
+  },
 )

@@ -8,6 +8,11 @@
 .vscode
 dist
 
+# Playwright (e2e) reports and artifacts
+playwright-report
+test-results
+blob-report
+
 # Node dependencies
 node_modules
 
