@@ -1,5 +1,13 @@
 // @vitest-environment node
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest'
 import type { EventHandler, H3Error } from 'h3'
 import {
   createApp,
@@ -8,6 +16,7 @@ import {
   defineEventHandler,
   deleteCookie,
   getCookie,
+  getRequestProtocol,
   isError,
   readBody,
   setCookie,
@@ -27,6 +36,12 @@ import { defineWrappedResponseHandler } from '~~/server/utils/handler'
 // `#medusa/server` alias), not the customer repository: these tests were run
 // against the handlers before and after the repository was extracted, which
 // is what shows that the extraction changed nothing a caller can observe.
+//
+// Issue #78 changed the contract on purpose: the cookie is HttpOnly and
+// SameSite=Lax, lives as long as the token (Max-Age), and is Secure when the
+// request came over https (`x-forwarded-proto`, as behind Vercel's edge); a
+// failed second step of login/register clears it; GET me without a cookie
+// doesn't ask Medusa.
 
 const medusa = {
   auth: { login: vi.fn(), register: vi.fn() },
@@ -64,6 +79,7 @@ beforeAll(async () => {
     getCookie,
     setCookie,
     deleteCookie,
+    getRequestProtocol,
   })
 
   // Imported after the globals above: the handlers call them when defined
@@ -112,21 +128,61 @@ beforeEach(() => {
   medusa.store.customer.update.mockResolvedValue({ customer })
 })
 
-const post = (path: string, body: unknown, cookie?: string) =>
+afterEach(() => {
+  vi.useRealTimers()
+})
+
+// What the TLS-terminating proxy in front of the function (Vercel's edge)
+// adds to a request that reached it over https
+const overHttps = { 'x-forwarded-proto': 'https' }
+
+const post = (
+  path: string,
+  body: unknown,
+  cookie?: string,
+  headers: Record<string, string> = {},
+) =>
   request(path, {
     method: 'POST',
     body: JSON.stringify(body),
     headers: {
       'content-type': 'application/json',
       ...(cookie ? { cookie } : {}),
+      ...headers,
     },
   })
 
 const get = (path: string, cookie?: string) =>
   request(path, cookie ? { headers: { cookie } } : undefined)
 
+const logout = (headers: Record<string, string> = {}) =>
+  request('/api/customers/logout', { method: 'DELETE', headers })
+
 const medusaError = (status: number, message: string) =>
   new FetchError(message, 'Medusa', status)
+
+// An unsigned token with the given claims: only its `exp` is read here (for
+// the cookie's lifetime); Medusa alone verifies the signature
+const base64url = (value: string) =>
+  btoa(value).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+const jwt = (claims: Record<string, unknown>) =>
+  [
+    base64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' })),
+    base64url(JSON.stringify(claims)),
+    'signature',
+  ].join('.')
+
+// The exact headers, attributes in the order h3 serialises them. The plain
+// test tokens ('login-token', ...) carry no `exp`, so their cookie gets the
+// 24 hours of Medusa's default `jwtExpiresIn`.
+const sessionCookie = (token: string, maxAge = 86400) =>
+  `medusa_jwt=${token}; Max-Age=${maxAge}; Path=/; HttpOnly; SameSite=Lax`
+const secureSessionCookie = (token: string, maxAge = 86400) =>
+  `medusa_jwt=${token}; Max-Age=${maxAge}; Path=/; HttpOnly; Secure; SameSite=Lax`
+const clearedSessionCookie =
+  'medusa_jwt=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax'
+const clearedSecureSessionCookie =
+  'medusa_jwt=; Max-Age=0; Path=/; HttpOnly; Secure; SameSite=Lax'
 
 const sentryEvents = () => vi.mocked(Sentry.captureException).mock.calls.length
 const sentryBreadcrumbs = () =>
@@ -138,10 +194,10 @@ describe('POST /api/customers/login', () => {
 
     expect(response.status).toBe(200)
     await expect(response.json()).resolves.toEqual({ customer })
-    // Today's attributes exactly: a session cookie on `/`, no HttpOnly,
-    // Secure, SameSite or Max-Age (h3's setCookie defaults)
+    // HttpOnly and SameSite=Lax always; no Secure on a plain http request
+    // (local dev, `pnpm preview`)
     expect(response.headers.getSetCookie()).toEqual([
-      'medusa_jwt=login-token; Path=/',
+      sessionCookie('login-token'),
     ])
     expect(medusa.auth.login).toHaveBeenCalledWith('customer', 'emailpass', {
       email: 'ada@example.com',
@@ -152,6 +208,34 @@ describe('POST /api/customers/login', () => {
       { Authorization: 'Bearer login-token' },
     )
     expect(sentryEvents()).toBe(0)
+  })
+
+  it('marks the cookie Secure when the request came over https', async () => {
+    const response = await post(
+      '/api/customers/login',
+      signin,
+      undefined,
+      overHttps,
+    )
+
+    expect(response.status).toBe(200)
+    expect(response.headers.getSetCookie()).toEqual([
+      secureSessionCookie('login-token'),
+    ])
+  })
+
+  it('lets the cookie live exactly as long as the token', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-11-16T12:00:00Z'))
+    const now = Math.floor(Date.now() / 1000)
+    const token = jwt({ actor_id: 'cus_test', exp: now + 3600 })
+    medusa.auth.login.mockResolvedValue(token)
+
+    const response = await post('/api/customers/login', signin)
+
+    expect(response.headers.getSetCookie()).toEqual([
+      sessionCookie(token, 3600),
+    ])
   })
 
   it('forwards only the email and the password to Medusa', async () => {
@@ -205,7 +289,7 @@ describe('POST /api/customers/login', () => {
     expect(sentryEvents()).toBe(1)
   })
 
-  it('answers an error, not `{ customer: null }`, when Medusa rejects the fresh token', async () => {
+  it('answers an error, not `{ customer: null }`, and clears the cookie when Medusa rejects the fresh token', async () => {
     medusa.store.customer.retrieve.mockRejectedValue(
       medusaError(401, 'Unauthorized'),
     )
@@ -213,22 +297,29 @@ describe('POST /api/customers/login', () => {
     const response = await post('/api/customers/login', signin)
 
     expect(response.status).toBe(401)
-    expect(response.headers.getSetCookie()).toEqual([
-      'medusa_jwt=login-token; Path=/',
-    ])
+    expect(failure()?.message).toBe('Unauthorized')
+    expect(response.headers.getSetCookie()).toEqual([clearedSessionCookie])
+    expect(sentryEvents()).toBe(0)
+    expect(sentryBreadcrumbs()).toBe(1)
   })
 
-  it('keeps the cookie it already set when retrieving the customer fails, and reports once', async () => {
+  it('clears the session cookie when retrieving the customer fails, keeps the status and reports once', async () => {
     medusa.store.customer.retrieve.mockRejectedValue(
       medusaError(500, 'Medusa is down'),
     )
 
-    const response = await post('/api/customers/login', signin)
+    const response = await post(
+      '/api/customers/login',
+      signin,
+      'medusa_jwt=earlier-session',
+      overHttps,
+    )
 
     expect(response.status).toBe(500)
     expect(failure()?.message).toBe('Medusa is down')
+    // Also drops a session the browser had before this attempt
     expect(response.headers.getSetCookie()).toEqual([
-      'medusa_jwt=login-token; Path=/',
+      clearedSecureSessionCookie,
     ])
     expect(sentryEvents()).toBe(1)
   })
@@ -241,7 +332,7 @@ describe('POST /api/customers/register', () => {
     expect(response.status).toBe(200)
     await expect(response.json()).resolves.toEqual({ customer })
     expect(response.headers.getSetCookie()).toEqual([
-      'medusa_jwt=register-token; Path=/',
+      sessionCookie('register-token'),
     ])
     expect(medusa.auth.register).toHaveBeenCalledWith('customer', 'emailpass', {
       email: 'ada@example.com',
@@ -258,6 +349,19 @@ describe('POST /api/customers/register', () => {
       { Authorization: 'Bearer register-token' },
     )
     expect(sentryEvents()).toBe(0)
+  })
+
+  it('marks the cookie Secure when the request came over https', async () => {
+    const response = await post(
+      '/api/customers/register',
+      registration,
+      undefined,
+      overHttps,
+    )
+
+    expect(response.headers.getSetCookie()).toEqual([
+      secureSessionCookie('register-token'),
+    ])
   })
 
   it('creates the customer without a phone when none is given', async () => {
@@ -305,7 +409,7 @@ describe('POST /api/customers/register', () => {
     expect(sentryEvents()).toBe(0)
   })
 
-  it('keeps the cookie it already set when creating the customer fails', async () => {
+  it("clears the session cookie when creating the customer fails, keeping Medusa's status and message", async () => {
     medusa.store.customer.create.mockRejectedValue(
       medusaError(400, 'Customer already exists'),
     )
@@ -313,25 +417,52 @@ describe('POST /api/customers/register', () => {
     const response = await post('/api/customers/register', registration)
 
     expect(response.status).toBe(400)
-    expect(response.headers.getSetCookie()).toEqual([
-      'medusa_jwt=register-token; Path=/',
-    ])
+    expect(failure()?.message).toBe('Customer already exists')
+    expect(response.headers.getSetCookie()).toEqual([clearedSessionCookie])
+    expect(sentryEvents()).toBe(0)
+    expect(sentryBreadcrumbs()).toBe(1)
+  })
+
+  it('reports a failed second step once', async () => {
+    medusa.store.customer.create.mockRejectedValue(
+      medusaError(500, 'Medusa is down'),
+    )
+
+    const response = await post('/api/customers/register', registration)
+
+    expect(response.status).toBe(500)
+    expect(response.headers.getSetCookie()).toEqual([clearedSessionCookie])
+    expect(sentryEvents()).toBe(1)
   })
 })
 
 describe('DELETE /api/customers/logout', () => {
-  it('expires the session cookie without calling Medusa', async () => {
-    const response = await request('/api/customers/logout', {
-      method: 'DELETE',
-      headers: { cookie: 'medusa_jwt=login-token' },
-    })
+  it('expires the session cookie with the attributes it was set with, without calling Medusa', async () => {
+    const response = await logout({ cookie: 'medusa_jwt=login-token' })
 
     expect(response.status).toBe(200)
     await expect(response.json()).resolves.toEqual({ success: true })
-    expect(response.headers.getSetCookie()).toEqual([
-      'medusa_jwt=; Max-Age=0; Path=/',
-    ])
+    expect(response.headers.getSetCookie()).toEqual([clearedSessionCookie])
+    // Medusa can't revoke its JWT (see logout.delete.ts)
     expect(serverMedusaClient).not.toHaveBeenCalled()
+  })
+
+  it('expires the Secure cookie over https', async () => {
+    const response = await logout({
+      cookie: 'medusa_jwt=login-token',
+      ...overHttps,
+    })
+
+    expect(response.headers.getSetCookie()).toEqual([
+      clearedSecureSessionCookie,
+    ])
+  })
+
+  it('succeeds without a session cookie too', async () => {
+    const response = await logout()
+
+    expect(response.status).toBe(200)
+    expect(response.headers.getSetCookie()).toEqual([clearedSessionCookie])
   })
 })
 
@@ -362,19 +493,20 @@ describe('GET /api/customers/me', () => {
     expect(sentryBreadcrumbs()).toBe(0)
   })
 
-  it('answers no customer without a session cookie (Medusa is still asked and answers 401)', async () => {
-    medusa.store.customer.retrieve.mockRejectedValue(
-      medusaError(401, 'Unauthorized'),
-    )
-
-    const response = await get('/api/customers/me')
+  it.each([
+    ['without a session cookie', undefined],
+    ['with an empty session cookie', 'medusa_jwt='],
+    ['with only other cookies', 'cart_id=cart_123'],
+  ])('answers no customer %s, without asking Medusa', async (_case, cookie) => {
+    const response = await get('/api/customers/me', cookie)
 
     expect(response.status).toBe(200)
     await expect(response.json()).resolves.toEqual({ customer: null })
-    expect(medusa.store.customer.retrieve).toHaveBeenCalledWith(
-      {},
-      { Authorization: 'Bearer undefined' },
-    )
+    expect(serverMedusaClient).not.toHaveBeenCalled()
+    expect(medusa.store.customer.retrieve).not.toHaveBeenCalled()
+    expect(response.headers.getSetCookie()).toEqual([])
+    expect(sentryEvents()).toBe(0)
+    expect(sentryBreadcrumbs()).toBe(0)
   })
 
   it('passes any other Medusa failure on and reports it once', async () => {
@@ -391,15 +523,25 @@ describe('GET /api/customers/me', () => {
 })
 
 describe('POST /api/customers/me', () => {
-  it('answers 401 without a session cookie, before reading the body or calling Medusa', async () => {
-    const response = await post('/api/customers/me', { first_name: 'A' })
+  it.each([
+    ['without a session cookie', undefined],
+    ['with an empty session cookie', 'medusa_jwt='],
+  ])(
+    'answers 401 %s, before reading the body or calling Medusa',
+    async (_case, cookie) => {
+      const response = await post(
+        '/api/customers/me',
+        { first_name: 'A' },
+        cookie,
+      )
 
-    expect(response.status).toBe(401)
-    expect(failure()?.message).toBe('Unauthorized')
-    expect(serverMedusaClient).not.toHaveBeenCalled()
-    expect(medusa.store.customer.update).not.toHaveBeenCalled()
-    expect(sentryEvents()).toBe(0)
-  })
+      expect(response.status).toBe(401)
+      expect(failure()?.message).toBe('Unauthorized')
+      expect(serverMedusaClient).not.toHaveBeenCalled()
+      expect(medusa.store.customer.update).not.toHaveBeenCalled()
+      expect(sentryEvents()).toBe(0)
+    },
+  )
 
   it('updates the customer with the session cookie as the bearer token, forwarding only the allowed fields', async () => {
     const response = await post(
