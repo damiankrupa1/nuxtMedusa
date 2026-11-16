@@ -1,34 +1,22 @@
 import { serverMedusaClient } from '#medusa/server'
 import { registerRequestSchema } from '~/types/customer'
+import { customerRepository } from '~~/server/repository/customer.repository'
 import { parseRequestInput } from '~~/server/utils/validation'
 
+// Medusa registers the auth identity first and the customer with its token
+// second. The cookie is set in between, as for login, so it stays set when
+// creating the customer fails.
 export default defineWrappedResponseHandler(async (event) => {
-  const medusa = serverMedusaClient(event)
   const body = parseRequestInput(
     registerRequestSchema,
     await readBody(event),
     'body',
   )
+  const customers = customerRepository(serverMedusaClient(event))
 
-  // Step 1: Get an authentication token via the auth.register method
-  const token = await medusa.auth.register('customer', 'emailpass', {
-    email: body.email,
-    password: body.password,
-  })
+  const token = await customers.register(body)
 
   setCookie(event, 'medusa_jwt', token)
 
-  // Step 2: Create the customer using the obtained token
-  return await medusa.store.customer.create(
-    {
-      email: body.email,
-      first_name: body.first_name,
-      last_name: body.last_name,
-      phone: body.phone,
-    },
-    {}, // empty query params
-    {
-      Authorization: `Bearer ${token}`,
-    },
-  )
+  return await customers.createCustomer(token, body)
 })
