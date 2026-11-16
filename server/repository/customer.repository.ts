@@ -6,7 +6,7 @@ import type {
   UpdateCustomerData,
 } from '~/types/customer'
 
-const bearer = (token: string | undefined) => ({
+const bearer = (token: string) => ({
   Authorization: `Bearer ${token}`,
 })
 
@@ -75,12 +75,9 @@ export function customerRepository(medusa: Medusa) {
 
     // Rejects like any other call when Medusa refuses the token (a 401);
     // GET /api/customers/me turns that into `{ customer: null }`, login keeps
-    // it as an error. `token` may be undefined because GET me asks Medusa
-    // even without a cookie (`Bearer undefined`, answered with a 401), as it
-    // always has.
-    async retrieveCustomer(
-      token: string | undefined,
-    ): Promise<StoreCustomerResponse> {
+    // it as an error. Without a session there is no token and no call: GET me
+    // answers `{ customer: null }` itself.
+    async retrieveCustomer(token: string): Promise<StoreCustomerResponse> {
       return await medusa.store.customer.retrieve({}, bearer(token))
     },
 

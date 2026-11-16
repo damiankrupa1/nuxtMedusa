@@ -1,12 +1,16 @@
 import { serverMedusaClient } from '#medusa/server'
 import { signinRequestSchema } from '~/types/customer'
 import { customerRepository } from '~~/server/repository/customer.repository'
+import {
+  clearSessionCookie,
+  setSessionCookie,
+} from '~~/server/utils/session-cookie'
 import { parseRequestInput } from '~~/server/utils/validation'
 
-// The cookie is set as soon as Medusa hands out the token, before the
-// customer is retrieved, so it stays set when that second call fails.
-// Its attributes are h3's defaults (`Path=/` only); keep them in step with
-// register.post.ts and logout.delete.ts.
+// The session cookie is set only once both Medusa calls succeeded. When the
+// second one fails, the cookie is cleared instead (which also drops a session
+// the browser had before) and Medusa's error goes on unchanged, reported once
+// by the handler wrapper. Same as register.post.ts.
 export default defineWrappedResponseHandler(async (event) => {
   const credentials = parseRequestInput(
     signinRequestSchema,
@@ -17,7 +21,12 @@ export default defineWrappedResponseHandler(async (event) => {
 
   const token = await customers.login(credentials)
 
-  setCookie(event, 'medusa_jwt', token)
-
-  return await customers.retrieveCustomer(token)
+  try {
+    const response = await customers.retrieveCustomer(token)
+    setSessionCookie(event, token)
+    return response
+  } catch (error) {
+    clearSessionCookie(event)
+    throw error
+  }
 })

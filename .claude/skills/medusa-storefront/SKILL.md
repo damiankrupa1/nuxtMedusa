@@ -29,6 +29,11 @@ description: Implement and debug storefront functionality integrated with Medusa
 - Handle stale carts, unavailable variants, invalid addresses, failed shipping selection, and payment failures explicitly.
 - Do not log access tokens, customer data, payment details, or secrets.
 
+## Customer session
+
+- The customer's Medusa JWT lives only in the HttpOnly `medusa_jwt` cookie, set and read by `server/api/customers/**` through `server/utils/session-cookie.ts` (see the session contract in root `CLAUDE.md`). Never read it with JS, store it in the browser, or authenticate the browser's `useMedusaClient()` as the customer; add a server route for a new customer call instead.
+- Logout can't revoke the token in Medusa (stateless JWT); it stays valid until its `exp`. Don't claim otherwise in UI copy or docs.
+
 ## Shipping and payment providers
 
 - Inspect current provider IDs and configuration in the project before changing them. Do not assume provider identifiers from examples.
