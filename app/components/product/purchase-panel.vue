@@ -71,9 +71,11 @@ async function handleAddToCart() {
   isCartDropdownOpen.value = true
 }
 
-// TODO(#58): mock. No wishlist exists (damiankrupa1/medusaDemo#26): the heart
-// only flips a local visual state and saves nothing.
-const isSaved = ref(false)
+// The heart saves the product in this browser's wishlist (useWishlist).
+// TODO(#79): a signed-in customer's list should follow them across devices
+// (damiankrupa1/medusaDemo#26).
+const wishlist = useWishlist()
+const isSaved = computed(() => wishlist.has(product.id))
 </script>
 
 <template>
@@ -166,13 +168,9 @@ const isSaved = ref(false)
         :aria-label="
           isSaved ? $t('product.wishlist.remove') : $t('product.wishlist.add')
         "
-        @click="isSaved = !isSaved"
+        @click="wishlist.toggle(product.id)"
       >
-        <UIcon
-          name="i-lucide-heart"
-          class="size-5"
-          :class="{ 'fill-current': isSaved }"
-        />
+        <WishlistHeartIcon :filled="isSaved" class="size-5" />
       </button>
     </div>
 
