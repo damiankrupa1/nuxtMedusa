@@ -83,6 +83,24 @@ describe('GET /api/cms/:slug', () => {
     })
   })
 
+  it('never asks for a draft: ?draft=true and a token are dropped, no credentials are passed', async () => {
+    getQuery.mockReturnValue({
+      locale: 'en',
+      depth: '1',
+      draft: 'true',
+      token: 'eyJhbGciOiJIUzI1NiJ9.e30.x',
+    })
+
+    await handler(event)
+
+    expect(payloadRepository).toHaveBeenCalledWith('https://cms.example.com/')
+    expect(vi.mocked(payloadRepository).mock.calls[0]).toHaveLength(1)
+    expect(fetchGlobal).toHaveBeenCalledWith('navigation', {
+      locale: 'en',
+      depth: 1,
+    })
+  })
+
   it('returns what the repository returns', async () => {
     await expect(handler(event)).resolves.toEqual({ primaryNav: [] })
   })
