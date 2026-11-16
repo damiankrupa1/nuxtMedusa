@@ -278,6 +278,59 @@ describe('sentry utils', () => {
       ])
     })
 
+    it('keeps the draft preview token and the Payload API key out of the event', () => {
+      const token =
+        'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJzdG9yZWZyb250LXByZXZpZXcifQ.c2lnbmF0dXJl'
+      const scrubbed = scrubSentryEvent(
+        makeEvent({
+          message: `Preview failed for /api/preview?token=${token}&locale=pl`,
+          transaction: `GET /api/preview?token=${token}`,
+          request: {
+            url: `https://shop.example.com/api/preview?token=${token}&locale=pl`,
+            headers: {
+              'x-preview-token': token,
+              authorization: 'service-users API-Key test-only-api-key',
+              'user-agent': 'jest',
+            },
+          },
+          extra: {
+            apiKey: 'test-only-api-key',
+            api_key: 'test-only-api-key',
+            note: 'Authorization: service-users API-Key test-only-api-key',
+          },
+          breadcrumbs: [
+            {
+              category: 'navigation',
+              data: {
+                from: `/api/preview?token=${token}`,
+                to: `/pl?preview=1#token=${token}`,
+              },
+            },
+          ],
+        }),
+      )
+
+      expect(scrubbed.request).toEqual({
+        url: 'https://shop.example.com/api/preview',
+        headers: { 'user-agent': 'jest' },
+      })
+      expect(scrubbed.transaction).toBe('GET /api/preview')
+      expect(scrubbed.message).toBe(
+        'Preview failed for /api/preview?token=[jwt]&locale=pl',
+      )
+      expect(scrubbed.extra).toEqual({
+        apiKey: '[Filtered]',
+        api_key: '[Filtered]',
+        note: 'Authorization: service-users API-Key [key]',
+      })
+      expect(scrubbed.breadcrumbs?.[0]?.data).toEqual({
+        from: '/api/preview',
+        to: '/pl',
+      })
+      expect(JSON.stringify(scrubbed)).not.toContain(token)
+      expect(JSON.stringify(scrubbed)).not.toContain('test-only-api-key')
+    })
+
     it('does not change the event it was given', () => {
       const event = makeEvent({
         user: { id: '1' },

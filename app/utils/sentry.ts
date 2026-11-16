@@ -10,9 +10,9 @@ export const SENTRY_FILTERED = '[Filtered]'
 
 // Keys whose value never goes to Sentry, wherever they show up in the extra
 // data or in a breadcrumb: customer, address, parcel locker, cart, payment and
-// credential fields.
+// credential fields (the draft preview's Payload API key included).
 const SENSITIVE_KEY =
-  /e-?mail|phone|password|token|secret|authorization|cookie|jwt|first_?name|last_?name|full_?name|address|postal|zip|city|street|billing|shipping|card|iban|locker|parcel|cart|customer/i
+  /e-?mail|phone|password|token|secret|authorization|cookie|jwt|api[_-]?key|first_?name|last_?name|full_?name|address|postal|zip|city|street|billing|shipping|card|iban|locker|parcel|cart|customer/i
 
 // Request headers that may stay on an event; everything else (cookies,
 // Authorization, the Medusa publishable key, forwarded IPs, ...) is dropped.
@@ -30,6 +30,8 @@ const SECRET_PATTERNS: [RegExp, string][] = [
   [/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g, '[email]'],
   [/\bBearer\s+[\w.~+/=-]+/gi, 'Bearer [token]'],
   [/\beyJ[\w-]+\.[\w-]+\.[\w-]+/g, '[jwt]'],
+  // Payload's API-key header value (`service-users API-Key <key>`)
+  [/\bAPI-Key\s+[\w.~+/=-]+/gi, 'API-Key [key]'],
   // Stripe client secrets (pi_xxx_secret_yyy, seti_..., src_...), which also
   // sit in the query string Przelewy24 redirects back with
   [/\b[a-z]{2,5}_[A-Za-z0-9]+_secret_[A-Za-z0-9]+/g, '[stripe_secret]'],
