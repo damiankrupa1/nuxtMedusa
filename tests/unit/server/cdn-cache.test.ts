@@ -28,13 +28,19 @@ describe('cdn cache plugin', () => {
   })
 
   // Renders a response and returns the CDN cache header it ends up with
-  const render = ({ cdnCache = true, statusCode = 200, setCookie = false }) => {
+  const render = ({
+    cdnCache = true,
+    statusCode = 200,
+    setCookie = false,
+    path = '/pl',
+  }) => {
     const response: RenderResponse = {
       statusCode,
       headers: { 'content-type': 'text/html;charset=utf-8' },
     }
     onRenderResponse(response, {
       event: {
+        path,
         context: { cdnCache },
         node: {
           res: {
@@ -63,5 +69,13 @@ describe('cdn cache plugin', () => {
 
   it('never shares a response that sets a cookie', () => {
     expect(render({ setCookie: true })).toBeUndefined()
+  })
+
+  it('never shares a preview request, even on a page that opted in', () => {
+    expect(render({ path: '/pl?preview=1' })).toBeUndefined()
+    expect(render({ path: '/pl/store?page=2&preview' })).toBeUndefined()
+    expect(render({ path: '/pl?page=2' })).toBe(
+      'max-age=60, stale-while-revalidate=300',
+    )
   })
 })

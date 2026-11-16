@@ -19,6 +19,11 @@ const payloadImageDomains = (() => {
   return domains
 })()
 
+const PREVIEW_ROUTE_HEADERS = {
+  'cache-control': 'private, no-store',
+  'x-robots-tag': 'noindex, nofollow',
+}
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 const testModules = process.env.NUXT_TEST_UTILS === 'true'
 
@@ -48,13 +53,25 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    // Draft preview of Payload content (#53), server only: never move any of
+    // this to `public`. Deliberately empty here, so no value is baked into
+    // the build; set at runtime through NUXT_PAYLOAD_PREVIEW_SECRET,
+    // NUXT_PAYLOAD_PREVIEW_API_KEY, NUXT_PAYLOAD_PREVIEW_API_KEY_COLLECTION
+    // and NUXT_PAYLOAD_PREVIEW_FRAME_ANCESTORS. Without the secret or the API
+    // key every /api/preview route is a 404 (server/utils/preview.ts).
+    payloadPreview: {
+      secret: '',
+      apiKey: '',
+      apiKeyCollection: '',
+      frameAncestors: '',
+    },
     public: {
       stripeKey: process.env.NUXT_PUBLIC_STRIPE_KEY || '',
       inpostGeowidgetToken:
         process.env.NUXT_PUBLIC_INPOST_GEOWIDGET_TOKEN || '',
-      // Payload CMS base URL. Its globals are public read-only today, so this
-      // is safe to expose; an admin/API key would instead go in private
-      // runtimeConfig, used only by the server/api/cms proxy.
+      // Payload CMS base URL. The published globals are public, so this is
+      // safe to expose; the preview's API key is in the private
+      // payloadPreview above, used only by server/api/preview.
       payloadUrl: process.env.NUXT_PUBLIC_PAYLOAD_URL || '',
       // Read by sentry.client.config.ts (the server init reads the same
       // variables from process.env). No DSN, no Sentry. The DSN is public by
@@ -85,6 +102,12 @@ export default defineNuxtConfig({
     '/**/store': { ssr: true },
     '/**/cart': { ssr: true },
     '/**/checkout': { ssr: true },
+    // The draft preview's routes are never stored by a shared cache. The
+    // handlers and server/plugins/preview.ts set the same headers (plus the
+    // preview's frame-ancestors, which is deliberately not a route rule);
+    // this is one more layer, applied by the platform on Vercel.
+    '/api/preview': { headers: PREVIEW_ROUTE_HEADERS },
+    '/api/preview/**': { headers: PREVIEW_ROUTE_HEADERS },
   },
 
   experimental: {
