@@ -60,7 +60,7 @@ export default defineEventHandler(async (event) => {
   const countryCode = resolvePreviewCountry(
     query.locale,
     countryCodes,
-    useAppConfig(event).defaultCountry,
+    useAppConfig().defaultCountry,
   )
 
   return sendRedirect(
