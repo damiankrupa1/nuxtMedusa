@@ -19,7 +19,7 @@ test.describe('robots.txt', () => {
     const body = await (await request.get('/robots.txt')).text()
 
     expect(body).toContain('User-agent: *')
-    ;['cart', 'checkout', 'account'].forEach((page) => {
+    ;['cart', 'checkout', 'account', 'wishlist'].forEach((page) => {
       expect(body).toContain(`Disallow: /*/${page}$`)
       expect(body).toContain(`Disallow: /*/${page}?`)
     })

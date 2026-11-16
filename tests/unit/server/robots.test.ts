@@ -30,6 +30,7 @@ describe('buildRobotsTxt', () => {
     '/de/checkout',
     '/de/checkout?step=delivery',
     '/pl/account',
+    '/pl/wishlist',
     '/pl/order/order_123/confirmed',
   ])('keeps crawlers out of %s', (url) => {
     expect(isDisallowed(robotsTxt, url)).toBe(true)

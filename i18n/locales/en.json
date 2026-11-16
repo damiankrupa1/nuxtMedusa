@@ -17,7 +17,8 @@
       "announcement": {
         "promise": "WELL CHOSEN. FOR LONGER.",
         "shipping": "Free shipping from 399 zł · 30-day returns"
-      }
+      },
+      "wishlist": "Wishlist"
     },
     "sideMenu": {
       "title": "Menu",
@@ -151,6 +152,37 @@
       "contactUs": "Contact us",
       "returnExchanges": "Return & Exchanges",
       "loading": "...loading"
+    },
+    "wishlist": {
+      "title": "Wishlist",
+      "description": "Products you saved for later.",
+      "breadcrumb": "Breadcrumb",
+      "eyebrow": "YOUR GOOD CHOICES",
+      "heading": "Your wishlist",
+      "lead": "Things that caught your eye. Come back for them whenever you like.",
+      "saved": "Saved products",
+      "sort": "Sort:",
+      "sortRecent": "Recently added",
+      "loading": "Loading saved products",
+      "error": "Could not load your saved products.",
+      "retry": "Try again",
+      "discover": "Discover more products",
+      "empty": {
+        "title": "You have no saved products yet",
+        "text": "Tap the heart on a product and it will show up here.",
+        "link": "Go to the store"
+      },
+      "item": {
+        "remove": "Remove from list",
+        "choose": "Choose {option}",
+        "chooseFirst": "Choose {option} first."
+      },
+      "account": {
+        "heading": "Good choices are worth keeping.",
+        "text": "Sign in to have your wishlist at hand on every device.",
+        "signIn": "Sign in",
+        "register": "Create an account"
+      }
     }
   },
   "cart": {

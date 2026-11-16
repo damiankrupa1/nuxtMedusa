@@ -17,9 +17,10 @@ Entries are added as each home page section is implemented. Each entry notes how
 
 ## Header: wishlist / saved products
 
-- **Needs**: the heart icon in the main header should open a saved-products / wishlist view.
-- **Mocked today**: `app/components/app/header/index.vue` links the heart icon to `/account` as a placeholder, no save/list behavior.
-- **Real fix would need**: Medusa's Store API has no wishlist/saved-products concept, and no composable/repository/server route for it exists anywhere in this codebase — would need a new backend concept (e.g. a Medusa module) plus a new repository/composable layer.
+- **Needs**: the heart icon in the main header opens a saved-products / wishlist view (Figma `40:2`, `/[countryCode]/wishlist`), and the hearts save a product.
+- **Done in the browser, mocked on the backend**: the list is kept in `localStorage` (`useWishlist()`, `app/composables/wishlist.ts`; see the wishlist note in `CLAUDE.md`), the header heart links to the wishlist page, the product page heart toggles a product, and the page shows the saved products fetched by id. Every stand-in is marked `TODO(#79)`: brand, the second badge ("DOBRA BAZA"), the single sort label, the empty state, the account banner (both links lead to `/account`).
+- **Real fix would need**: Medusa's Store API has no wishlist/saved-products concept: a new backend concept (damiankrupa1/medusaDemo#26: a Medusa module plus Store API routes) so a signed-in customer's list follows them across devices, then a `server/api/customers/**` route and repository (see "Server layers" in `CLAUDE.md`) and a merge of the local list on login. The decisions to confirm are listed in #79.
+- **Wishlist page extras with no backend data**: the product cards show the same mocked brand as the product page (see the product page entries), and "NOWOŚĆ" comes from `isNewProduct()`.
 
 ## Header: country/currency display in the announcement bar
 
@@ -106,7 +107,7 @@ Gaps between Figma's "Produkt i wybór rozmiaru" (node 38:36, Fashion file) and 
 - **"Cena zawiera VAT"**: static i18n copy (`product.priceIncludesVat`), shown for every region. The store API gives no per-region flag for a tax-inclusive price in these types. Wrong for a region that shows net prices. Real fix: the `ProductPageInfo` Global or a tax-inclusive flag from the backend.
 - **"Dostępny · wysyłka w 1–2 dni robocze"**: availability comes from the selected variant (`getVariantAvailability()` rules), but the shipping time is static i18n copy; there is no per-product lead time. The delivery/returns block (free from 399 zł, 30 days) is static i18n copy too, like the benefits bar, with the 399 zł threshold hard-coded in the text.
 - **"Napisz do nas"**: a `mailto:` link to the footer contact e-mail from Payload (`useFetchFooterContent()`); the line is left out while Payload has no e-mail.
-- **Favourites heart**: no wishlist exists anywhere (see the header wishlist entry). **Mocked**: the button flips a local `aria-pressed` state and saves nothing. The header heart still links to `/account` as a placeholder.
+- **Favourites heart**: toggles the product in the browser's wishlist (`useWishlist()`, see the header wishlist entry); nothing is saved on the backend yet (`TODO(#79)`).
 - **"Tabela rozmiarów"**: no size-chart content. **Mocked**: `ProductSizeGuide` opens a modal with a made-up measurements table (XS–XL, chest/waist/hips in cm) hard-coded in the component; the link shows next to any option whose title is a size (`isSizeOption`: size/rozmiar). Real fix: a Payload `SizeGuide` Global.
 - **Fit hint ("Prosty krój. Wybierz swój zwykły rozmiar.")**: per-product editorial text, no field. **Mocked**: one i18n sentence (`product.fitHint`) under the sizes of every product that has a size option. Real fix: `metadata` on the product.
 - **Image caption ("Sweter w kolorze ecru. Widok z przodu i zbliżenie.")**: Medusa images have no caption or alt. **Mocked**: the product title next to the "01 / 04" counter, and as the main photo's `alt`; the thumbnails are decorative.

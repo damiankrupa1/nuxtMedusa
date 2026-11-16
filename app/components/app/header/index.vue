@@ -35,8 +35,9 @@ const isSideMenuOpen = ref(false)
           <AppLink to="/account" class="hidden sm:flex">
             <UIcon name="i-lucide-user-round" class="size-[21px]" />
           </AppLink>
-          <AppLink to="/account" class="hidden sm:flex">
+          <AppLink to="/wishlist" class="hidden sm:flex">
             <UIcon name="i-lucide-heart" class="size-[21px]" />
+            <span class="sr-only">{{ $t('app.header.wishlist') }}</span>
           </AppLink>
           <ClientOnly>
             <LazyCartDropdown />
