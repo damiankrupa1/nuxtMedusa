@@ -17,7 +17,8 @@
       "announcement": {
         "promise": "DOBRZE WYBRANE. NA DŁUŻEJ.",
         "shipping": "Darmowa dostawa od 399 zł · 30 dni na zwrot"
-      }
+      },
+      "wishlist": "Wishlista"
     },
     "sideMenu": {
       "title": "Menu",
@@ -151,6 +152,37 @@
       "contactUs": "Skontaktuj się z nami",
       "returnExchanges": "Zwroty i wymiany",
       "loading": "...ładowanie"
+    },
+    "wishlist": {
+      "title": "Wishlista",
+      "description": "Produkty, które zapisałeś na później.",
+      "breadcrumb": "Ścieżka nawigacji",
+      "eyebrow": "TWOJE DOBRE WYBORY",
+      "heading": "Twoja wishlista",
+      "lead": "Rzeczy, które wpadły Ci w oko. Wróć po nie, kiedy zechcesz.",
+      "saved": "Zapisane produkty",
+      "sort": "Sortuj:",
+      "sortRecent": "Ostatnio dodane",
+      "loading": "Wczytywanie zapisanych produktów",
+      "error": "Nie udało się wczytać zapisanych produktów.",
+      "retry": "Spróbuj ponownie",
+      "discover": "Odkrywaj więcej produktów",
+      "empty": {
+        "title": "Nie masz jeszcze zapisanych produktów",
+        "text": "Dotknij serca przy produkcie, a pojawi się tutaj.",
+        "link": "Przejdź do sklepu"
+      },
+      "item": {
+        "remove": "Usuń z listy",
+        "choose": "Wybierz {option}",
+        "chooseFirst": "Najpierw wybierz: {option}."
+      },
+      "account": {
+        "heading": "Dobre wybory warto zachować.",
+        "text": "Zaloguj się, by mieć swoją wishlistę zawsze pod ręką — na każdym urządzeniu.",
+        "signIn": "Zaloguj się",
+        "register": "Załóż konto"
+      }
     }
   },
   "cart": {
