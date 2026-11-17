@@ -10,6 +10,7 @@ type RenderedHook = (args: { ssrContext?: SsrContext }) => void
 describe('cdn cache page plugin', () => {
   let onRendered: RenderedHook
   let routeMeta: { cdnCache?: boolean }
+  let routeQuery: Record<string, string | null>
 
   beforeAll(async () => {
     // Nuxt auto-imports these into app code; the fakes hand the plugin a router
@@ -19,7 +20,7 @@ describe('cdn cache page plugin', () => {
       useRouter: () => ({
         currentRoute: {
           get value() {
-            return { meta: routeMeta }
+            return { meta: routeMeta, query: routeQuery }
           },
         },
       }),
@@ -38,8 +39,10 @@ describe('cdn cache page plugin', () => {
     cdnCache = true,
     error = false,
     payloadError = undefined as unknown,
+    query = {} as Record<string, string | null>,
   } = {}) => {
     routeMeta = { cdnCache }
+    routeQuery = query
     const ssrContext: SsrContext = {
       error,
       payload: { error: payloadError },
@@ -78,8 +81,17 @@ describe('cdn cache page plugin', () => {
     ).toBeUndefined()
   })
 
+  // The draft preview (#53): ?preview marks the request as a preview, whatever
+  // its value; it is never shared
+  it('does not mark a preview request', () => {
+    expect(render({ query: { preview: '1' } })).toBeUndefined()
+    expect(render({ query: { preview: null } })).toBeUndefined()
+    expect(render({ query: { page: '2' } })).toBe(true)
+  })
+
   it('does nothing without an SSR context', () => {
     routeMeta = { cdnCache: true }
+    routeQuery = {}
     expect(() => onRendered({})).not.toThrow()
   })
 })

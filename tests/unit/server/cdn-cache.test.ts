@@ -74,6 +74,12 @@ describe('cdn cache plugin', () => {
     expect(render({ setCookie: true })).toBeUndefined()
   })
 
+  it('never shares a preview request, even on a page that opted in', () => {
+    expect(render({ path: '/pl?preview=1' })).toBeUndefined()
+    expect(render({ path: '/pl/store?page=2&preview' })).toBeUndefined()
+    expect(render({ path: '/pl?page=2' })).toBe(SHARED)
+  })
+
   // Nuxt renders its error page as a request to /__nuxt_error, which this hook
   // sees as a 200: the 500, or the 404 of a missing product handle, is applied
   // to the response that carries the page afterwards

@@ -13,8 +13,10 @@ import { createError } from 'h3'
 import * as Sentry from '@sentry/nuxt'
 import {
   PAYLOAD_REQUEST_TIMEOUT_MS,
+  payloadDraftRepository,
   payloadRepository,
 } from '~~/server/repository/payload.repository'
+import type { CmsGlobalQuery } from '~/types/cms'
 
 const fetchPayload = vi.fn()
 const query = { locale: 'en', depth: 1 }
@@ -48,6 +50,22 @@ describe('payloadRepository().fetchGlobal', () => {
       'https://cms.example.com/api/globals/navigation',
       expect.objectContaining({ query, signal: expect.any(AbortSignal) }),
     )
+  })
+
+  it('never sends draft or credentials, whatever else the query object carries', async () => {
+    const smuggled = {
+      ...query,
+      draft: 'true',
+      headers: { authorization: 'service-users API-Key x' },
+    } as unknown as CmsGlobalQuery
+
+    await payloadRepository('https://cms.example.com').fetchGlobal(
+      'navigation',
+      smuggled,
+    )
+
+    const [, options] = fetchPayload.mock.calls[0] as [string, object]
+    expect(options).toEqual({ query, signal: expect.any(AbortSignal) })
   })
 
   it.each(['https://cms.example.com/', 'https://cms.example.com///'])(
@@ -196,5 +214,53 @@ describe('payloadRepository().fetchGlobal', () => {
       expect(Sentry.captureException).not.toHaveBeenCalled()
       expect(Sentry.addBreadcrumb).not.toHaveBeenCalled()
     })
+  })
+})
+
+describe('payloadDraftRepository().fetchDraftGlobal', () => {
+  const credentials = {
+    apiKey: 'test-only-api-key',
+    apiKeyCollection: 'service-users',
+  }
+  const fetchDraft = () =>
+    payloadDraftRepository(
+      'https://cms.example.com/',
+      credentials,
+    ).fetchDraftGlobal('navigation', query)
+
+  it('asks for the draft with the API key header, the timeout and the same URL', async () => {
+    await fetchDraft()
+
+    expect(fetchPayload).toHaveBeenCalledWith(
+      'https://cms.example.com/api/globals/navigation',
+      {
+        query: { ...query, draft: 'true' },
+        headers: { authorization: 'service-users API-Key test-only-api-key' },
+        signal: expect.any(AbortSignal),
+      },
+    )
+  })
+
+  it('maps a failure to a 502 and reports it without the API key', async () => {
+    fetchPayload.mockRejectedValue(
+      Object.assign(new Error('Forbidden'), { statusCode: 403 }),
+    )
+
+    const error = await fetchDraft().catch((thrown: Error) => thrown)
+
+    expect(error).toMatchObject({
+      statusCode: 502,
+      message: 'Payload CMS draft request failed (403)',
+    })
+    expect(Sentry.captureException).toHaveBeenCalledTimes(1)
+    const [reported, options] = vi.mocked(Sentry.captureException).mock
+      .calls[0] as [Error, unknown]
+    expect(options).toEqual({
+      tags: { source: 'payload', cms_global: 'navigation' },
+      extra: { draft: true },
+    })
+    expect(JSON.stringify([reported.message, options])).not.toContain(
+      credentials.apiKey,
+    )
   })
 })
