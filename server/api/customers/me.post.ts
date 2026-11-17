@@ -1,13 +1,14 @@
 import { serverMedusaClient } from '#medusa/server'
 import { updateCustomerRequestSchema } from '~/types/customer'
 import { customerRepository } from '~~/server/repository/customer.repository'
+import { getSessionToken } from '~~/server/utils/session-cookie'
 import { parseRequestInput } from '~~/server/utils/validation'
 
 export default defineWrappedResponseHandler(async (event) => {
-  const token = getCookie(event, 'medusa_jwt')
+  const token = getSessionToken(event)
 
   // Before the body is read and before Medusa is asked
-  if (!token || typeof token !== 'string') {
+  if (!token) {
     throw createError({ statusCode: 401, message: 'Unauthorized' })
   }
 

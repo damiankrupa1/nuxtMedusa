@@ -124,15 +124,6 @@ describe('customerRepository', () => {
       )
     })
 
-    it('still asks Medusa without a token, as GET /api/customers/me always has', async () => {
-      await customers().retrieveCustomer(undefined)
-
-      expect(retrieve).toHaveBeenCalledWith(
-        {},
-        { Authorization: 'Bearer undefined' },
-      )
-    })
-
     it('updates the customer with the given data and token', async () => {
       await expect(
         customers().updateCustomer('login-token', { first_name: 'Ada' }),

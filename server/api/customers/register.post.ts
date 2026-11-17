@@ -1,11 +1,18 @@
 import { serverMedusaClient } from '#medusa/server'
 import { registerRequestSchema } from '~/types/customer'
 import { customerRepository } from '~~/server/repository/customer.repository'
+import {
+  clearSessionCookie,
+  setSessionCookie,
+} from '~~/server/utils/session-cookie'
 import { parseRequestInput } from '~~/server/utils/validation'
 
 // Medusa registers the auth identity first and the customer with its token
-// second. The cookie is set in between, as for login, so it stays set when
-// creating the customer fails.
+// second. As for login, the session cookie is set only when both succeeded
+// and cleared when the second call fails (Medusa's error goes on unchanged).
+// The auth identity from the first call then stays without a customer, so
+// signing up again with that email gets Medusa's "Identity with email already
+// exists", as it did before.
 export default defineWrappedResponseHandler(async (event) => {
   const body = parseRequestInput(
     registerRequestSchema,
@@ -16,7 +23,12 @@ export default defineWrappedResponseHandler(async (event) => {
 
   const token = await customers.register(body)
 
-  setCookie(event, 'medusa_jwt', token)
-
-  return await customers.createCustomer(token, body)
+  try {
+    const response = await customers.createCustomer(token, body)
+    setSessionCookie(event, token)
+    return response
+  } catch (error) {
+    clearSessionCookie(event)
+    throw error
+  }
 })
