@@ -13,6 +13,7 @@ useSeoMeta({
 </script>
 
 <template>
+  <AppPreviewBanner />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>

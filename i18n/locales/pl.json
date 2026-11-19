@@ -24,6 +24,12 @@
       "title": "Menu",
       "description": "Menu nawigacyjne"
     },
+    "preview": {
+      "label": "Podgląd wersji roboczej",
+      "active": "Podgląd wersji roboczej: widzisz nieopublikowane zmiany z Payload. Ważny do {time}.",
+      "expired": "Podgląd wygasł albo link jest nieważny. Otwórz podgląd ponownie w Payload. Sekcje bez wczytanej wersji roboczej są ukryte, a wersji opublikowanej nie pokazujemy w ich miejscu.",
+      "exit": "Zakończ podgląd"
+    },
     "input": {
       "password": {
         "toggleVisibility": "Przełącz widoczność hasła"

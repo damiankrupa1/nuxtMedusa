@@ -24,6 +24,12 @@
       "title": "Menu",
       "description": "Navigation menu"
     },
+    "preview": {
+      "label": "Draft preview",
+      "active": "Draft preview: you are seeing unpublished changes from Payload. Valid until {time}.",
+      "expired": "The preview has expired or its link is invalid. Open the preview again in Payload. Sections without a loaded draft are hidden; the published version is not shown in their place.",
+      "exit": "Exit preview"
+    },
     "input": {
       "password": {
         "toggleVisibility": "Toggle password visibility"
