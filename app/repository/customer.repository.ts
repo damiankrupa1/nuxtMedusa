@@ -8,10 +8,16 @@ import type {
 
 export function customerRepository() {
   const { request } = apiRepository()
+  // The session is the HttpOnly `medusa_jwt` cookie, so `me` must be asked
+  // with the visitor's cookies. In a server render the global $fetch sends
+  // none (the customer always looked signed out); useRequestFetch() forwards
+  // the page request's headers. In the browser it is $fetch itself. Taken
+  // here, while the Nuxt context of the calling setup is active.
+  const requestFetch = useRequestFetch()
 
   return {
     async fetchCustomer(): Promise<CustomerResponse> {
-      return await request($fetch<CustomerResponse>('/api/customers/me'))
+      return await request(requestFetch<CustomerResponse>('/api/customers/me'))
     },
 
     async registerCustomer(

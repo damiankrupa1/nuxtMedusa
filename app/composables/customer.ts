@@ -16,9 +16,18 @@ const extractErrorMessage = (err: unknown, fallback: string) => {
   return errorResponse.data?.message || errorResponse.message || fallback
 }
 
+// The customer depends on the visitor's session cookie. Per-visitor pages
+// (account, wishlist) get it in the server render already, so a signed-in
+// customer never sees the sign-in form or the guest banner flash. A page
+// shared through the CDN cache (`cdnCache`) must render the same for every
+// visitor, so there it is fetched in the browser only.
 export const useFetchCustomer = () => {
   const { fetchCustomer } = customerRepository()
-  return useLazyAsyncData('customer', async () => await fetchCustomer())
+  const route = useRoute()
+
+  return useLazyAsyncData('customer', async () => await fetchCustomer(), {
+    server: !route.meta.cdnCache,
+  })
 }
 
 export const useCustomer = () => {
