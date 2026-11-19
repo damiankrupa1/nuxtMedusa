@@ -10,6 +10,34 @@ const bearer = (token: string) => ({
   Authorization: `Bearer ${token}`,
 })
 
+// Medusa's emailpass routes for the `customer` actor, the same ones the SDK's
+// auth.login()/auth.register() call
+const EMAILPASS_PATH = '/auth/customer/emailpass'
+
+// The token of a plain `{ token }` answer. Medusa also answers a login with a
+// redirect (`location`, third-party auth), an MFA challenge or a
+// verification step, partly with a token of their own; none of them is a
+// session for this store, so they are an unexpected answer (a 500 through
+// the handler wrapper), as is an answer without a token.
+const sessionToken = (answer: unknown, message: string): string => {
+  const { token, location, mfa_challenge, verification_required } =
+    typeof answer === 'object' && answer !== null
+      ? (answer as Record<string, unknown>)
+      : {}
+
+  if (
+    typeof token !== 'string' ||
+    token === '' ||
+    location ||
+    mfa_challenge ||
+    verification_required
+  ) {
+    throw new Error(message)
+  }
+
+  return token
+}
+
 // The only place on the server that knows Medusa's customer and auth calls
 // (`emailpass` for the `customer` actor, the bearer header). The handlers in
 // server/api/customers/** keep the HTTP side: the parsed body, the
@@ -22,27 +50,30 @@ const bearer = (token: string) => ({
 // request. So every call that acts as a customer gets that customer's token
 // as an argument and sends it as `Authorization: Bearer <token>` itself.
 //
+// Login and register call Medusa's token routes through `medusa.client.fetch`,
+// not the SDK's auth.login()/auth.register() (#82). The server client has the
+// @nuxtjs/medusa defaults, `auth: { type: 'session', jwtTokenStorageMethod:
+// 'local' }`, shared with the browser client. With them auth.login() follows
+// the token with `POST /auth/session`, which opens a Medusa cookie session
+// that this server never uses and nothing ever ends, and auth.register()
+// stores the token in localStorage without awaiting it, which on the server
+// rejects unhandled ("Local JWT storage is only available in the browser").
+// The store keeps only the JWT, in its own `medusa_jwt` cookie.
+//
 // Medusa errors are not caught or reported here: they reach
 // defineWrappedResponseHandler(), which reports them once (source
 // `server-api`) and keeps their status and message, as it did before this
 // repository existed.
 export function customerRepository(medusa: Medusa) {
   return {
-    // Returns the session token. Medusa also answers a login with a redirect
-    // (third-party auth), an MFA challenge or a verification step; none of
-    // them is a session for this store, so they are an unexpected answer
-    // (a 500 through the handler wrapper).
+    // Returns the session token
     async login({ email, password }: LoginCustomerData): Promise<string> {
-      const token = await medusa.auth.login('customer', 'emailpass', {
-        email,
-        password,
+      const answer = await medusa.client.fetch<unknown>(EMAILPASS_PATH, {
+        method: 'POST',
+        body: { email, password },
       })
 
-      if (typeof token !== 'string') {
-        throw new Error('Unexpected login response from Medusa')
-      }
-
-      return token
+      return sessionToken(answer, 'Unexpected login response from Medusa')
     },
 
     // Creates the auth identity only and returns its token; the customer
@@ -51,10 +82,15 @@ export function customerRepository(medusa: Medusa) {
       email,
       password,
     }: Pick<RegisterCustomerData, 'email' | 'password'>): Promise<string> {
-      return await medusa.auth.register('customer', 'emailpass', {
-        email,
-        password,
-      })
+      const answer = await medusa.client.fetch<unknown>(
+        `${EMAILPASS_PATH}/register`,
+        { method: 'POST', body: { email, password } },
+      )
+
+      return sessionToken(
+        answer,
+        'Unexpected registration response from Medusa',
+      )
     },
 
     async createCustomer(

@@ -33,6 +33,7 @@ description: Implement and debug storefront functionality integrated with Medusa
 
 - The customer's Medusa JWT lives only in the HttpOnly `medusa_jwt` cookie, set and read by `server/api/customers/**` through `server/utils/session-cookie.ts` (see the session contract in root `CLAUDE.md`). Never read it with JS, store it in the browser, or authenticate the browser's `useMedusaClient()` as the customer; add a server route for a new customer call instead.
 - A server render that needs the customer must forward the visitor's cookie: `fetchCustomer()` uses `useRequestFetch()`, because the global `$fetch` sends no cookies during SSR (#81). Never do that on a `cdnCache` page; `useFetchCustomer()` fetches in the browser only there.
+- On the server, never call the SDK's `auth.login()`/`auth.register()`/`auth.logout()`: the server client has the module's `auth: { type: 'session' }` defaults, so login would also open a Medusa cookie session nobody ends (#82). `server/repository/customer.repository.ts` asks the token routes through `medusa.client.fetch` instead.
 - Logout can't revoke the token in Medusa (stateless JWT); it stays valid until its `exp`. Don't claim otherwise in UI copy or docs.
 
 ## Shipping and payment providers
