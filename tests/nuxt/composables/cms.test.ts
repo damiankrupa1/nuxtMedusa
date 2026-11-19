@@ -118,7 +118,7 @@ describe('CMS composables in Nuxt', () => {
     const wrapper = await mountComposable(useFetchNavigation)
 
     await vi.waitFor(() => expect(wrapper.text()).toBe('loaded'))
-    expect(fetchNavigation).toHaveBeenCalledWith('pl')
+    expect(fetchNavigation).toHaveBeenCalledWith('pl', undefined)
   })
 
   it('loads footer content through the repository', async () => {
@@ -127,7 +127,7 @@ describe('CMS composables in Nuxt', () => {
     const wrapper = await mountComposable(useFetchFooterContent)
 
     await vi.waitFor(() => expect(wrapper.text()).toBe('empty'))
-    expect(fetchFooterContent).toHaveBeenCalledWith('pl')
+    expect(fetchFooterContent).toHaveBeenCalledWith('pl', undefined)
   })
 
   it('loads the studio story through the repository', async () => {
@@ -136,7 +136,7 @@ describe('CMS composables in Nuxt', () => {
     const wrapper = await mountComposable(useFetchStudioStory)
 
     await vi.waitFor(() => expect(wrapper.text()).toBe('empty'))
-    expect(fetchStudioStory).toHaveBeenCalledWith('pl')
+    expect(fetchStudioStory).toHaveBeenCalledWith('pl', undefined)
   })
 
   it('loads brands through the repository', async () => {
@@ -145,7 +145,7 @@ describe('CMS composables in Nuxt', () => {
     const wrapper = await mountComposable(useFetchBrands)
 
     await vi.waitFor(() => expect(wrapper.text()).toBe('empty'))
-    expect(fetchBrands).toHaveBeenCalledWith('pl')
+    expect(fetchBrands).toHaveBeenCalledWith('pl', undefined)
   })
 
   it('loads the journal section through the repository', async () => {
@@ -154,7 +154,7 @@ describe('CMS composables in Nuxt', () => {
     const wrapper = await mountComposable(useFetchJournalSection)
 
     await vi.waitFor(() => expect(wrapper.text()).toBe('empty'))
-    expect(fetchJournalSection).toHaveBeenCalledWith('pl')
+    expect(fetchJournalSection).toHaveBeenCalledWith('pl', undefined)
   })
 
   it('loads campaign slides through the repository', async () => {
@@ -163,7 +163,7 @@ describe('CMS composables in Nuxt', () => {
     const wrapper = await mountComposable(useFetchCampaignSlides)
 
     await vi.waitFor(() => expect(wrapper.text()).toBe('empty'))
-    expect(fetchCampaignSlides).toHaveBeenCalledWith('pl')
+    expect(fetchCampaignSlides).toHaveBeenCalledWith('pl', undefined)
   })
 
   it('resolves category tiles through the CMS service', async () => {
@@ -172,7 +172,11 @@ describe('CMS composables in Nuxt', () => {
     const wrapper = await mountComposable(useFetchCategoryTiles)
 
     await vi.waitFor(() => expect(wrapper.text()).toBe('empty'))
-    expect(getResolvedCategoryTiles).toHaveBeenCalledWith('pl', 'pl-PL')
+    expect(getResolvedCategoryTiles).toHaveBeenCalledWith(
+      'pl',
+      'pl-PL',
+      undefined,
+    )
   })
 
   it('passes the current locale and country region to the CMS service', async () => {
@@ -185,6 +189,7 @@ describe('CMS composables in Nuxt', () => {
       'pl',
       { region_id: 'reg_pl' },
       'pl-PL',
+      undefined,
     )
   })
 })
