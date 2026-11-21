@@ -183,6 +183,10 @@
         "choose": "Wybierz {option}",
         "chooseFirst": "Najpierw wybierz: {option}."
       },
+      "unavailable": {
+        "title": "Ten produkt nie jest już dostępny",
+        "text": "Został usunięty ze sklepu lub wycofany ze sprzedaży."
+      },
       "account": {
         "heading": "Dobre wybory warto zachować.",
         "text": "Zaloguj się, by mieć swoją wishlistę zawsze pod ręką — na każdym urządzeniu.",
