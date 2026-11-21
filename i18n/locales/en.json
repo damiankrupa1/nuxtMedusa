@@ -256,7 +256,9 @@
     "fitHint": "Straight cut. Choose your usual size.",
     "wishlist": {
       "add": "Add to favourites",
-      "remove": "Remove from favourites"
+      "remove": "Remove from favourites",
+      "addTitled": "Add {title} to favourites",
+      "removeTitled": "Remove {title} from favourites"
     },
     "sizeGuide": {
       "link": "Size guide",

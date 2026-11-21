@@ -256,7 +256,9 @@
     "fitHint": "Prosty krój. Wybierz swój zwykły rozmiar.",
     "wishlist": {
       "add": "Dodaj do ulubionych",
-      "remove": "Usuń z ulubionych"
+      "remove": "Usuń z ulubionych",
+      "addTitled": "Dodaj do ulubionych: {title}",
+      "removeTitled": "Usuń z ulubionych: {title}"
     },
     "sizeGuide": {
       "link": "Tabela rozmiarów",
