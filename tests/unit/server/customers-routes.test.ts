@@ -42,8 +42,16 @@ import { defineWrappedResponseHandler } from '~~/server/utils/handler'
 // request came over https (`x-forwarded-proto`, as behind Vercel's edge); a
 // failed second step of login/register clears it; GET me without a cookie
 // doesn't ask Medusa.
+//
+// Issue #82 changed only the Medusa side of login and register: they ask the
+// token routes directly, so no Medusa cookie session is opened. Statuses,
+// bodies and `Set-Cookie` stayed as they were.
 
+// Login and register ask Medusa's token routes through `client.fetch`; the
+// SDK's auth.login()/auth.register() are faked only to show they are never
+// called (#82: with the server client's config they open a Medusa session).
 const medusa = {
+  client: { fetch: vi.fn() },
   auth: { login: vi.fn(), register: vi.fn() },
   store: {
     customer: { retrieve: vi.fn(), create: vi.fn(), update: vi.fn() },
@@ -121,8 +129,9 @@ beforeEach(() => {
   vi.spyOn(console, 'error').mockImplementation(() => undefined)
   vi.mocked(Sentry.isEnabled).mockReturnValue(true)
   vi.mocked(serverMedusaClient).mockReturnValue(medusa)
-  medusa.auth.login.mockResolvedValue('login-token')
-  medusa.auth.register.mockResolvedValue('register-token')
+  medusa.client.fetch.mockImplementation(async (path: string) => ({
+    token: path.endsWith('/register') ? 'register-token' : 'login-token',
+  }))
   medusa.store.customer.retrieve.mockResolvedValue({ customer })
   medusa.store.customer.create.mockResolvedValue({ customer })
   medusa.store.customer.update.mockResolvedValue({ customer })
@@ -199,10 +208,16 @@ describe('POST /api/customers/login', () => {
     expect(response.headers.getSetCookie()).toEqual([
       sessionCookie('login-token'),
     ])
-    expect(medusa.auth.login).toHaveBeenCalledWith('customer', 'emailpass', {
-      email: 'ada@example.com',
-      password: 'secret',
-    })
+    expect(medusa.client.fetch).toHaveBeenCalledWith(
+      '/auth/customer/emailpass',
+      {
+        method: 'POST',
+        body: { email: 'ada@example.com', password: 'secret' },
+      },
+    )
+    // One Medusa call for the token, no POST /auth/session (#82)
+    expect(medusa.client.fetch).toHaveBeenCalledTimes(1)
+    expect(medusa.auth.login).not.toHaveBeenCalled()
     expect(medusa.store.customer.retrieve).toHaveBeenCalledWith(
       {},
       { Authorization: 'Bearer login-token' },
@@ -229,7 +244,7 @@ describe('POST /api/customers/login', () => {
     vi.setSystemTime(new Date('2026-11-16T12:00:00Z'))
     const now = Math.floor(Date.now() / 1000)
     const token = jwt({ actor_id: 'cus_test', exp: now + 3600 })
-    medusa.auth.login.mockResolvedValue(token)
+    medusa.client.fetch.mockResolvedValue({ token })
 
     const response = await post('/api/customers/login', signin)
 
@@ -241,10 +256,13 @@ describe('POST /api/customers/login', () => {
   it('forwards only the email and the password to Medusa', async () => {
     await post('/api/customers/login', { ...signin, actor_type: 'user' })
 
-    expect(medusa.auth.login).toHaveBeenCalledWith('customer', 'emailpass', {
-      email: 'ada@example.com',
-      password: 'secret',
-    })
+    expect(medusa.client.fetch).toHaveBeenCalledWith(
+      '/auth/customer/emailpass',
+      {
+        method: 'POST',
+        body: { email: 'ada@example.com', password: 'secret' },
+      },
+    )
   })
 
   it('answers 400 with the issues for an invalid body, without calling Medusa', async () => {
@@ -258,12 +276,12 @@ describe('POST /api/customers/login', () => {
     expect(failure()?.message).toBe('Invalid request body')
     expect(Object.keys(body.data.fieldErrors)).toEqual(['email', 'password'])
     expect(response.headers.getSetCookie()).toEqual([])
-    expect(medusa.auth.login).not.toHaveBeenCalled()
+    expect(medusa.client.fetch).not.toHaveBeenCalled()
     expect(sentryEvents()).toBe(0)
   })
 
   it('keeps the status and message of rejected credentials, sets no cookie and only leaves a breadcrumb', async () => {
-    medusa.auth.login.mockRejectedValue(
+    medusa.client.fetch.mockRejectedValue(
       medusaError(401, 'Invalid email or password'),
     )
 
@@ -278,7 +296,7 @@ describe('POST /api/customers/login', () => {
   })
 
   it('answers 500 and sets no cookie when Medusa answers without a token (third-party login)', async () => {
-    medusa.auth.login.mockResolvedValue({ location: 'https://idp.example' })
+    medusa.client.fetch.mockResolvedValue({ location: 'https://idp.example' })
 
     const response = await post('/api/customers/login', signin)
 
@@ -334,10 +352,14 @@ describe('POST /api/customers/register', () => {
     expect(response.headers.getSetCookie()).toEqual([
       sessionCookie('register-token'),
     ])
-    expect(medusa.auth.register).toHaveBeenCalledWith('customer', 'emailpass', {
-      email: 'ada@example.com',
-      password: 'secret1',
-    })
+    expect(medusa.client.fetch).toHaveBeenCalledWith(
+      '/auth/customer/emailpass/register',
+      {
+        method: 'POST',
+        body: { email: 'ada@example.com', password: 'secret1' },
+      },
+    )
+    expect(medusa.auth.register).not.toHaveBeenCalled()
     expect(medusa.store.customer.create).toHaveBeenCalledWith(
       {
         email: 'ada@example.com',
@@ -392,11 +414,11 @@ describe('POST /api/customers/register', () => {
     expect(failure()?.message).toBe('Invalid request body')
     expect(Object.keys(body.data.fieldErrors)).toEqual(['password'])
     expect(response.headers.getSetCookie()).toEqual([])
-    expect(medusa.auth.register).not.toHaveBeenCalled()
+    expect(medusa.client.fetch).not.toHaveBeenCalled()
   })
 
   it('keeps the status of a rejected registration and sets no cookie', async () => {
-    medusa.auth.register.mockRejectedValue(
+    medusa.client.fetch.mockRejectedValue(
       medusaError(401, 'Identity with email already exists'),
     )
 

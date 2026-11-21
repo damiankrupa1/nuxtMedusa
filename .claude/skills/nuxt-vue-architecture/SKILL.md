@@ -60,7 +60,7 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 ## Page meta
 
 - Per-page configuration read by the layout, a plugin or middleware is declared in `definePageMeta` (route meta), never set in a store from the page's `setup`. A page's setup runs before the new page has loaded, so a store flag would switch the layout under the old page, and every page would have to reset it on leave. Current keys — keep this list up to date when adding one:
-  - `cdnCache` — share the server render through the CDN cache (read by `app/plugins/cdn-cache.server.ts`, see root `CLAUDE.md`).
+  - `cdnCache` — share the server render through the CDN cache (read by `app/plugins/cdn-cache.server.ts`, see root `CLAUDE.md`; also by `useFetchCustomer()`, which then fetches in the browser only).
   - `prefooter` — show `AppBenefitsBar` + `AppNewsletter` above the footer (read by `app/layouts/default.vue`).
 - Read custom flags by truthiness (`v-if="route.meta.prefooter"`). Nuxt 4.6 generates `PageMeta` augmentations for its modules, so do not carry forward the Nuxt 3.16 workaround that targeted a pnpm-hashed declaration path. This project has no standalone typecheck command; verify any custom `PageMeta` augmentation with an actual typecheck before relying on it, and keep the flags readable even if added because indexed metadata cannot catch misspelled custom keys.
 
