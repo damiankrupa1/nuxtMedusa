@@ -2,6 +2,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { customerRepository } from '~/repository/customer.repository'
 
+// Built by apiRepository(), never used by the customer calls
+vi.mock('~/composables/medusa', () => ({ useMedusaClient: () => ({}) }))
+
 // Issue #81: during a server render the global $fetch does not send the
 // visitor's cookies, so `GET /api/customers/me` never saw the session cookie
 // and a signed-in customer was rendered signed out. useRequestFetch() is the
@@ -16,7 +19,6 @@ describe('customer repository (app)', () => {
   Object.assign(globalThis, {
     $fetch: globalFetch,
     useRequestFetch,
-    useMedusaClient: () => ({}),
     captureError,
   })
 

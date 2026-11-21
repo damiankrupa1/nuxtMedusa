@@ -1,3 +1,5 @@
+import { useMedusaClient } from '~/composables/medusa'
+
 export function apiRepository() {
   const client = useMedusaClient()
 

@@ -1,5 +1,6 @@
 import type { StoreCartResponse, StorePaymentCollection } from '@medusajs/types'
 import type { StripeCardElement } from '@stripe/stripe-js'
+import { useMedusaClient } from '~/composables/medusa'
 import { usePaymentService } from '~/services/payment.service'
 
 const getErrorMessage = (err: unknown, fallback: string) =>

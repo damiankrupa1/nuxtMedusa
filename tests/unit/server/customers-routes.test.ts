@@ -23,19 +23,23 @@ import {
   toWebHandler,
 } from 'h3'
 import { FetchError } from '@medusajs/js-sdk'
+import type Medusa from '@medusajs/js-sdk'
 
 import * as Sentry from '@sentry/nuxt'
-import { serverMedusaClient } from '#medusa/server'
 import { defineWrappedResponseHandler } from '~~/server/utils/handler'
+import { serverMedusaClient } from '~~/server/utils/medusa'
+
+vi.mock('~~/server/utils/medusa', () => ({ serverMedusaClient: vi.fn() }))
 
 // The session contract of server/api/customers/** as the storefront sees it:
 // paths, methods, statuses, response bodies, the exact `Set-Cookie` header of
 // `medusa_jwt` and the Medusa SDK calls. The requests go through a real h3 app
 // with h3's own cookie and body helpers, so the cookie attributes are the ones
-// Nitro sends. Only the Medusa SDK client is faked (behind the
-// `#medusa/server` alias), not the customer repository: these tests were run
-// against the handlers before and after the repository was extracted, which
-// is what shows that the extraction changed nothing a caller can observe.
+// Nitro sends. Only the Medusa SDK client is faked (the serverMedusaClient()
+// of server/utils/medusa.ts is mocked), not the customer repository: these
+// tests were run against the handlers before and after the repository was
+// extracted, which is what shows that the extraction changed nothing a
+// caller can observe.
 //
 // Issue #78 changed the contract on purpose: the cookie is HttpOnly and
 // SameSite=Lax, lives as long as the token (Max-Age), and is Secure when the
@@ -43,16 +47,18 @@ import { defineWrappedResponseHandler } from '~~/server/utils/handler'
 // failed second step of login/register clears it; GET me without a cookie
 // doesn't ask Medusa.
 //
-// Issue #82 changed only the Medusa side of login and register: they ask the
-// token routes directly, so no Medusa cookie session is opened. Statuses,
+// Issues #82 and #89 changed only the Medusa side of login and register: they
+// asked the token routes directly (#82), then the SDK's auth.login()/
+// auth.register() again once the server client used JWT auth (#89); neither
+// opens a Medusa cookie session (tests/unit/server/customer.repository.test.ts
+// and medusa-client.test.ts check that against the real SDK). Statuses,
 // bodies and `Set-Cookie` stayed as they were.
 
-// Login and register ask Medusa's token routes through `client.fetch`; the
-// SDK's auth.login()/auth.register() are faked only to show they are never
-// called (#82: with the server client's config they open a Medusa session).
+// One SDK auth call each for login, register and the token refresh after it;
+// `client.fetch` is faked only to show no other auth request is made
 const medusa = {
   client: { fetch: vi.fn() },
-  auth: { login: vi.fn(), register: vi.fn() },
+  auth: { login: vi.fn(), register: vi.fn(), refresh: vi.fn() },
   store: {
     customer: { retrieve: vi.fn(), create: vi.fn(), update: vi.fn() },
   },
@@ -128,14 +134,10 @@ beforeEach(() => {
   lastError = undefined
   vi.spyOn(console, 'error').mockImplementation(() => undefined)
   vi.mocked(Sentry.isEnabled).mockReturnValue(true)
-  vi.mocked(serverMedusaClient).mockReturnValue(medusa)
-  medusa.client.fetch.mockImplementation(async (path: string) => ({
-    token: path.endsWith('/register')
-      ? 'register-token'
-      : path === '/auth/token/refresh'
-        ? 'session-token'
-        : 'login-token',
-  }))
+  vi.mocked(serverMedusaClient).mockReturnValue(medusa as unknown as Medusa)
+  medusa.auth.login.mockResolvedValue('login-token')
+  medusa.auth.register.mockResolvedValue('register-token')
+  medusa.auth.refresh.mockResolvedValue({ token: 'session-token' })
   medusa.store.customer.retrieve.mockResolvedValue({ customer })
   medusa.store.customer.create.mockResolvedValue({ customer })
   medusa.store.customer.update.mockResolvedValue({ customer })
@@ -212,16 +214,14 @@ describe('POST /api/customers/login', () => {
     expect(response.headers.getSetCookie()).toEqual([
       sessionCookie('login-token'),
     ])
-    expect(medusa.client.fetch).toHaveBeenCalledWith(
-      '/auth/customer/emailpass',
-      {
-        method: 'POST',
-        body: { email: 'ada@example.com', password: 'secret' },
-      },
-    )
-    // One Medusa call for the token, no POST /auth/session (#82)
-    expect(medusa.client.fetch).toHaveBeenCalledTimes(1)
-    expect(medusa.auth.login).not.toHaveBeenCalled()
+    expect(medusa.auth.login).toHaveBeenCalledWith('customer', 'emailpass', {
+      email: 'ada@example.com',
+      password: 'secret',
+    })
+    // One Medusa call for the token; the server client's JWT auth makes it
+    // open no session (#82, #89)
+    expect(medusa.auth.login).toHaveBeenCalledTimes(1)
+    expect(medusa.client.fetch).not.toHaveBeenCalled()
     expect(medusa.store.customer.retrieve).toHaveBeenCalledWith(
       {},
       { Authorization: 'Bearer login-token' },
@@ -248,7 +248,7 @@ describe('POST /api/customers/login', () => {
     vi.setSystemTime(new Date('2026-11-16T12:00:00Z'))
     const now = Math.floor(Date.now() / 1000)
     const token = jwt({ actor_id: 'cus_test', exp: now + 3600 })
-    medusa.client.fetch.mockResolvedValue({ token })
+    medusa.auth.login.mockResolvedValue(token)
 
     const response = await post('/api/customers/login', signin)
 
@@ -260,13 +260,10 @@ describe('POST /api/customers/login', () => {
   it('forwards only the email and the password to Medusa', async () => {
     await post('/api/customers/login', { ...signin, actor_type: 'user' })
 
-    expect(medusa.client.fetch).toHaveBeenCalledWith(
-      '/auth/customer/emailpass',
-      {
-        method: 'POST',
-        body: { email: 'ada@example.com', password: 'secret' },
-      },
-    )
+    expect(medusa.auth.login).toHaveBeenCalledWith('customer', 'emailpass', {
+      email: 'ada@example.com',
+      password: 'secret',
+    })
   })
 
   it('answers 400 with the issues for an invalid body, without calling Medusa', async () => {
@@ -280,12 +277,12 @@ describe('POST /api/customers/login', () => {
     expect(failure()?.message).toBe('Invalid request body')
     expect(Object.keys(body.data.fieldErrors)).toEqual(['email', 'password'])
     expect(response.headers.getSetCookie()).toEqual([])
-    expect(medusa.client.fetch).not.toHaveBeenCalled()
+    expect(medusa.auth.login).not.toHaveBeenCalled()
     expect(sentryEvents()).toBe(0)
   })
 
   it('keeps the status and message of rejected credentials, sets no cookie and only leaves a breadcrumb', async () => {
-    medusa.client.fetch.mockRejectedValue(
+    medusa.auth.login.mockRejectedValue(
       medusaError(401, 'Invalid email or password'),
     )
 
@@ -300,7 +297,8 @@ describe('POST /api/customers/login', () => {
   })
 
   it('answers 500 and sets no cookie when Medusa answers without a token (third-party login)', async () => {
-    medusa.client.fetch.mockResolvedValue({ location: 'https://idp.example' })
+    // What the SDK's login returns for a redirect instead of a token
+    medusa.auth.login.mockResolvedValue({ location: 'https://idp.example' })
 
     const response = await post('/api/customers/login', signin)
 
@@ -358,14 +356,12 @@ describe('POST /api/customers/register', () => {
     expect(response.headers.getSetCookie()).toEqual([
       sessionCookie('session-token'),
     ])
-    expect(medusa.client.fetch).toHaveBeenCalledWith(
-      '/auth/customer/emailpass/register',
-      {
-        method: 'POST',
-        body: { email: 'ada@example.com', password: 'secret1' },
-      },
-    )
-    expect(medusa.auth.register).not.toHaveBeenCalled()
+    expect(medusa.auth.register).toHaveBeenCalledWith('customer', 'emailpass', {
+      email: 'ada@example.com',
+      password: 'secret1',
+    })
+    expect(medusa.auth.register).toHaveBeenCalledTimes(1)
+    expect(medusa.client.fetch).not.toHaveBeenCalled()
     expect(medusa.store.customer.create).toHaveBeenCalledWith(
       {
         email: 'ada@example.com',
@@ -376,13 +372,10 @@ describe('POST /api/customers/register', () => {
       {},
       { Authorization: 'Bearer register-token' },
     )
-    expect(medusa.client.fetch).toHaveBeenLastCalledWith(
-      '/auth/token/refresh',
-      {
-        method: 'POST',
-        headers: { Authorization: 'Bearer register-token' },
-      },
-    )
+    expect(medusa.auth.refresh).toHaveBeenCalledTimes(1)
+    expect(medusa.auth.refresh).toHaveBeenCalledWith({
+      Authorization: 'Bearer register-token',
+    })
     expect(sentryEvents()).toBe(0)
   })
 
@@ -427,11 +420,11 @@ describe('POST /api/customers/register', () => {
     expect(failure()?.message).toBe('Invalid request body')
     expect(Object.keys(body.data.fieldErrors)).toEqual(['password'])
     expect(response.headers.getSetCookie()).toEqual([])
-    expect(medusa.client.fetch).not.toHaveBeenCalled()
+    expect(medusa.auth.register).not.toHaveBeenCalled()
   })
 
   it('keeps the status of a rejected registration and sets no cookie', async () => {
-    medusa.client.fetch.mockRejectedValue(
+    medusa.auth.register.mockRejectedValue(
       medusaError(401, 'Identity with email already exists'),
     )
 
@@ -459,12 +452,7 @@ describe('POST /api/customers/register', () => {
   })
 
   it('clears the session cookie when the token refresh fails, keeping its status', async () => {
-    medusa.client.fetch.mockImplementation(async (path: string) => {
-      if (path === '/auth/token/refresh') {
-        throw medusaError(401, 'Unauthorized')
-      }
-      return { token: 'register-token' }
-    })
+    medusa.auth.refresh.mockRejectedValue(medusaError(401, 'Unauthorized'))
 
     const response = await post('/api/customers/register', registration)
 

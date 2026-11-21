@@ -1,4 +1,4 @@
-import { serverMedusaClient } from '#medusa/server'
+import { serverMedusaClient } from '~~/server/utils/medusa'
 import { updateCustomerRequestSchema } from '~/types/customer'
 import { customerRepository } from '~~/server/repository/customer.repository'
 import { getSessionToken } from '~~/server/utils/session-cookie'
