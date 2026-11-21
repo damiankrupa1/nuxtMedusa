@@ -54,7 +54,7 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
 
 - Link inside the store through `AppLink`/`AppLinkButton`, which add the country prefix. Never build `` `/${country.iso_2}/...` `` by hand: use `useCountryLink()` for a `UButton :to` and `toCountryLink(to, countryCode)` for `navigateTo` (see "Internal links" in root `CLAUDE.md`).
 - A route with params (`products/[handle]`, `categories/[handle]`, `collections/[handle]`, `order/[orderId]/confirmed`) is linked as a named route without `countryCode` — `{ name: 'countryCode-categories-handle', params: { handle } }` — so `typedPages` checks the name and params. A static page (`/store`, `/cart`, `/account`) and every CMS-provided URL stay path strings.
-- A computed link that is either form is typed `AppLinkTarget`; a prop that only takes a named route is `AppRoute` (both in `~/types/link`). Nuxt 4.6.3 uses Vue Router 5.4 while `@nuxt/ui` 3.0.0 brings Vue Router 4.5 to the root, so do not pass root `RouteLocationRaw` across this boundary; `AppRoute` also deliberately omits `countryCode`.
+- A computed link that is either form is typed `AppLinkTarget`; a prop that only takes a named route is `AppRoute` (both in `~/types/link`). Nuxt uses Vue Router 5.4 while `@nuxt/ui` 3.0.0 brings Vue Router 4.5 to the root, so do not pass root `RouteLocationRaw` across this boundary; `AppRoute` also deliberately omits `countryCode`.
 - A page reads its params with the route name, `useRoute('countryCode-products-handle').params.handle`, not `route.params.handle as string`.
 
 ## Page meta
