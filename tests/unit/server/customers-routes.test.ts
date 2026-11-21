@@ -130,7 +130,11 @@ beforeEach(() => {
   vi.mocked(Sentry.isEnabled).mockReturnValue(true)
   vi.mocked(serverMedusaClient).mockReturnValue(medusa)
   medusa.client.fetch.mockImplementation(async (path: string) => ({
-    token: path.endsWith('/register') ? 'register-token' : 'login-token',
+    token: path.endsWith('/register')
+      ? 'register-token'
+      : path === '/auth/token/refresh'
+        ? 'session-token'
+        : 'login-token',
   }))
   medusa.store.customer.retrieve.mockResolvedValue({ customer })
   medusa.store.customer.create.mockResolvedValue({ customer })
@@ -344,13 +348,15 @@ describe('POST /api/customers/login', () => {
 })
 
 describe('POST /api/customers/register', () => {
-  it('registers the identity, sets the session cookie and creates the customer with that token', async () => {
+  it("registers the identity, creates the customer with its token and keeps the customer's token as the session", async () => {
     const response = await post('/api/customers/register', registration)
 
     expect(response.status).toBe(200)
     await expect(response.json()).resolves.toEqual({ customer })
+    // The registration token has no actor_id and Medusa refuses it for `me`,
+    // so the session is the token refreshed once the customer exists
     expect(response.headers.getSetCookie()).toEqual([
-      sessionCookie('register-token'),
+      sessionCookie('session-token'),
     ])
     expect(medusa.client.fetch).toHaveBeenCalledWith(
       '/auth/customer/emailpass/register',
@@ -370,6 +376,13 @@ describe('POST /api/customers/register', () => {
       {},
       { Authorization: 'Bearer register-token' },
     )
+    expect(medusa.client.fetch).toHaveBeenLastCalledWith(
+      '/auth/token/refresh',
+      {
+        method: 'POST',
+        headers: { Authorization: 'Bearer register-token' },
+      },
+    )
     expect(sentryEvents()).toBe(0)
   })
 
@@ -382,7 +395,7 @@ describe('POST /api/customers/register', () => {
     )
 
     expect(response.headers.getSetCookie()).toEqual([
-      secureSessionCookie('register-token'),
+      secureSessionCookie('session-token'),
     ])
   })
 
@@ -443,6 +456,21 @@ describe('POST /api/customers/register', () => {
     expect(response.headers.getSetCookie()).toEqual([clearedSessionCookie])
     expect(sentryEvents()).toBe(0)
     expect(sentryBreadcrumbs()).toBe(1)
+  })
+
+  it('clears the session cookie when the token refresh fails, keeping its status', async () => {
+    medusa.client.fetch.mockImplementation(async (path: string) => {
+      if (path === '/auth/token/refresh') {
+        throw medusaError(401, 'Unauthorized')
+      }
+      return { token: 'register-token' }
+    })
+
+    const response = await post('/api/customers/register', registration)
+
+    expect(response.status).toBe(401)
+    expect(response.headers.getSetCookie()).toEqual([clearedSessionCookie])
+    expect(medusa.store.customer.create).toHaveBeenCalled()
   })
 
   it('reports a failed second step once', async () => {
