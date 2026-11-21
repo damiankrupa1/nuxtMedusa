@@ -1,7 +1,38 @@
 version: 2
 
 updates:
-  - package-ecosystem: pnpm
+  # Dependabot has no `pnpm` ecosystem: pnpm projects use `npm`, which also
+  # reads pnpm-lock.yaml (GitHub docs, "Dependabot options reference").
+  - package-ecosystem: npm
     directory: '/'
     schedule:
       interval: weekly
+    # Minor and patch updates arrive as one PR a week; a major update stays a
+    # PR of its own so it can be reviewed alone.
+    groups:
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: build
+    ignore:
+      # No major updates of these: h3 stays on 1.x (#65), and Nuxt UI 4 is a
+      # planned, separate migration (CLAUDE.md, Key modules).
+      - dependency-name: h3
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@nuxt/ui'
+        update-types: ['version-update:semver-major']
+
+  - package-ecosystem: github-actions
+    directory: '/'
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns:
+          - '*'
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: build
