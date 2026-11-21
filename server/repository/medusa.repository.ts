@@ -1,13 +1,17 @@
 import type { H3Event } from 'h3'
 import type { StoreRegionListResponse } from '@medusajs/types'
+import {
+  MEDUSA_REGION_FIELDS,
+  medusaRegionListResponseSchema,
+} from '~/types/country'
+import { MEDUSA_RESPONSE_POLICY } from '~/types/medusa'
 import type { SitemapCatalogItem } from '~/types/seo'
 import { captureError } from '~/utils/capture-error'
+import { parseMedusaResponse } from '~/utils/medusa-response'
 import { serverMedusaClient } from '~~/server/utils/medusa'
 import { listAllPages } from '~~/server/utils/pagination'
 import type { MedusaError } from '~~/server/types/medusa-error'
 
-const REGION_FIELDS =
-  'id,countries.iso_2,countries.name,countries.display_name,countries.region_id'
 const SITEMAP_FIELDS = 'handle,updated_at'
 
 // The only place on the server that knows the shape of the Medusa Store API
@@ -36,8 +40,34 @@ export function medusaRepository(event: H3Event) {
   }
 
   return {
-    listRegions(): Promise<StoreRegionListResponse> {
-      return request(() => medusa.store.region.list({ fields: REGION_FIELDS }))
+    // Checked with the soft policy (#84): the regions drive the routing of
+    // every page, so an answer without what it needs (a country's `iso_2` or
+    // `region_id`) is reported once (`invalid_response`) and treated like a
+    // regions outage, a 502: not cached, so /api/regions keeps serving its
+    // last valid copy while it has one (SWR), and the pages render as
+    // without regions otherwise. Never an empty or partial list, which the
+    // cache would keep for 10 minutes and which would redirect every URL of
+    // a missing country. The cause is the reported error (the same one on
+    // every repeat), so Sentry's Nitro hook doesn't report the 502 again.
+    async listRegions(): Promise<StoreRegionListResponse> {
+      const answer = await request(() =>
+        medusa.store.region.list({ fields: MEDUSA_REGION_FIELDS }),
+      )
+      const result = parseMedusaResponse(
+        medusaRegionListResponseSchema,
+        answer,
+        'regions',
+        MEDUSA_RESPONSE_POLICY.soft,
+      )
+      if (!result.success) {
+        throw createError({
+          statusCode: 502,
+          message: result.error.message,
+          cause: result.error,
+        })
+      }
+
+      return result.data
     },
 
     // Every product, category and collection that has a page of its own,

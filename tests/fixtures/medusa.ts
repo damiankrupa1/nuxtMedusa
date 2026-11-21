@@ -4,6 +4,37 @@
 // field the storefront doesn't read is kept on purpose, so the tests show
 // that the schemas let them through.
 
+// GET /store/regions with the storefront's fields (MEDUSA_REGION_FIELDS)
+export const medusaRegionListResponse = {
+  regions: [
+    {
+      id: 'reg_01M7ZA4MYF3PJMA5KB6RF6Y0CF',
+      countries: [
+        {
+          iso_2: 'pl',
+          name: 'POLAND',
+          display_name: 'Poland',
+          region_id: 'reg_01M7ZA4MYF3PJMA5KB6RF6Y0CF',
+        },
+      ],
+    },
+    {
+      id: 'reg_01M7ZA4MYZMD1MC5VV4NJTAH88',
+      countries: [
+        {
+          iso_2: 'de',
+          name: 'GERMANY',
+          display_name: 'Germany',
+          region_id: 'reg_01M7ZA4MYZMD1MC5VV4NJTAH88',
+        },
+      ],
+    },
+  ],
+  count: 2,
+  offset: 0,
+  limit: 50,
+}
+
 // GET /store/customers/me (POST /store/customers and POST
 // /store/customers/me answer the same shape). Not typed as
 // StoreCustomerResponse: Medusa leaves out fields its type calls required
