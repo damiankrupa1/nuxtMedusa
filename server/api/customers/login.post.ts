@@ -1,4 +1,4 @@
-import { serverMedusaClient } from '#medusa/server'
+import { serverMedusaClient } from '~~/server/utils/medusa'
 import { signinRequestSchema } from '~/types/customer'
 import { customerRepository } from '~~/server/repository/customer.repository'
 import {

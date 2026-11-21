@@ -31,7 +31,6 @@ export default defineNuxtConfig({
   modules: testModules
     ? ['@nuxt/ui', '@nuxtjs/i18n']
     : [
-        '@nuxtjs/medusa',
         '@nuxt/ui',
         '@nuxt/image',
         '@nuxt/eslint',
@@ -66,6 +65,16 @@ export default defineNuxtConfig({
       frameAncestors: '',
     },
     public: {
+      // The Medusa Store API, for both clients: the page's
+      // (app/plugins/medusa.ts) and the server API routes'
+      // (server/utils/medusa.ts). Both values are public by design (the
+      // publishable key only picks the sales channel) and can be overridden
+      // at runtime by the same variables.
+      medusa: {
+        backendUrl:
+          process.env.NUXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000',
+        publishableKey: process.env.NUXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
+      },
       stripeKey: process.env.NUXT_PUBLIC_STRIPE_KEY || '',
       inpostGeowidgetToken:
         process.env.NUXT_PUBLIC_INPOST_GEOWIDGET_TOKEN || '',
@@ -123,15 +132,6 @@ export default defineNuxtConfig({
     },
   },
 
-  // @nuxtjs/medusa transpiles @medusajs/js-sdk, so Vite serves it unbundled in
-  // dev and its CommonJS `qs` import has no named exports: the client script
-  // throws on load and nothing hydrates (no button reacts). Pre-bundle `qs`.
-  vite: {
-    optimizeDeps: {
-      include: ['qs'],
-    },
-  },
-
   eslint: {
     config: {
       stylistic: true,
@@ -172,12 +172,6 @@ export default defineNuxtConfig({
 
   image: {
     domains: payloadImageDomains,
-  },
-
-  medusa: {
-    baseUrl: process.env.NUXT_PUBLIC_MEDUSA_BACKEND_URL,
-    publishableKey: process.env.NUXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY,
-    server: true,
   },
 
   // Build-time Sentry settings. The org, project and auth token come from

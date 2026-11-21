@@ -1,9 +1,12 @@
 // @vitest-environment node
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import type Medusa from '@medusajs/js-sdk'
 import type { EventHandler, H3Event } from 'h3'
 import { createError, isError } from 'h3'
-import { serverMedusaClient } from '#medusa/server'
 import { defineWrappedResponseHandler } from '~~/server/utils/handler'
+import { serverMedusaClient } from '~~/server/utils/medusa'
+
+vi.mock('~~/server/utils/medusa', () => ({ serverMedusaClient: vi.fn() }))
 
 const readBody = vi.fn()
 const getCookie = vi.fn()
@@ -28,7 +31,7 @@ beforeAll(async () => {
 
 beforeEach(() => {
   vi.clearAllMocks()
-  vi.mocked(serverMedusaClient).mockReturnValue(medusa)
+  vi.mocked(serverMedusaClient).mockReturnValue(medusa as unknown as Medusa)
   getCookie.mockReturnValue(undefined)
   readBody.mockResolvedValue({ first_name: 'Ada', last_name: 'Lovelace' })
   updateCustomer.mockResolvedValue({ customer: { id: 'cus_test' } })

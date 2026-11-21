@@ -2,6 +2,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { useFetchCustomer } from '~/composables/customer'
 
+// Built by apiRepository(), never used by the customer calls
+vi.mock('~/composables/medusa', () => ({ useMedusaClient: () => ({}) }))
+
 // Issue #81: the customer is fetched in the server render of per-visitor
 // pages (account, wishlist), with the visitor's cookie, so a signed-in
 // customer's reload shows their account and not the sign-in form. A page
@@ -16,7 +19,6 @@ describe('useFetchCustomer', () => {
     useLazyAsyncData,
     useRoute: () => route,
     useRequestFetch: () => requestFetch,
-    useMedusaClient: () => ({}),
   })
 
   beforeEach(() => {

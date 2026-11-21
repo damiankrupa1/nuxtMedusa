@@ -3,7 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Medusa, { FetchError } from '@medusajs/js-sdk'
 
 import * as Sentry from '@sentry/nuxt'
+import { buildBrowserMedusaConfig } from '~/utils/medusa'
 import { customerRepository } from '~~/server/repository/customer.repository'
+import { buildServerMedusaConfig } from '~~/server/utils/medusa'
 
 const clientFetch = vi.fn()
 const sdkLogin = vi.fn()
@@ -13,8 +15,8 @@ const create = vi.fn()
 const update = vi.fn()
 
 // Only the calls the repository makes; the cast stands in for the rest of
-// the SDK client. auth.login()/auth.register() are there to show they are
-// never used (#82).
+// the SDK client. `client.fetch` is there to show no auth request is made
+// by hand any more (#89).
 const medusa = {
   client: { fetch: clientFetch },
   auth: { login: sdkLogin, register: sdkRegister },
@@ -27,9 +29,8 @@ const customer = { id: 'cus_test' }
 beforeEach(() => {
   vi.clearAllMocks()
   vi.mocked(Sentry.isEnabled).mockReturnValue(true)
-  clientFetch.mockImplementation(async (path: string) => ({
-    token: path.endsWith('/register') ? 'register-token' : 'login-token',
-  }))
+  sdkLogin.mockResolvedValue('login-token')
+  sdkRegister.mockResolvedValue('register-token')
   retrieve.mockResolvedValue({ customer })
   create.mockResolvedValue({ customer })
   update.mockResolvedValue({ customer })
@@ -37,17 +38,16 @@ beforeEach(() => {
 
 describe('customerRepository', () => {
   describe('login', () => {
-    it("asks Medusa's token route of the customer actor with email and password and returns the token", async () => {
+    it("signs in through the SDK's login for the customer actor and returns the token", async () => {
       await expect(
         customers().login({ email: 'ada@example.com', password: 'secret' }),
       ).resolves.toBe('login-token')
-      expect(clientFetch).toHaveBeenCalledTimes(1)
-      expect(clientFetch).toHaveBeenCalledWith('/auth/customer/emailpass', {
-        method: 'POST',
-        body: { email: 'ada@example.com', password: 'secret' },
+      expect(sdkLogin).toHaveBeenCalledTimes(1)
+      expect(sdkLogin).toHaveBeenCalledWith('customer', 'emailpass', {
+        email: 'ada@example.com',
+        password: 'secret',
       })
-      // The SDK's login would open a Medusa cookie session as well (#82)
-      expect(sdkLogin).not.toHaveBeenCalled()
+      expect(clientFetch).not.toHaveBeenCalled()
     })
 
     it('forwards nothing but the email and the password', async () => {
@@ -60,27 +60,29 @@ describe('customerRepository', () => {
 
       await customers().login(body)
 
-      expect(clientFetch).toHaveBeenCalledWith('/auth/customer/emailpass', {
-        method: 'POST',
-        body: { email: 'ada@example.com', password: 'secret' },
+      expect(sdkLogin).toHaveBeenCalledWith('customer', 'emailpass', {
+        email: 'ada@example.com',
+        password: 'secret',
       })
     })
 
+    // What the SDK's login returns instead of a token
     it.each([
       ['a third-party redirect', { location: 'https://idp.example' }],
       [
         'an MFA challenge',
-        { token: 'partial', mfa_challenge: { id: 'mfa_1' } },
+        {
+          mfa_required: true,
+          mfa_challenge: { id: 'mfa_1' },
+          token: 'partial',
+        },
       ],
       [
         'a verification step',
-        { token: 'partial', verification_required: true },
+        { verification_required: true, verification: {}, token: 'partial' },
       ],
-      ['an answer without a token', {}],
-      ['an empty token', { token: '' }],
-      ['no JSON object', 'login-token'],
     ])('rejects %s as an unexpected answer', async (_case, answer) => {
-      clientFetch.mockResolvedValue(answer)
+      sdkLogin.mockResolvedValue(answer)
 
       await expect(
         customers().login({ email: 'ada@example.com', password: 'secret' }),
@@ -89,7 +91,7 @@ describe('customerRepository', () => {
   })
 
   describe('register', () => {
-    it('registers the customer identity with email and password only and returns its token', async () => {
+    it('registers the customer identity through the SDK with email and password only and returns its token', async () => {
       const body = {
         email: 'ada@example.com',
         password: 'secret1',
@@ -97,23 +99,12 @@ describe('customerRepository', () => {
       }
 
       await expect(customers().register(body)).resolves.toBe('register-token')
-      expect(clientFetch).toHaveBeenCalledTimes(1)
-      expect(clientFetch).toHaveBeenCalledWith(
-        '/auth/customer/emailpass/register',
-        {
-          method: 'POST',
-          body: { email: 'ada@example.com', password: 'secret1' },
-        },
-      )
-      expect(sdkRegister).not.toHaveBeenCalled()
-    })
-
-    it('rejects an answer without a token', async () => {
-      clientFetch.mockResolvedValue({})
-
-      await expect(
-        customers().register({ email: 'ada@example.com', password: 'secret1' }),
-      ).rejects.toThrow('Unexpected registration response from Medusa')
+      expect(sdkRegister).toHaveBeenCalledTimes(1)
+      expect(sdkRegister).toHaveBeenCalledWith('customer', 'emailpass', {
+        email: 'ada@example.com',
+        password: 'secret1',
+      })
+      expect(clientFetch).not.toHaveBeenCalled()
     })
   })
 
@@ -204,7 +195,7 @@ describe('customerRepository', () => {
       '%s passes the error on unchanged and does not report it (the handler wrapper does)',
       async (_name, call) => {
         const failure = new FetchError('Unauthorized', 'Unauthorized', 401)
-        ;[clientFetch, retrieve, create, update].forEach((method) =>
+        ;[sdkLogin, sdkRegister, retrieve, create, update].forEach((method) =>
           method.mockRejectedValue(failure),
         )
 
@@ -216,29 +207,26 @@ describe('customerRepository', () => {
   })
 })
 
-// #82, against the installed js-sdk: the client the server really gets.
-// serverMedusaClient() builds it from the @nuxtjs/medusa 1.2.0 defaults, whose
-// `auth` is below (shared with the browser client). Only the network is fake.
+// #82, against the installed js-sdk with the client the server really gets:
+// the config of serverMedusaClient() (server/utils/medusa.ts). Only the
+// network is fake. Vitest also fails on an unhandled rejection inside the SDK.
 describe('customerRepository with the real SDK client', () => {
-  const moduleAuthDefaults = {
-    type: 'session',
-    jwtTokenStorageKey: 'medusa_auth_token',
-    jwtTokenStorageMethod: 'local',
-  } as const
   const network = vi.fn<(input: URL, init: RequestInit) => Promise<Response>>()
-  const sdkClient = () =>
-    new Medusa({
-      baseUrl: 'http://medusa.test',
-      publishableKey: 'pk_test',
-      auth: moduleAuthDefaults,
-    })
+  const connection = {
+    backendUrl: 'http://medusa.test',
+    publishableKey: 'pk_test',
+  }
+  const serverClient = () => new Medusa(buildServerMedusaConfig(connection))
   const requests = () =>
     network.mock.calls.map(
-      ([input, init]) => `${init.method} ${new URL(input).pathname}`,
+      ([input, init]) => `${init.method ?? 'GET'} ${new URL(input).pathname}`,
     )
+  const answer = (body: unknown) =>
+    network.mockImplementation(async () => Response.json(body))
+  const signin = { email: 'ada@example.com', password: 'secret' }
 
   beforeEach(() => {
-    network.mockImplementation(async () => Response.json({ token: 'jwt' }))
+    answer({ token: 'jwt' })
     vi.stubGlobal('fetch', network)
   })
 
@@ -248,24 +236,18 @@ describe('customerRepository with the real SDK client', () => {
 
   it('signs in with the token request alone, opening no Medusa session', async () => {
     await expect(
-      customerRepository(sdkClient()).login({
-        email: 'ada@example.com',
-        password: 'secret',
-      }),
+      customerRepository(serverClient()).login(signin),
     ).resolves.toBe('jwt')
 
     expect(requests()).toEqual(['POST /auth/customer/emailpass'])
-    expect(JSON.parse(String(network.mock.calls[0]?.[1].body))).toEqual({
-      email: 'ada@example.com',
-      password: 'secret',
-    })
+    expect(JSON.parse(String(network.mock.calls[0]?.[1].body))).toEqual(signin)
   })
 
-  it('registers with the token request alone and stores nothing on the client', async () => {
-    // auth.register() would also store the token in localStorage without
-    // awaiting it, an unhandled rejection on the server that Vitest reports
+  it('registers with the token request alone, without an unhandled rejection', async () => {
+    // With 'local' token storage auth.register() stored the token in
+    // localStorage without awaiting it: a rejection on the server
     await expect(
-      customerRepository(sdkClient()).register({
+      customerRepository(serverClient()).register({
         email: 'ada@example.com',
         password: 'secret1',
       }),
@@ -274,13 +256,74 @@ describe('customerRepository with the real SDK client', () => {
     expect(requests()).toEqual(['POST /auth/customer/emailpass/register'])
   })
 
-  it("is needed: the SDK's own login with these defaults also opens a Medusa session", async () => {
-    // If this starts failing after an SDK or module upgrade, the workaround
-    // in the repository may no longer be needed
-    await sdkClient().auth.login('customer', 'emailpass', {
-      email: 'ada@example.com',
-      password: 'secret',
+  it.each([
+    ['a third-party redirect', { location: 'https://idp.example' }],
+    ['an MFA challenge', { token: 'partial', mfa_challenge: { id: 'mfa_1' } }],
+    ['a verification step', { token: 'partial', verification_required: true }],
+  ])('rejects a login answered with %s', async (_case, body) => {
+    answer(body)
+
+    await expect(
+      customerRepository(serverClient()).login(signin),
+    ).rejects.toThrow('Unexpected login response from Medusa')
+    expect(requests()).toEqual(['POST /auth/customer/emailpass'])
+  })
+
+  // The SDK throws on these itself, with its own message
+  it.each([
+    ['without a token', {}],
+    ['with an empty token', { token: '' }],
+    ['with no JSON object', 'jwt'],
+  ])('rejects a login or a registration answered %s', async (_case, body) => {
+    answer(body)
+    const repository = customerRepository(serverClient())
+
+    await expect(repository.login(signin)).rejects.toThrow(
+      'Unexpected authentication response',
+    )
+    await expect(repository.register(signin)).rejects.toThrow(
+      'Unexpected registration response',
+    )
+  })
+
+  it("passes Medusa's error on unchanged", async () => {
+    network.mockImplementation(async () =>
+      Response.json(
+        { message: 'Invalid email or password' },
+        { status: 401, statusText: 'Unauthorized' },
+      ),
+    )
+
+    await expect(
+      customerRepository(serverClient()).login(signin),
+    ).rejects.toMatchObject({
+      status: 401,
+      message: 'Invalid email or password',
     })
+  })
+
+  it('retrieves the customer with the given token and keeps none from the login', async () => {
+    const repository = customerRepository(serverClient())
+    await repository.login(signin)
+    answer({ customer })
+
+    await repository.retrieveCustomer('customer-token')
+
+    expect(requests()).toEqual([
+      'POST /auth/customer/emailpass',
+      'GET /store/customers/me',
+    ])
+    const headers = new Headers(network.mock.calls[1]?.[1].headers)
+    expect(headers.get('authorization')).toBe('Bearer customer-token')
+    expect(headers.get('x-publishable-api-key')).toBe('pk_test')
+  })
+
+  it("is why the server has its own config: the SDK's login with the page client's config opens a Medusa session", async () => {
+    await new Medusa(buildBrowserMedusaConfig(connection)).auth.login(
+      'customer',
+      'emailpass',
+      signin,
+    )
 
     expect(requests()).toEqual([
       'POST /auth/customer/emailpass',
