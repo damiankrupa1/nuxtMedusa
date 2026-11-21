@@ -1,8 +1,8 @@
 import type { H3Event } from 'h3'
-import { serverMedusaClient } from '#medusa/server'
 import type { StoreRegionListResponse } from '@medusajs/types'
 import type { SitemapCatalogItem } from '~/types/seo'
 import { captureError } from '~/utils/capture-error'
+import { serverMedusaClient } from '~~/server/utils/medusa'
 import { listAllPages } from '~~/server/utils/pagination'
 import type { MedusaError } from '~~/server/types/medusa-error'
 
@@ -16,8 +16,7 @@ const SITEMAP_FIELDS = 'handle,updated_at'
 // breadcrumb, see isExpectedError()), and becomes an H3 error carrying
 // Medusa's status (500 without one) and the reported error as `cause`, so
 // Sentry's Nitro hook doesn't report that H3 error again and neither does the
-// handler. `serverMedusaClient()` is typed `any`; this file is the one place
-// that narrows it.
+// handler.
 export function medusaRepository(event: H3Event) {
   const medusa = serverMedusaClient(event)
 

@@ -23,19 +23,23 @@ import {
   toWebHandler,
 } from 'h3'
 import { FetchError } from '@medusajs/js-sdk'
+import type Medusa from '@medusajs/js-sdk'
 
 import * as Sentry from '@sentry/nuxt'
-import { serverMedusaClient } from '#medusa/server'
 import { defineWrappedResponseHandler } from '~~/server/utils/handler'
+import { serverMedusaClient } from '~~/server/utils/medusa'
+
+vi.mock('~~/server/utils/medusa', () => ({ serverMedusaClient: vi.fn() }))
 
 // The session contract of server/api/customers/** as the storefront sees it:
 // paths, methods, statuses, response bodies, the exact `Set-Cookie` header of
 // `medusa_jwt` and the Medusa SDK calls. The requests go through a real h3 app
 // with h3's own cookie and body helpers, so the cookie attributes are the ones
-// Nitro sends. Only the Medusa SDK client is faked (behind the
-// `#medusa/server` alias), not the customer repository: these tests were run
-// against the handlers before and after the repository was extracted, which
-// is what shows that the extraction changed nothing a caller can observe.
+// Nitro sends. Only the Medusa SDK client is faked (the serverMedusaClient()
+// of server/utils/medusa.ts is mocked), not the customer repository: these
+// tests were run against the handlers before and after the repository was
+// extracted, which is what shows that the extraction changed nothing a
+// caller can observe.
 //
 // Issue #78 changed the contract on purpose: the cookie is HttpOnly and
 // SameSite=Lax, lives as long as the token (Max-Age), and is Secure when the
@@ -128,7 +132,7 @@ beforeEach(() => {
   lastError = undefined
   vi.spyOn(console, 'error').mockImplementation(() => undefined)
   vi.mocked(Sentry.isEnabled).mockReturnValue(true)
-  vi.mocked(serverMedusaClient).mockReturnValue(medusa)
+  vi.mocked(serverMedusaClient).mockReturnValue(medusa as unknown as Medusa)
   medusa.client.fetch.mockImplementation(async (path: string) => ({
     token: path.endsWith('/register') ? 'register-token' : 'login-token',
   }))
