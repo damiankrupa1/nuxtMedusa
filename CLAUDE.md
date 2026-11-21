@@ -28,6 +28,8 @@ The Playwright e2e suite (`tests/e2e/`, `playwright.config.ts`) is separate from
 
 CI has two workflows. `.github/workflows/ci.yml` runs `pnpm test`, `pnpm lint`, `pnpm format:check` and `pnpm build` on pushes to `main` and pull requests. `.github/workflows/e2e.yml` starts a throwaway Medusa with the e2e seed (medusaDemo's `e2e-medusa` action, pinned to a commit) and runs `pnpm test:e2e` against it, `@medusa` specs included (Chromium on pull requests and `main`; Firefox and WebKit through a manual `workflow_dispatch` with `all_browsers`) on Node 22, and uploads the HTML report and the traces/screenshots for 7 days (on failure also the Medusa log). It is deliberately not a required check yet, so a slow or flaky browser run can't block a merge; make it required in the branch protection rules once it is stable.
 
+`ci.yml` ends with a blocking `pnpm audit --prod --audit-level high` (#90). Fix a new advisory with `pnpm update --depth Infinity <package>` when its dependent's range allows the patched release, else with a version bump or an `overrides` entry in `pnpm-workspace.yaml`. Accept one only after checking it can't be reached: its GHSA id under `auditConfig.ignoreGhsas` in `pnpm-workspace.yaml` (pnpm 11 reads its settings there, not from `package.json`), with a YAML comment giving the reason.
+
 ### Environment
 
 Copy `.env.template` to `.env` and set:
