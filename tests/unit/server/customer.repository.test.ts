@@ -10,6 +10,7 @@ import { buildServerMedusaConfig } from '~~/server/utils/medusa'
 const clientFetch = vi.fn()
 const sdkLogin = vi.fn()
 const sdkRegister = vi.fn()
+const sdkRefresh = vi.fn()
 const retrieve = vi.fn()
 const create = vi.fn()
 const update = vi.fn()
@@ -19,7 +20,7 @@ const update = vi.fn()
 // by hand any more (#89).
 const medusa = {
   client: { fetch: clientFetch },
-  auth: { login: sdkLogin, register: sdkRegister },
+  auth: { login: sdkLogin, register: sdkRegister, refresh: sdkRefresh },
   store: { customer: { retrieve, create, update } },
 } as unknown as Medusa
 
@@ -31,6 +32,7 @@ beforeEach(() => {
   vi.mocked(Sentry.isEnabled).mockReturnValue(true)
   sdkLogin.mockResolvedValue('login-token')
   sdkRegister.mockResolvedValue('register-token')
+  sdkRefresh.mockResolvedValue({ token: 'session-token' })
   retrieve.mockResolvedValue({ customer })
   create.mockResolvedValue({ customer })
   update.mockResolvedValue({ customer })
@@ -108,6 +110,32 @@ describe('customerRepository', () => {
     })
   })
 
+  describe('refreshToken', () => {
+    it("exchanges the registration token for the customer's session token", async () => {
+      await expect(customers().refreshToken('register-token')).resolves.toBe(
+        'session-token',
+      )
+      expect(sdkRefresh).toHaveBeenCalledTimes(1)
+      expect(sdkRefresh).toHaveBeenCalledWith({
+        Authorization: 'Bearer register-token',
+      })
+      expect(clientFetch).not.toHaveBeenCalled()
+    })
+
+    it.each([
+      ['without a token', {}],
+      ['with an empty token', { token: '' }],
+      ['with an MFA challenge', { mfa_challenge: { id: 'mfa_1' } }],
+      ['with a verification step', { verification_required: true }],
+    ])('rejects an answer %s', async (_case, body) => {
+      sdkRefresh.mockResolvedValue(body)
+
+      await expect(customers().refreshToken('register-token')).rejects.toThrow(
+        'Unexpected token refresh response from Medusa',
+      )
+    })
+  })
+
   describe('calls made as the customer', () => {
     it('creates the customer with the profile fields and the given token, never the password', async () => {
       // The handler passes its whole parsed body, password included
@@ -180,6 +208,7 @@ describe('customerRepository', () => {
         'register',
         () => customers().register({ email: 'a@b.co', password: 'x' }),
       ],
+      ['refreshToken', () => customers().refreshToken('t')],
       [
         'createCustomer',
         () =>
@@ -195,8 +224,8 @@ describe('customerRepository', () => {
       '%s passes the error on unchanged and does not report it (the handler wrapper does)',
       async (_name, call) => {
         const failure = new FetchError('Unauthorized', 'Unauthorized', 401)
-        ;[sdkLogin, sdkRegister, retrieve, create, update].forEach((method) =>
-          method.mockRejectedValue(failure),
+        ;[sdkLogin, sdkRegister, sdkRefresh, retrieve, create, update].forEach(
+          (method) => method.mockRejectedValue(failure),
         )
 
         await expect(call()).rejects.toBe(failure)
@@ -254,6 +283,17 @@ describe('customerRepository with the real SDK client', () => {
     ).resolves.toBe('jwt')
 
     expect(requests()).toEqual(['POST /auth/customer/emailpass/register'])
+  })
+
+  it('refreshes the token with that request alone, sending the given token', async () => {
+    await expect(
+      customerRepository(serverClient()).refreshToken('register-token'),
+    ).resolves.toBe('jwt')
+
+    expect(requests()).toEqual(['POST /auth/token/refresh'])
+    expect(
+      new Headers(network.mock.calls[0]?.[1].headers).get('authorization'),
+    ).toBe('Bearer register-token')
   })
 
   it.each([

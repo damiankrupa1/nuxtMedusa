@@ -68,6 +68,23 @@ export function customerRepository(medusa: Medusa) {
       return await medusa.auth.register(ACTOR, PROVIDER, { email, password })
     },
 
+    // The registration token belongs to the auth identity alone (an empty
+    // `actor_id`), so Medusa refuses it for `/store/customers/me`. Once the
+    // customer exists, Medusa's refresh route (`POST /auth/token/refresh`)
+    // issues a token for that customer, which is the session. Like login and
+    // register, this is safe because the server client stores nothing
+    // (`nostore`). An MFA or verification answer carries no token and is an
+    // unexpected one here, like it is for login.
+    async refreshToken(token: string): Promise<string> {
+      const answer = await medusa.auth.refresh(bearer(token))
+
+      if (!('token' in answer) || !answer.token) {
+        throw new Error('Unexpected token refresh response from Medusa')
+      }
+
+      return answer.token
+    },
+
     async createCustomer(
       token: string,
       {

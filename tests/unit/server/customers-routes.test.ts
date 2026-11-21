@@ -54,11 +54,11 @@ vi.mock('~~/server/utils/medusa', () => ({ serverMedusaClient: vi.fn() }))
 // and medusa-client.test.ts check that against the real SDK). Statuses,
 // bodies and `Set-Cookie` stayed as they were.
 
-// One SDK auth call each for login and register; `client.fetch` is faked only
-// to show no other auth request is made
+// One SDK auth call each for login, register and the token refresh after it;
+// `client.fetch` is faked only to show no other auth request is made
 const medusa = {
   client: { fetch: vi.fn() },
-  auth: { login: vi.fn(), register: vi.fn() },
+  auth: { login: vi.fn(), register: vi.fn(), refresh: vi.fn() },
   store: {
     customer: { retrieve: vi.fn(), create: vi.fn(), update: vi.fn() },
   },
@@ -137,6 +137,7 @@ beforeEach(() => {
   vi.mocked(serverMedusaClient).mockReturnValue(medusa as unknown as Medusa)
   medusa.auth.login.mockResolvedValue('login-token')
   medusa.auth.register.mockResolvedValue('register-token')
+  medusa.auth.refresh.mockResolvedValue({ token: 'session-token' })
   medusa.store.customer.retrieve.mockResolvedValue({ customer })
   medusa.store.customer.create.mockResolvedValue({ customer })
   medusa.store.customer.update.mockResolvedValue({ customer })
@@ -345,13 +346,15 @@ describe('POST /api/customers/login', () => {
 })
 
 describe('POST /api/customers/register', () => {
-  it('registers the identity, sets the session cookie and creates the customer with that token', async () => {
+  it("registers the identity, creates the customer with its token and keeps the customer's token as the session", async () => {
     const response = await post('/api/customers/register', registration)
 
     expect(response.status).toBe(200)
     await expect(response.json()).resolves.toEqual({ customer })
+    // The registration token has no actor_id and Medusa refuses it for `me`,
+    // so the session is the token refreshed once the customer exists
     expect(response.headers.getSetCookie()).toEqual([
-      sessionCookie('register-token'),
+      sessionCookie('session-token'),
     ])
     expect(medusa.auth.register).toHaveBeenCalledWith('customer', 'emailpass', {
       email: 'ada@example.com',
@@ -369,6 +372,10 @@ describe('POST /api/customers/register', () => {
       {},
       { Authorization: 'Bearer register-token' },
     )
+    expect(medusa.auth.refresh).toHaveBeenCalledTimes(1)
+    expect(medusa.auth.refresh).toHaveBeenCalledWith({
+      Authorization: 'Bearer register-token',
+    })
     expect(sentryEvents()).toBe(0)
   })
 
@@ -381,7 +388,7 @@ describe('POST /api/customers/register', () => {
     )
 
     expect(response.headers.getSetCookie()).toEqual([
-      secureSessionCookie('register-token'),
+      secureSessionCookie('session-token'),
     ])
   })
 
@@ -442,6 +449,16 @@ describe('POST /api/customers/register', () => {
     expect(response.headers.getSetCookie()).toEqual([clearedSessionCookie])
     expect(sentryEvents()).toBe(0)
     expect(sentryBreadcrumbs()).toBe(1)
+  })
+
+  it('clears the session cookie when the token refresh fails, keeping its status', async () => {
+    medusa.auth.refresh.mockRejectedValue(medusaError(401, 'Unauthorized'))
+
+    const response = await post('/api/customers/register', registration)
+
+    expect(response.status).toBe(401)
+    expect(response.headers.getSetCookie()).toEqual([clearedSessionCookie])
+    expect(medusa.store.customer.create).toHaveBeenCalled()
   })
 
   it('reports a failed second step once', async () => {
