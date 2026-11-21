@@ -91,4 +91,45 @@ describe.each([
 
     expect(wrapper.find('[role="alert"] .u-alert').text()).toBe(genericError)
   })
+
+  // The Vercel firewall answers a rate-limited request itself, so the
+  // composable only has ofetch's request line as the message (#91)
+  it.each([
+    ['ofetch (the firewall or our handler)', { statusCode: 429 }],
+    ['the Medusa SDK', { status: 429 }],
+    ['a raw response', { response: { status: 429 } }],
+  ])('explains a 429 from %s instead of its raw message', async (_, fields) => {
+    mutate.mockImplementation(async () => {
+      apiError.value = '[POST] "/api/customers/login": 429 Too Many Requests'
+      throw Object.assign(new Error('429'), fields)
+    })
+    const wrapper = mountForm()
+
+    await wrapper.find('form').trigger('submit')
+    await flushPromises()
+
+    expect(wrapper.find('[role="alert"] .u-alert').text()).toBe(
+      'auth.tooManyAttempts',
+    )
+  })
+
+  it('shows the API message again on the next failure after a 429', async () => {
+    mutate.mockImplementationOnce(async () => {
+      throw Object.assign(new Error('429'), { statusCode: 429 })
+    })
+    mutate.mockImplementationOnce(async () => {
+      apiError.value = 'Invalid email or password'
+      throw Object.assign(new Error('401'), { statusCode: 401 })
+    })
+    const wrapper = mountForm()
+
+    await wrapper.find('form').trigger('submit')
+    await flushPromises()
+    await wrapper.find('form').trigger('submit')
+    await flushPromises()
+
+    expect(wrapper.find('[role="alert"] .u-alert').text()).toBe(
+      'Invalid email or password',
+    )
+  })
 })
