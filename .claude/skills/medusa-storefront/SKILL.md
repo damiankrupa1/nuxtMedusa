@@ -17,6 +17,7 @@ description: Implement and debug storefront functionality integrated with Medusa
 - Account for region, currency, sales channel, publication status, pagination, and product variants as required by the existing implementation.
 - Handle missing images, prices, variants, and optional product fields without crashing.
 - Keep API response types accurate. Transform API data into view models at a clear boundary when helpful.
+- Validate a Medusa answer the code relies on in its repository with `parseMedusaResponse()` (`app/utils/medusa-response.ts`, #84): a narrow `z.looseObject` schema in `app/types/<domain>.ts` with only the fields the code reads, each object `satisfies MedusaResponseShape<SdkType>`. `hard` for session, payments and orders (throws, the caller's error path reports), `soft` for displayed or routed-on data (reports once, the caller shows its existing error state). Details in "Server API routes" in root `CLAUDE.md`.
 - Ensure localized content and slugs follow the project's i18n conventions for Polish and English.
 
 ## Cart and checkout

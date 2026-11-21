@@ -6,6 +6,7 @@ import {
   type SigninForm,
 } from '~/types/customer'
 import { useLoginCustomer } from '~/composables/customer'
+import { isTooManyRequestsError } from '~/utils/http-error'
 
 const emit = defineEmits<{
   'switch-to-register': []
@@ -39,14 +40,19 @@ const onSubmit = async (_event: FormSubmitEvent<SigninForm>) => {
 
     await login(loginData)
     await refreshNuxtData('customer')
-  } catch {
-    if (!apiError.value) {
+  } catch (error) {
+    // A rate limit's answer may not be our JSON error (the Vercel firewall
+    // answers before the handler runs), so its message would be the raw
+    // request line: say what happened instead.
+    if (isTooManyRequestsError(error)) {
+      formError.value = t('auth.tooManyAttempts')
+    } else if (!apiError.value) {
       formError.value = t('auth.signin.genericError')
     }
   }
 }
 
-const displayError = computed(() => apiError.value || formError.value)
+const displayError = computed(() => formError.value || apiError.value)
 
 const switchToRegister = () => {
   emit('switch-to-register')

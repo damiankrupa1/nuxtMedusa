@@ -19,6 +19,7 @@ export const appUrl = `http://127.0.0.1:${appPort}`
 export const payloadStubUrl = `http://127.0.0.1:${payloadStubPort}`
 
 export const medusaBackendUrl = process.env.E2E_MEDUSA_BACKEND_URL ?? ''
+export const medusaPublishableKey = process.env.E2E_MEDUSA_PUBLISHABLE_KEY ?? ''
 export const hasMedusa = medusaBackendUrl !== ''
 export const hasStripe = (process.env.E2E_STRIPE_KEY ?? '') !== ''
 export const skipBuild = process.env.E2E_SKIP_BUILD === '1'
@@ -41,8 +42,7 @@ export const appEnv: Record<string, string> = {
 
   NUXT_PUBLIC_MEDUSA_BACKEND_URL: medusaBackendUrl || unreachableMedusaUrl,
   MEDUSA_URL: medusaBackendUrl || unreachableMedusaUrl,
-  NUXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY:
-    process.env.E2E_MEDUSA_PUBLISHABLE_KEY ?? '',
+  NUXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: medusaPublishableKey,
   NUXT_PUBLIC_STRIPE_KEY: process.env.E2E_STRIPE_KEY ?? '',
   NUXT_PUBLIC_INPOST_GEOWIDGET_TOKEN: '',
 

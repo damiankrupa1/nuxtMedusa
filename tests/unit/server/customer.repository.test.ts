@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/nuxt'
 import { buildBrowserMedusaConfig } from '~/utils/medusa'
 import { customerRepository } from '~~/server/repository/customer.repository'
 import { buildServerMedusaConfig } from '~~/server/utils/medusa'
+import { medusaCustomerResponse } from '~~/tests/fixtures/medusa'
 
 const clientFetch = vi.fn()
 const sdkLogin = vi.fn()
@@ -25,7 +26,8 @@ const medusa = {
 } as unknown as Medusa
 
 const customers = () => customerRepository(medusa)
-const customer = { id: 'cus_test' }
+// Medusa's recorded answer: the repository checks it (#84)
+const { customer } = medusaCustomerResponse
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -108,6 +110,19 @@ describe('customerRepository', () => {
       })
       expect(clientFetch).not.toHaveBeenCalled()
     })
+
+    // The SDK throws on an answer without a token itself; this is what an
+    // SDK or Medusa change that let one through would hand the repository
+    it.each([
+      ['an empty token', ''],
+      ['no string', { token: 'register-token' }],
+    ])('rejects %s as an unexpected answer (#84)', async (_case, answer) => {
+      sdkRegister.mockResolvedValue(answer)
+
+      await expect(
+        customers().register({ email: 'ada@example.com', password: 'secret1' }),
+      ).rejects.toThrow('Unexpected registration response from Medusa')
+    })
   })
 
   describe('refreshToken', () => {
@@ -127,6 +142,16 @@ describe('customerRepository', () => {
       ['with an empty token', { token: '' }],
       ['with an MFA challenge', { mfa_challenge: { id: 'mfa_1' } }],
       ['with a verification step', { verification_required: true }],
+      // What the SDK's type says these answers carry: a token without an
+      // actor, which must not become the session (#84)
+      [
+        'with an MFA challenge and its token',
+        { token: 'partial', mfa_required: true, mfa_challenge: { id: 'm' } },
+      ],
+      [
+        'with a verification step and its token',
+        { token: 'partial', verification_required: true, verification: {} },
+      ],
     ])('rejects an answer %s', async (_case, body) => {
       sdkRefresh.mockResolvedValue(body)
 
@@ -199,6 +224,34 @@ describe('customerRepository', () => {
         { Authorization: 'Bearer second-token' },
       )
     })
+
+    // #84: the customer the account page and the session rely on
+    it.each([
+      [
+        'createCustomer',
+        () =>
+          customers().createCustomer('t', {
+            email: 'a@b.co',
+            first_name: 'Ada',
+            last_name: 'Lovelace',
+          }),
+      ],
+      ['retrieveCustomer', () => customers().retrieveCustomer('t')],
+      ['updateCustomer', () => customers().updateCustomer('t', {})],
+    ])(
+      '%s rejects an answer without the customer id and reports nothing (the handler wrapper does)',
+      async (_name, call) => {
+        const { id: _id, ...withoutId } = customer
+        ;[retrieve, create, update].forEach((method) =>
+          method.mockResolvedValue({ customer: withoutId }),
+        )
+
+        await expect(call()).rejects.toThrow(
+          'Unexpected customer response from Medusa',
+        )
+        expect(Sentry.captureException).not.toHaveBeenCalled()
+      },
+    )
   })
 
   describe('Medusa errors', () => {

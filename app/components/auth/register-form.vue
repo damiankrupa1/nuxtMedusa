@@ -5,6 +5,7 @@ import {
   type RegisterCustomerData,
   type RegisterForm,
 } from '~/types/customer'
+import { isTooManyRequestsError } from '~/utils/http-error'
 
 const emit = defineEmits<{
   'switch-to-signin': []
@@ -44,14 +45,17 @@ const onSubmit = async (_event: FormSubmitEvent<RegisterForm>) => {
 
     await register(customerData)
     await refreshNuxtData('customer')
-  } catch {
-    if (!apiError.value) {
+  } catch (error) {
+    // Same as the sign-in form: a rate limit gets its own message
+    if (isTooManyRequestsError(error)) {
+      formError.value = t('auth.tooManyAttempts')
+    } else if (!apiError.value) {
       formError.value = t('auth.register.genericError')
     }
   }
 }
 
-const displayError = computed(() => apiError.value || formError.value)
+const displayError = computed(() => formError.value || apiError.value)
 
 const switchToSignin = () => {
   emit('switch-to-signin')
