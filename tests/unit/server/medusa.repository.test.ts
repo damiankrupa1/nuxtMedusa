@@ -1,11 +1,14 @@
 // @vitest-environment node
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import type Medusa from '@medusajs/js-sdk'
 import type { H3Event } from 'h3'
 import { createError } from 'h3'
 
 import * as Sentry from '@sentry/nuxt'
-import { serverMedusaClient } from '#medusa/server'
 import { medusaRepository } from '~~/server/repository/medusa.repository'
+import { serverMedusaClient } from '~~/server/utils/medusa'
+
+vi.mock('~~/server/utils/medusa', () => ({ serverMedusaClient: vi.fn() }))
 
 const event = {} as H3Event
 
@@ -26,7 +29,7 @@ beforeEach(() => {
   vi.clearAllMocks()
   vi.spyOn(console, 'error').mockImplementation(() => undefined)
   vi.mocked(Sentry.isEnabled).mockReturnValue(true)
-  vi.mocked(serverMedusaClient).mockReturnValue(medusa)
+  vi.mocked(serverMedusaClient).mockReturnValue(medusa as unknown as Medusa)
   medusa.store.region.list.mockResolvedValue({ regions: [] })
   medusa.store.product.list.mockResolvedValue({ products: [], count: 0 })
   medusa.store.category.list.mockResolvedValue({

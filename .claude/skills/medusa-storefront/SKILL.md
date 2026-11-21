@@ -9,7 +9,7 @@ description: Implement and debug storefront functionality integrated with Medusa
 
 - Inspect `package.json`, the lockfile, the Medusa SDK/module configuration, runtime config, and existing API wrappers before coding.
 - This project has used Medusa v2.19; confirm the installed version rather than assuming documentation or examples match.
-- Prefer existing `@nuxtjs/medusa` or SDK usage patterns already in the repository. Do not mix incompatible SDK versions or copy v1 examples into a v2 project.
+- Prefer the existing SDK usage patterns: `useMedusaClient()` (`app/composables/medusa.ts`, provided by `app/plugins/medusa.ts`) in the app's repositories, `serverMedusaClient(event)` (`server/utils/medusa.ts`) on the server. There is no Medusa Nuxt module (removed in #89). Do not mix incompatible SDK versions or copy v1 examples into a v2 project.
 - Never invent endpoint names, request shapes, response fields, or provider configuration. Check installed types and version-matched documentation/source.
 
 ## Product data
@@ -33,7 +33,7 @@ description: Implement and debug storefront functionality integrated with Medusa
 
 - The customer's Medusa JWT lives only in the HttpOnly `medusa_jwt` cookie, set and read by `server/api/customers/**` through `server/utils/session-cookie.ts` (see the session contract in root `CLAUDE.md`). Never read it with JS, store it in the browser, or authenticate the browser's `useMedusaClient()` as the customer; add a server route for a new customer call instead.
 - A server render that needs the customer must forward the visitor's cookie: `fetchCustomer()` uses `useRequestFetch()`, because the global `$fetch` sends no cookies during SSR (#81). Never do that on a `cdnCache` page; `useFetchCustomer()` fetches in the browser only there.
-- On the server, never call the SDK's `auth.login()`/`auth.register()`/`auth.logout()`: the server client has the module's `auth: { type: 'session' }` defaults, so login would also open a Medusa cookie session nobody ends (#82). `server/repository/customer.repository.ts` asks the token routes through `medusa.client.fetch` instead.
+- The two clients have different `auth` on purpose. The page's keeps `type: 'session'` (it decides the CORS credentials mode; don't change it without a real Medusa to check against). The server's is `{ type: 'jwt', jwtTokenStorageMethod: 'nostore' }`, which is what makes the SDK's `auth.login()`/`auth.register()` in `server/repository/customer.repository.ts` safe: with `'session'` login would also open a Medusa cookie session nobody ends (#82). Never build the server client from the page client's config.
 - Logout can't revoke the token in Medusa (stateless JWT); it stays valid until its `exp`. Don't claim otherwise in UI copy or docs.
 
 ## Shipping and payment providers

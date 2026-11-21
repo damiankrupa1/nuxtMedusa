@@ -40,7 +40,6 @@
     "@nuxt/image": "^2.2.0",
     "@nuxt/ui": "3.0.0",
     "@nuxtjs/i18n": "^10.6.0",
-    "@nuxtjs/medusa": "1.2.0",
     "@nuxtjs/sitemap": "^9.1.0",
     "@sentry/nuxt": "^11.10.0",
     "@stripe/stripe-js": "^6.0.0",
@@ -48,7 +47,7 @@
     "lodash": "^4.17.21",
     "nuxt": "^4.6.3",
     "vue": "^3.5.44",
-    "zod": "^4.4.3"
+    "zod": "^4.6.7"
   },
   "packageManager": "pnpm@11.5.0",
   "devDependencies": {

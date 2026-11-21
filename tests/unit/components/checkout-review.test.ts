@@ -9,6 +9,8 @@ import CheckoutReview from '~/components/checkout/review/index.vue'
 import { useCartPayment } from '~/composables/payment'
 
 vi.mock('@stripe/stripe-js', () => ({ loadStripe: vi.fn() }))
+// The page's Medusa client; the review step never reaches it here
+vi.mock('~/composables/medusa', () => ({ useMedusaClient: () => ({}) }))
 
 // Runs the real payment composable, service and repositories; only Stripe.js
 // and Nuxt's auto-imports are mocked.
@@ -31,7 +33,6 @@ describe('checkout review component', () => {
 
   Object.assign(globalThis, {
     useCartPayment,
-    useMedusaClient: () => ({}),
     useNuxtData: () => ({ data: cartResponse }),
     useRuntimeConfig: () => ({ public: { stripeKey: 'pk_test' } }),
     useI18n: () => ({ t: (key: string) => key }),

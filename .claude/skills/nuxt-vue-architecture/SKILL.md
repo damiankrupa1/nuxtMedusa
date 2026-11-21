@@ -70,7 +70,7 @@ description: Apply consistent Nuxt 4, Vue 3, and TypeScript architecture in this
   - `~/` → `app/` (Nuxt `srcDir`): everything under `app/`, imported from `app/` or from `tests/`; Vitest maps `~/` to `app/`.
   - `~~/` → project root: code outside `app/`, e.g. `~~/server/types/medusa-error` inside `server/`. Nuxt generates `~~/*` in `.nuxt/tsconfig.server.json`, so Nitro resolves it.
   - Server code that Nitro doesn't auto-import (`server/utils` is, `server/repository` is not) is imported explicitly: `import { payloadRepository } from '~~/server/repository/payload.repository'`.
-  - Module/virtual aliases (`#ui/types`, `#medusa/server`) stay as they are. Use `~/`, not `@/` — the repo uses `~/` only.
+  - Module/virtual aliases (`#ui/types`, `#app`) stay as they are. Use `~/`, not `@/` — the repo uses `~/` only.
 - Tests follow the same rule: `import Heading from '~/components/app/heading.vue'`, not `'../../../app/components/app/heading.vue'`. Vitest maps `~~/` to the project root (`vitest.config.ts`), so a test imports server code as `~~/server/...`. ESLint (`no-restricted-imports`) rejects relative imports, but not dynamic `import()` — write those with an alias by hand.
 
 ## Where types live
