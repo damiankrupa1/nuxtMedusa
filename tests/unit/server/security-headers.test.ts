@@ -14,6 +14,9 @@ import nitroErrorHandler, {
   defaultHandler,
 } from 'nitropack/runtime/internal/error/prod'
 
+import type { PreviewRuntimeConfigInput } from '~/types/preview'
+import type { SecurityHeadersRuntimeConfigInput } from '~/types/security'
+import { buildContentSecurityPolicy } from '~~/server/utils/content-security-policy'
 import {
   buildSecurityHeaders,
   isErrorPageRequest,
@@ -38,6 +41,24 @@ const PERMISSIONS =
   'display-capture=(), geolocation=(self "https://geowidget-app.inpost.pl"), ' +
   'gyroscope=(), hid=(), magnetometer=(), microphone=(), midi=(), ' +
   'serial=(), usb=()'
+
+// The preview tests' runtime config plus what the report-only policy reads
+const cspRuntimeConfig = (
+  csp: SecurityHeadersRuntimeConfigInput['csp'] = {},
+) => {
+  const preview = previewRuntimeConfig()
+  const config: PreviewRuntimeConfigInput & SecurityHeadersRuntimeConfigInput =
+    {
+      ...preview,
+      csp,
+      public: {
+        ...preview.public,
+        medusa: { backendUrl: 'https://api.example.com' },
+        sentry: { dsn: 'https://key@o1.ingest.sentry.io/2' },
+      },
+    }
+  return config
+}
 
 type Hook = (...args: never[]) => unknown
 type Hooks = Record<string, Hook[]>
@@ -122,7 +143,7 @@ describe('security headers plugin', () => {
   })
 
   beforeEach(() => {
-    nitro.runtimeConfig = previewRuntimeConfig()
+    nitro.runtimeConfig = cspRuntimeConfig()
   })
 
   // What Nuxt's renderer does with a page: the render:response hooks of the
@@ -208,11 +229,16 @@ describe('security headers plugin', () => {
     'x-content-type-options': response.headers.get('x-content-type-options'),
     'referrer-policy': response.headers.get('referrer-policy'),
     'permissions-policy': response.headers.get('permissions-policy'),
+    'content-security-policy-report-only': response.headers.get(
+      'content-security-policy-report-only',
+    ),
   })
   const DEFAULTS = {
     'x-content-type-options': 'nosniff',
     'referrer-policy': 'strict-origin-when-cross-origin',
     'permissions-policy': PERMISSIONS,
+    'content-security-policy-report-only':
+      buildContentSecurityPolicy(cspRuntimeConfig()),
   }
 
   it.each(['/pl', '/api/regions', '/old'])(
@@ -284,6 +310,9 @@ describe('security headers plugin', () => {
         expect(response.headers.get('cdn-cache-control')).toBeNull()
         expect(response.headers.get('x-content-type-options')).toBe('nosniff')
         expect(response.headers.get('permissions-policy')).toBe(PERMISSIONS)
+        expect(
+          response.headers.get('content-security-policy-report-only'),
+        ).toBe(DEFAULTS['content-security-policy-report-only'])
       })
     })
   })
@@ -326,7 +355,39 @@ describe('security headers plugin', () => {
       'x-content-type-options': null,
       'referrer-policy': null,
       'permissions-policy': null,
+      'content-security-policy-report-only': null,
     })
+  })
+
+  it('sends the report-only policy as a header of its own, next to the enforced frame-ancestors', async () => {
+    const response = await createApp()('/pl')
+    const reportOnly = response.headers.get(
+      'content-security-policy-report-only',
+    )
+
+    expect(response.headers.get('content-security-policy')).toBe(
+      DEFAULT_FRAME_ANCESTORS,
+    )
+    expect(reportOnly).toContain("default-src 'self'")
+    expect(reportOnly).toContain('https://api.example.com')
+    expect(reportOnly).not.toContain('frame-ancestors')
+    expect(response.headers.get('reporting-endpoints')).toBeNull()
+  })
+
+  it('reports to NUXT_CSP_REPORT_URI only when it is set', async () => {
+    nitro.runtimeConfig = cspRuntimeConfig({
+      reportUri: 'https://csp.example.com/report',
+    })
+    const response = await createApp()('/pl')
+
+    expect(response.headers.get('reporting-endpoints')).toBe(
+      'csp-endpoint="https://csp.example.com/report"',
+    )
+    expect(
+      response.headers.get('content-security-policy-report-only'),
+    ).toContain(
+      'report-uri https://csp.example.com/report; report-to csp-endpoint',
+    )
   })
 
   it('keeps a header another hook set before it', async () => {

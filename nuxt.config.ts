@@ -64,6 +64,17 @@ export default defineNuxtConfig({
       apiKeyCollection: '',
       frameAncestors: '',
     },
+    // Content-Security-Policy-Report-Only (#90,
+    // server/utils/content-security-policy.ts), server only. reportUri
+    // (NUXT_CSP_REPORT_URI) is where browsers send violation reports; empty
+    // means nowhere. imgSrc (NUXT_CSP_IMG_SRC) lists extra image hosts,
+    // comma-separated (e.g. the bucket of Medusa's S3 file storage). The
+    // Payload image hosts are the build-time list @nuxt/image uses (above).
+    csp: {
+      reportUri: '',
+      imgSrc: '',
+      payloadImageHosts: process.env.NUXT_PUBLIC_PAYLOAD_IMAGE_HOSTS || '',
+    },
     public: {
       // The Medusa Store API, for both clients: the page's
       // (app/plugins/medusa.ts) and the server API routes'

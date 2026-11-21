@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '~/utils/zod'
 
 export const buildNewsletterSchema = (t: (key: string) => string) =>
   z.object({

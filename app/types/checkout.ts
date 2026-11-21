@@ -1,4 +1,4 @@
-import * as z from 'zod'
+import { z } from '~/utils/zod'
 
 export const buildAddressSchema = (t: (key: string) => string) =>
   z.object({

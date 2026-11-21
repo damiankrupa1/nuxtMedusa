@@ -1,11 +1,17 @@
+import { buildContentSecurityPolicyHeaders } from '~~/server/utils/content-security-policy'
 import {
   buildSecurityHeaders,
   isErrorPageRequest,
 } from '~~/server/utils/security-headers'
 
 // The security headers of every response (#90; values and reasons in
-// server/utils/security-headers.ts): X-Content-Type-Options, Referrer-Policy
-// and Permissions-Policy. frame-ancestors is server/plugins/frame-ancestors.ts.
+// server/utils/security-headers.ts and content-security-policy.ts):
+// X-Content-Type-Options, Referrer-Policy, Permissions-Policy and the
+// Content-Security-Policy-Report-Only. The enforced frame-ancestors policy is
+// server/plugins/frame-ancestors.ts. The report-only policy is not sent by
+// `nuxt dev` (Vite's client and the devtools would only add noise); check a
+// new source with a production build (`pnpm build && pnpm preview`, or the
+// e2e suite).
 //
 // Like frame-ancestors, a default set when the request arrives, so it also
 // covers API routes, errors, redirects and Nitro's static asset handler, and
@@ -22,7 +28,12 @@ export default defineNitroPlugin((nitroApp) => {
   nitroApp.hooks.hook('request', (event) => {
     if (isErrorPageRequest(event.path)) return
 
-    Object.entries(buildSecurityHeaders()).forEach(([name, value]) => {
+    const headers = {
+      ...buildSecurityHeaders(),
+      ...(!import.meta.dev &&
+        buildContentSecurityPolicyHeaders(useRuntimeConfig(event))),
+    }
+    Object.entries(headers).forEach(([name, value]) => {
       if (getResponseHeader(event, name) === undefined) {
         setResponseHeader(event, name, value)
       }
