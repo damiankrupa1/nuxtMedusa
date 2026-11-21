@@ -30,8 +30,10 @@ const {
       <h3 class="text-sm font-medium mb-2">
         {{ $t('checkout.review.creditCardInfo') }}
       </h3>
+      <!-- data-testid: the e2e suite finds Stripe's card iframe inside it -->
       <div
         ref="cardContainer"
+        data-testid="stripe-card-element"
         class="p-4 border rounded-lg border-neutral-200 bg-white"
       />
       <!--
