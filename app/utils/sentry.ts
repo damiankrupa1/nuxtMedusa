@@ -1,6 +1,7 @@
 import type { Breadcrumb, ErrorEvent } from '@sentry/nuxt'
 
 import type { SentryConfigInput } from '~/types/sentry'
+import { getErrorStatus } from '~/utils/http-error'
 
 // Pure helpers behind captureError() and the two Sentry init files
 // (sentry.client.config.ts, sentry.server.config.ts), kept free of the Sentry
@@ -22,6 +23,9 @@ const MAX_DEPTH = 5
 
 // Medusa's 4xx answers are the shopper's to fix (bad input, wrong password,
 // missing product). 408 and 429 are not: they mean the backend is struggling.
+// A 429 stays an event even now that the sign-in forms explain it (#91): the
+// storefront's server calls Medusa from Vercel's shared addresses, so a
+// per-IP limit there would lock every shopper out, and that has to alert.
 const NOT_EXPECTED_STATUSES = [408, 429]
 
 const STRIPE_CUSTOMER_ERROR_TYPES = ['card_error', 'validation_error']
@@ -39,24 +43,6 @@ const SECRET_PATTERNS: [RegExp, string][] = [
   [/\b(cart|order|ord|cus|payses|pay)_[0-9A-Za-z]{20,}/g, '$1_[id]'],
 ]
 
-function toNumber(value: unknown): number | undefined {
-  return typeof value === 'number' && Number.isFinite(value) ? value : undefined
-}
-
-// The HTTP status of whatever the Medusa SDK, ofetch or h3 threw
-function getStatus(error: unknown): number | undefined {
-  if (typeof error !== 'object' || error === null) {
-    return undefined
-  }
-  const candidate = error as Record<string, unknown>
-  const response = candidate.response as Record<string, unknown> | undefined
-  return (
-    toNumber(candidate.status) ??
-    toNumber(candidate.statusCode) ??
-    toNumber(response?.status)
-  )
-}
-
 /**
  * Whether an error is the shopper's to fix and not ours: a Medusa/h3 4xx
  * answer (validation, wrong password, 404) or a Stripe card decline. Those
@@ -66,7 +52,7 @@ export function isExpectedError(
   error: unknown,
   context: Record<string, unknown> = {},
 ): boolean {
-  const status = getStatus(error)
+  const status = getErrorStatus(error)
   if (
     status !== undefined &&
     status >= 400 &&

@@ -319,7 +319,8 @@
       "submit": "Dołącz",
       "alreadyMember": "Masz już konto?",
       "genericError": "Wystąpił błąd podczas rejestracji. Spróbuj ponownie."
-    }
+    },
+    "tooManyAttempts": "Zbyt wiele prób. Odczekaj kilka minut i spróbuj ponownie."
   },
   "validation": {
     "emailInvalid": "Podaj prawidłowy adres email",
