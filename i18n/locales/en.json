@@ -319,7 +319,8 @@
       "submit": "Join",
       "alreadyMember": "Already a member?",
       "genericError": "An error occurred during registration. Please try again."
-    }
+    },
+    "tooManyAttempts": "Too many attempts. Please wait a few minutes and try again."
   },
   "validation": {
     "emailInvalid": "Please enter a valid email address",
