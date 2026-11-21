@@ -5,11 +5,14 @@ name: E2E
 # deliberately not a required check yet: make it required in the branch
 # protection rules once the suite has been stable for a while.
 #
-# Without E2E_MEDUSA_BACKEND_URL (not set here yet) the specs tagged @medusa
-# are left out, so the job runs the backend-free part: robots.txt, the CMS
-# proxy against the local Payload stub and the test helpers. The ephemeral
-# Medusa (PostgreSQL, Redis, migrations and the e2e seed from the medusaDemo
-# repository) is added to this job in a later change.
+# The job starts a throwaway Medusa in the runner (PostgreSQL and Redis in
+# Docker, migrations and the deterministic e2e seed, from the medusaDemo
+# repository's e2e-medusa action), so the specs tagged @medusa run too. Never
+# production data or keys: the database lives in tmpfs and is gone with the
+# runner. Stripe isn't configured: neither a pk_test_ key for the storefront
+# (E2E_STRIPE_KEY) nor an sk_test_ key for the Medusa (the action's
+# `stripe-secret-key`), so the @stripe specs stay left out until the owner
+# adds both, test mode only, as secrets.
 
 on:
   push:
@@ -76,10 +79,65 @@ jobs:
         if: steps.browsers.outputs.cache-hit == 'true'
         run: pnpm exec playwright install-deps ${{ inputs.all_browsers && 'chromium firefox webkit' || 'chromium' }}
 
+      # Ephemeral Medusa with the e2e seed (damiankrupa1/medusaDemo,
+      # docs/e2e.md): PostgreSQL and Redis in Docker (tmpfs), migrations
+      # without the demo seed, the e2e seed and `medusa start` on
+      # 127.0.0.1:9100 in the background, running until the job ends.
+      #
+      # Pinned to a commit of medusaDemo's main, not @main: the action and
+      # the seed's handles and prices are a contract with
+      # tests/e2e/support/test-data.ts, and a moving ref would let a medusaDemo
+      # merge break this job without a change here. To update, take the new
+      # SHA (`gh api repos/damiankrupa1/medusaDemo/commits/main --jq .sha`),
+      # check apps/backend/src/scripts/e2e/data.ts and the action's inputs
+      # and outputs at that commit against test-data.ts and the steps below,
+      # and change both in the same pull request.
+      #
+      # No inputs: the defaults (port 9100, CORS for 127.0.0.1:3100 and
+      # localhost:3100) are what tests/e2e/support/env.ts uses, and
+      # `stripe-secret-key` stays empty (see the top of this file).
+      - name: Start the e2e Medusa
+        id: medusa
+        timeout-minutes: 10
+        uses: damiankrupa1/medusaDemo/.github/actions/e2e-medusa@91440fe6a7e7710c82a39b8cdc691cc6c494ac02 # main, 2026-11-21
+
       # Builds the app with the e2e environment (tests/e2e/support/env.ts),
-      # serves it with `nuxt preview` and starts the Payload stub
+      # serves it with `nuxt preview` and starts the Payload stub. The suite
+      # reads only E2E_* variables: env.ts passes the Medusa URL and the
+      # publishable key to the build and the preview server as
+      # NUXT_PUBLIC_MEDUSA_BACKEND_URL (and MEDUSA_URL) and
+      # NUXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY. The key is created by Medusa on
+      # the fresh database, so it comes from the action's output; it is a
+      # publishable key (sent to every browser anyway), not a secret.
       - name: E2E tests
+        timeout-minutes: 20
+        env:
+          E2E_MEDUSA_BACKEND_URL: ${{ steps.medusa.outputs.backend-url }}
+          E2E_MEDUSA_PUBLISHABLE_KEY: ${{ steps.medusa.outputs.publishable-key }}
         run: pnpm test:e2e
+
+      # Medusa's own log (the action writes it to a file, at the fallback
+      # path when the action failed before it set its outputs) and the
+      # database and Redis containers (compose project `medusa-e2e` of
+      # medusaDemo's docker-compose.e2e.yml), for a failure the Playwright
+      # report can't explain. Nothing in them is a credential: the Medusa is
+      # throwaway and its JWT and cookie secrets are random per run.
+      - name: Upload the Medusa log
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-medusa-log
+          path: ${{ steps.medusa.outputs.log-file || format('{0}/e2e-medusa.log', runner.temp) }}
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Show the Medusa service logs
+        if: ${{ failure() }}
+        env:
+          MEDUSA_LOG: ${{ steps.medusa.outputs.log-file || format('{0}/e2e-medusa.log', runner.temp) }}
+        run: |
+          tail -n 200 "$MEDUSA_LOG" || true
+          docker compose -p medusa-e2e logs --no-color --tail 100 || true
 
       - name: Upload the report
         if: ${{ !cancelled() }}
