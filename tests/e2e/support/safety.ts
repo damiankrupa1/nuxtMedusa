@@ -38,9 +38,17 @@ export function findUnsafeE2eEnvironment(
 ): string[] {
   const problems: string[] = []
 
-  if (appEnv.NUXT_PUBLIC_STRIPE_KEY?.startsWith('pk_live_')) {
+  // The key is baked into the public client bundle, so anything but a
+  // publishable test key (a live key, or a secret sk_/rk_ key passed by
+  // mistake) is refused. The message never repeats the value.
+  const stripeKey = appEnv.NUXT_PUBLIC_STRIPE_KEY ?? ''
+  if (stripeKey.startsWith('pk_live_')) {
     problems.push(
       'E2E_STRIPE_KEY is a live Stripe key (pk_live_...). Use a pk_test_ key.',
+    )
+  } else if (stripeKey && !stripeKey.startsWith('pk_test_')) {
+    problems.push(
+      'E2E_STRIPE_KEY is not a publishable test key. It must start with pk_test_ (it is baked into the client bundle, so never pass a secret sk_ or rk_ key).',
     )
   }
 
