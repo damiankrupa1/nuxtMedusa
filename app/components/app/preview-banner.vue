@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { PREVIEW_STATUS } from '~/types/preview'
+
 // The draft preview's notice (#53). Rendered only while the preview is on,
 // which is never during the server render or the hydration (usePreview() is
 // `off` until app/plugins/preview.client.ts starts it), so a CDN-cached page
@@ -8,7 +10,7 @@ const { state, exit } = usePreview()
 const { t, locale } = useI18n()
 
 const message = computed(() => {
-  if (state.value.status === 'active') {
+  if (state.value.status === PREVIEW_STATUS.active) {
     const time = new Intl.DateTimeFormat(locale.value, {
       hour: '2-digit',
       minute: '2-digit',
@@ -21,7 +23,7 @@ const message = computed(() => {
 
 <template>
   <aside
-    v-if="state.status !== 'off'"
+    v-if="state.status !== PREVIEW_STATUS.off"
     :aria-label="t('app.preview.label')"
     class="bg-color-accent text-color-paper"
   >

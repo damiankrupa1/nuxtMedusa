@@ -15,7 +15,7 @@ import { cmsRepository } from '~/repository/cms.repository'
 import { previewRepository } from '~/repository/preview.repository'
 import type { CmsNavigation } from '~/types/cms'
 import type { CmsPreviewRequest, PreviewState } from '~/types/preview'
-import { PREVIEW_STORAGE_KEY } from '~/types/preview'
+import { PREVIEW_STATUS, PREVIEW_STORAGE_KEY } from '~/types/preview'
 import { createPreviewUnauthorizedError } from '~/utils/preview'
 
 vi.mock('~/repository/cms.repository', () => ({ cmsRepository: vi.fn() }))
@@ -52,7 +52,7 @@ beforeEach(() => {
   } as unknown as ReturnType<typeof cmsRepository>)
   vi.mocked(previewRepository).mockReturnValue({ fetchSession })
   clearNuxtData()
-  previewState().value = { status: 'off' }
+  previewState().value = { status: PREVIEW_STATUS.off }
   sessionStorage.clear()
   useNuxtApp().$i18n.locale.value = 'pl'
 })
@@ -65,7 +65,7 @@ describe('usePreview in Nuxt', () => {
   it('is off until the plugin starts it, like the server render and the hydration', () => {
     const { state, isPreview, previewToken } = usePreview()
 
-    expect(state.value).toEqual({ status: 'off' })
+    expect(state.value).toEqual({ status: PREVIEW_STATUS.off })
     expect(isPreview.value).toBe(false)
     expect(previewToken.value).toBeNull()
   })
@@ -77,7 +77,11 @@ describe('usePreview in Nuxt', () => {
     await preview.start(token)
 
     expect(fetchSession).toHaveBeenCalledWith(token)
-    expect(preview.state.value).toEqual({ status: 'active', token, expiresAt })
+    expect(preview.state.value).toEqual({
+      status: PREVIEW_STATUS.active,
+      token,
+      expiresAt,
+    })
     expect(preview.previewToken.value).toBe(token)
     expect(JSON.parse(stored() ?? 'null')).toEqual({ token, expiresAt })
   })
@@ -92,7 +96,7 @@ describe('usePreview in Nuxt', () => {
 
     await preview.start(token)
 
-    expect(preview.state.value).toEqual({ status: 'expired' })
+    expect(preview.state.value).toEqual({ status: PREVIEW_STATUS.expired })
     expect(preview.isPreview.value).toBe(true)
     expect(preview.previewToken.value).toBeNull()
     expect(stored()).toBeNull()
@@ -104,20 +108,20 @@ describe('usePreview in Nuxt', () => {
     await preview.start(null)
 
     expect(fetchSession).not.toHaveBeenCalled()
-    expect(preview.state.value).toEqual({ status: 'expired' })
+    expect(preview.state.value).toEqual({ status: PREVIEW_STATUS.expired })
   })
 
   it('expires only an active preview', async () => {
     const preview = usePreview()
 
     preview.expire()
-    expect(preview.state.value).toEqual({ status: 'off' })
+    expect(preview.state.value).toEqual({ status: PREVIEW_STATUS.off })
 
     fetchSession.mockResolvedValue({ expiresAt })
     await preview.start(token)
     preview.expire()
 
-    expect(preview.state.value).toEqual({ status: 'expired' })
+    expect(preview.state.value).toEqual({ status: PREVIEW_STATUS.expired })
     expect(stored()).toBeNull()
   })
 
@@ -146,7 +150,7 @@ describe('usePreview in Nuxt', () => {
       await preview.start(token)
       await preview.exit()
 
-      expect(preview.state.value).toEqual({ status: 'off' })
+      expect(preview.state.value).toEqual({ status: PREVIEW_STATUS.off })
       expect(stored()).toBeNull()
       expect(payload.data).not.toHaveProperty('cms:navigation:pl:preview')
       expect(payload.data).not.toHaveProperty(
@@ -179,7 +183,7 @@ describe('CMS reads in the draft preview', () => {
   })
 
   const activate = () => {
-    previewState().value = { status: 'active', token, expiresAt }
+    previewState().value = { status: PREVIEW_STATUS.active, token, expiresAt }
   }
 
   it('fetches the draft under its own key and never puts it under the published key', async () => {
@@ -212,7 +216,7 @@ describe('CMS reads in the draft preview', () => {
     activate()
 
     await vi.waitFor(() =>
-      expect(previewState().value).toEqual({ status: 'expired' }),
+      expect(previewState().value).toEqual({ status: PREVIEW_STATUS.expired }),
     )
     await vi.waitFor(() => expect(wrapper.text()).toBe('empty'))
     // The published read before the preview and the refused draft, nothing after

@@ -1,6 +1,6 @@
 import { previewRepository } from '~/repository/preview.repository'
 import type { PreviewState } from '~/types/preview'
-import { PREVIEW_QUERY_PARAM } from '~/types/preview'
+import { PREVIEW_QUERY_PARAM, PREVIEW_STATUS } from '~/types/preview'
 
 // State of the draft preview in this browser tab (#53, "Draft preview" in
 // CLAUDE.md). It is `off` on the server and during hydration: only
@@ -10,16 +10,18 @@ import { PREVIEW_QUERY_PARAM } from '~/types/preview'
 export const usePreview = () => {
   const nuxtApp = useNuxtApp()
   const router = useRouter()
-  const state = useState<PreviewState>('preview', () => ({ status: 'off' }))
+  const state = useState<PreviewState>('preview', () => ({
+    status: PREVIEW_STATUS.off,
+  }))
 
   // Drafts (or, once expired, nothing) instead of the published content
-  const isPreview = computed(() => state.value.status !== 'off')
+  const isPreview = computed(() => state.value.status !== PREVIEW_STATUS.off)
   const previewToken = computed(() =>
-    state.value.status === 'active' ? state.value.token : null,
+    state.value.status === PREVIEW_STATUS.active ? state.value.token : null,
   )
 
   function setExpired() {
-    state.value = { status: 'expired' }
+    state.value = { status: PREVIEW_STATUS.expired }
     forgetPreviewSession()
   }
 
@@ -34,13 +36,17 @@ export const usePreview = () => {
       return
     }
 
-    state.value = { status: 'active', token, expiresAt: session.expiresAt }
+    state.value = {
+      status: PREVIEW_STATUS.active,
+      token,
+      expiresAt: session.expiresAt,
+    }
     storePreviewSession({ token, expiresAt: session.expiresAt })
   }
 
   /** Ends an active preview whose token ran out or was refused (401). */
   function expire() {
-    if (state.value.status === 'active') setExpired()
+    if (state.value.status === PREVIEW_STATUS.active) setExpired()
   }
 
   /**
@@ -52,7 +58,7 @@ export const usePreview = () => {
   async function exit() {
     // clearNuxtData() is synchronous; the context makes it work from a click
     void nuxtApp.runWithContext(() => clearNuxtData(isPreviewCacheKey))
-    state.value = { status: 'off' }
+    state.value = { status: PREVIEW_STATUS.off }
     forgetPreviewSession()
 
     const route = router.currentRoute.value

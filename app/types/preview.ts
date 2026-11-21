@@ -95,10 +95,20 @@ export type StoredPreviewSession = z.infer<typeof storedPreviewSessionSchema>
 // hydration never depend on it. `expired`: the token was refused (401), ran
 // out, or the page has `?preview` without one; nothing is fetched then, not
 // even the published version, and the banner says so.
+export const PREVIEW_STATUS = {
+  off: 'off',
+  active: 'active',
+  expired: 'expired',
+} as const
+
+export type PreviewStatus = (typeof PREVIEW_STATUS)[keyof typeof PREVIEW_STATUS]
+
+// A union, not a flat object with an optional token: `token` and `expiresAt`
+// exist only while the preview is active, and checking `status` narrows to them.
 export type PreviewState =
-  | { status: 'off' }
-  | { status: 'active'; token: string; expiresAt: string }
-  | { status: 'expired' }
+  | { status: typeof PREVIEW_STATUS.off }
+  | { status: typeof PREVIEW_STATUS.active; token: string; expiresAt: string }
+  | { status: typeof PREVIEW_STATUS.expired }
 
 // What a CMS fetcher gets in preview mode: the token of the active preview,
 // or null once it has expired (the fetcher then returns no content instead

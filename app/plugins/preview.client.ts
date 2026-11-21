@@ -1,4 +1,4 @@
-import { PAYLOAD_LIVE_PREVIEW_MESSAGE } from '~/types/preview'
+import { PAYLOAD_LIVE_PREVIEW_MESSAGE, PREVIEW_STATUS } from '~/types/preview'
 
 // Browser side of the draft preview (#53, "Draft preview" in CLAUDE.md). The
 // entry route redirects an editor to `/pl?preview=1#token=<JWT>`; this plugin
@@ -52,7 +52,7 @@ export default defineNuxtPlugin({
           preview.state,
           (state) => {
             clearTimeout(expiryTimer)
-            if (state.status === 'active') {
+            if (state.status === PREVIEW_STATUS.active) {
               expiryTimer = setTimeout(
                 preview.expire,
                 msUntilPreviewExpiry(state.expiresAt),
@@ -64,9 +64,12 @@ export default defineNuxtPlugin({
 
         await preview.start(handedOver ?? stored?.token ?? null)
 
-        if (preview.state.value.status === 'active' && payloadOrigin) {
+        if (
+          preview.state.value.status === PREVIEW_STATUS.active &&
+          payloadOrigin
+        ) {
           connectLivePreview(payloadOrigin, () => {
-            if (preview.state.value.status !== 'active') return
+            if (preview.state.value.status !== PREVIEW_STATUS.active) return
             const draftKeys = Object.keys(nuxtApp.payload.data).filter(
               isPreviewCacheKey,
             )
