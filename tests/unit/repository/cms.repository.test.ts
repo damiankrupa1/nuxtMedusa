@@ -3,6 +3,7 @@ import { ZodError } from 'zod'
 
 import { cmsRepository } from '~/repository/cms.repository'
 import type { CmsGlobalSlug } from '~/types/cms'
+import { isPreviewUnauthorizedError } from '~/utils/preview'
 import { resetReportedOnce } from '~/utils/report-once'
 import { payloadGlobals, payloadImage } from '~~/tests/fixtures/cms'
 
@@ -197,5 +198,119 @@ describe('cms repository', () => {
 
     expect(result).toBeNull()
     expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  describe('in draft preview mode', () => {
+    const token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.c2lnbmF0dXJl'
+
+    it.each(fetchers)(
+      '%s fetches the draft of %s from the uncached preview route, with the token in a header',
+      async (fetcher, slug, locale, depth) => {
+        fetchMock.mockResolvedValue({
+          ...payloadGlobals[slug],
+          _status: 'draft',
+        })
+
+        const result = await cmsRepository()[fetcher](locale, { token })
+
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+        expect(fetchMock).toHaveBeenCalledWith(`/api/preview/cms/${slug}`, {
+          query: { locale, depth },
+          headers: { 'x-preview-token': token },
+          cache: 'no-store',
+        })
+        expect(result).not.toBeNull()
+        expect(result).not.toHaveProperty('_status')
+      },
+    )
+
+    it('never puts the token in the URL or the query', async () => {
+      fetchMock.mockResolvedValue(payloadGlobals.navigation)
+
+      await cmsRepository().fetchNavigation('pl', { token })
+
+      const [url, options] = fetchMock.mock.calls[0] as [
+        string,
+        { query: object },
+      ]
+      expect(url).not.toContain(token)
+      expect(JSON.stringify(options.query)).not.toContain(token)
+    })
+
+    it('fetches nothing, not even the published version, once the preview has expired', async () => {
+      const result = await cmsRepository().fetchNavigation('pl', {
+        token: null,
+      })
+
+      expect(result).toBeNull()
+      expect(fetchMock).not.toHaveBeenCalled()
+    })
+
+    it('throws a new error without the request when the token is refused (401)', async () => {
+      fetchMock.mockRejectedValue(
+        Object.assign(new Error('Unauthorized'), {
+          statusCode: 401,
+          options: { headers: { 'x-preview-token': token } },
+        }),
+      )
+
+      const error = await cmsRepository()
+        .fetchNavigation('pl', { token })
+        .catch((thrown: unknown) => thrown)
+
+      expect(isPreviewUnauthorizedError(error)).toBe(true)
+      expect(JSON.stringify(error)).not.toContain(token)
+      expect((error as Error).cause).toBeUndefined()
+      expect(captureError).not.toHaveBeenCalled()
+      // No retry against the published proxy
+      expect(fetchMock).toHaveBeenCalledTimes(1)
+    })
+
+    it.each([404, 502, 503])(
+      'treats the preview route answering %i as no content, without a published fallback or a second report',
+      async (statusCode) => {
+        fetchMock.mockRejectedValue(
+          Object.assign(new Error('failed'), { statusCode }),
+        )
+
+        const result = await cmsRepository().fetchNavigation('pl', { token })
+
+        expect(result).toBeNull()
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+        expect(captureError).not.toHaveBeenCalled()
+      },
+    )
+
+    it('reports a draft request without an answer, without the token', async () => {
+      fetchMock.mockRejectedValue(
+        Object.assign(new TypeError('fetch failed'), {
+          options: { headers: { 'x-preview-token': token } },
+        }),
+      )
+
+      const result = await cmsRepository().fetchNavigation('pl', { token })
+
+      expect(result).toBeNull()
+      expect(captureError).toHaveBeenCalledTimes(1)
+      const [error, context] = captureError.mock.calls[0] as [Error, object]
+      expect(context).toEqual({
+        source: 'payload',
+        global: 'navigation',
+        draft: true,
+      })
+      expect(error.cause).toBeUndefined()
+      expect(
+        JSON.stringify([error.message, error.stack, { ...error }, context]),
+      ).not.toContain(token)
+    })
+
+    it('treats a draft that does not match the schema as missing, without reporting it', async () => {
+      fetchMock.mockResolvedValue({ primaryNav: [{ label: null, url: '/' }] })
+
+      const result = await cmsRepository().fetchNavigation('pl', { token })
+
+      expect(result).toBeNull()
+      expect(captureError).not.toHaveBeenCalled()
+    })
   })
 })
