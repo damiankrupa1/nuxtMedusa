@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it } from 'vitest'
 
 type SsrContext = {
   error: boolean
-  payload: { error?: unknown }
+  payload: { error?: unknown; _errors?: Record<string, unknown> }
   event: { context: { cdnCache?: boolean } }
 }
 type RenderedHook = (args: { ssrContext?: SsrContext }) => void
@@ -39,13 +39,14 @@ describe('cdn cache page plugin', () => {
     cdnCache = true,
     error = false,
     payloadError = undefined as unknown,
+    dataErrors = undefined as Record<string, unknown> | undefined,
     query = {} as Record<string, string | null>,
   } = {}) => {
     routeMeta = { cdnCache }
     routeQuery = query
     const ssrContext: SsrContext = {
       error,
-      payload: { error: payloadError },
+      payload: { error: payloadError, _errors: dataErrors },
       event: { context: {} },
     }
     onRendered({ ssrContext })
@@ -70,6 +71,35 @@ describe('cdn cache page plugin', () => {
         payloadError: { statusCode: 404, statusMessage: 'Product not found' },
       }),
     ).toBeUndefined()
+  })
+
+  // #75: with Medusa down the page still renders, as a 200 with empty
+  // sections; only the failed useLazyAsyncData calls record it
+  it('does not mark a page whose data failed to load', () => {
+    const fetchFailed = { statusCode: 500, message: 'fetch failed' }
+    expect(
+      render({
+        dataErrors: { countries: fetchFailed, 'cms:footer:pl': undefined },
+      }),
+    ).toBeUndefined()
+    expect(
+      render({
+        dataErrors: {
+          countries: undefined,
+          'products:undefined:undefined:undefined:12:0:reg_pl:pl-PL':
+            fetchFailed,
+        },
+      }),
+    ).toBeUndefined()
+  })
+
+  it('marks a page whose data all loaded', () => {
+    expect(
+      render({
+        dataErrors: { countries: undefined, 'cms:footer:pl': undefined },
+      }),
+    ).toBe(true)
+    expect(render({ dataErrors: {} })).toBe(true)
   })
 
   // Nitro renders the error page for the failed URL, so the route resolves to
