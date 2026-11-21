@@ -1,15 +1,46 @@
 import { z } from 'zod'
+import type {
+  AuthMfaRequiredResponse,
+  AuthVerificationRequiredResponse,
+} from '@medusajs/js-sdk'
+import type { StoreCustomer, StoreCustomerResponse } from '@medusajs/types'
+import type { MedusaResponseShape } from '~/types/medusa'
 
-export interface Customer {
-  id: string
-  email: string
-  first_name: string | null
-  last_name: string | null
-  phone: string | null
-  created_at: string
-  updated_at: string
-  has_account: boolean
-}
+// Medusa's answers to server/repository/customer.repository.ts, checked with
+// parseMedusaResponse() and the hard policy (a session never goes on with
+// half an answer). Only what the storefront reads: the token of login,
+// register and refresh, the customer's id and what the account page shows.
+
+// A login or registration answers the token itself (the SDK's auth.login()
+// and auth.register()); anything else is not a session for this store
+export const medusaTokenSchema = z.string().min(1)
+
+// `POST /auth/token/refresh` (the SDK's auth.refresh()). An MFA challenge or
+// a verification step also carries a `token`, but one without an actor, so
+// it is refused like it is for login.
+export const medusaTokenRefreshSchema = z.looseObject({
+  token: medusaTokenSchema,
+  mfa_required: z.never().optional(),
+  verification_required: z.never().optional(),
+} satisfies MedusaResponseShape<
+  Partial<AuthMfaRequiredResponse & AuthVerificationRequiredResponse>
+>)
+
+export const medusaCustomerSchema = z.looseObject({
+  id: z.string().min(1),
+  email: z.string(),
+  first_name: z.string().nullable(),
+  last_name: z.string().nullable(),
+  phone: z.string().nullish(),
+} satisfies MedusaResponseShape<StoreCustomer>)
+
+export const medusaCustomerResponseSchema = z.looseObject({
+  customer: medusaCustomerSchema,
+} satisfies MedusaResponseShape<StoreCustomerResponse>)
+
+// What server/api/customers/** answers: Medusa's customer as checked above,
+// or no customer (no session, or Medusa refused the token)
+export type Customer = z.infer<typeof medusaCustomerSchema>
 
 export interface CustomerResponse {
   customer: Customer | null

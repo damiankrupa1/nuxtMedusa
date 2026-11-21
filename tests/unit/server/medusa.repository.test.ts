@@ -6,7 +6,9 @@ import { createError } from 'h3'
 
 import * as Sentry from '@sentry/nuxt'
 import { medusaRepository } from '~~/server/repository/medusa.repository'
+import { resetReportedOnce } from '~/utils/report-once'
 import { serverMedusaClient } from '~~/server/utils/medusa'
+import { medusaRegionListResponse } from '~~/tests/fixtures/medusa'
 
 vi.mock('~~/server/utils/medusa', () => ({ serverMedusaClient: vi.fn() }))
 
@@ -94,6 +96,75 @@ describe('medusaRepository().listRegions', () => {
     ).resolves.toMatchObject({
       statusCode: 500,
       message: 'Internal Server Error',
+    })
+  })
+
+  it("returns Medusa's recorded regions answer as it is", async () => {
+    medusa.store.region.list.mockResolvedValue(medusaRegionListResponse)
+
+    await expect(medusaRepository(event).listRegions()).resolves.toBe(
+      medusaRegionListResponse,
+    )
+    expect(Sentry.captureException).not.toHaveBeenCalled()
+  })
+
+  // #84, the soft policy: reported once, then answered like a regions outage
+  describe('with an answer that does not match its schema', () => {
+    const [poland] = medusaRegionListResponse.regions
+    const { region_id: _regionId, ...withoutRegionId } = poland!.countries[0]!
+    const invalid = {
+      regions: [{ ...poland, countries: [withoutRegionId] }],
+    }
+
+    beforeEach(() => {
+      resetReportedOnce()
+      medusa.store.region.list.mockResolvedValue(invalid)
+    })
+
+    it('reports it once as invalid_response, with the issues and never the answer', async () => {
+      const error = await failure(medusaRepository(event).listRegions())
+
+      expect(Sentry.captureException).toHaveBeenCalledTimes(1)
+      const [reported, hint] =
+        vi.mocked(Sentry.captureException).mock.calls[0] ?? []
+      expect((reported as Error).message).toBe(
+        'Unexpected regions response from Medusa',
+      )
+      expect(hint).toEqual({
+        tags: { source: 'medusa', error_type: 'invalid_response' },
+        extra: {
+          response: 'regions',
+          issues: [
+            {
+              code: 'invalid_type',
+              path: 'regions.0.countries.0.region_id',
+              message: 'Invalid input: expected string, received undefined',
+            },
+          ],
+        },
+      })
+      expect(JSON.stringify(hint)).not.toContain(poland!.id)
+      expect(error.cause).toBe(reported)
+    })
+
+    it('throws a 502, never an empty or partial list the cache would keep', async () => {
+      await expect(
+        failure(medusaRepository(event).listRegions()),
+      ).resolves.toMatchObject({
+        statusCode: 502,
+        message: 'Unexpected regions response from Medusa',
+      })
+    })
+
+    it('does not report a repeat, and throws it with the same reported cause', async () => {
+      const first = await failure(medusaRepository(event).listRegions())
+      const second = await failure(medusaRepository(event).listRegions())
+
+      expect(Sentry.captureException).toHaveBeenCalledTimes(1)
+      // Sentry marks the error it captured, and its Nitro hook skips an H3
+      // error whose cause carries the mark: the same cause keeps the repeats
+      // out of Sentry
+      expect(second.cause).toBe(first.cause)
     })
   })
 

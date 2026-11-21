@@ -1,12 +1,17 @@
 import { describe, expect, it } from 'vitest'
+import type { z } from 'zod'
 
 import {
   buildRegisterSchema,
   buildSigninSchema,
+  medusaCustomerResponseSchema,
+  medusaTokenRefreshSchema,
+  medusaTokenSchema,
   registerRequestSchema,
   signinRequestSchema,
   updateCustomerRequestSchema,
 } from '~/types/customer'
+import { medusaCustomerResponse } from '~~/tests/fixtures/medusa'
 
 const t = (key: string) => key
 
@@ -123,5 +128,122 @@ describe('update customer request schema', () => {
     expect(
       updateCustomerRequestSchema.safeParse({ first_name: 'J' }).success,
     ).toBe(false)
+  })
+})
+
+// The narrow schemas of Medusa's answers (#84): what the storefront reads,
+// loose, so a field Medusa adds passes
+const issuesOf = (result: { error?: z.ZodError }) =>
+  result.error?.issues.map(({ path, code }) => [path.join('.'), code])
+
+describe('medusaTokenSchema', () => {
+  it('accepts the token string a login or registration answers', () => {
+    expect(medusaTokenSchema.safeParse('eyJ.header.sig').success).toBe(true)
+  })
+
+  it.each([
+    ['an empty token', ''],
+    ['a redirect', { location: 'https://idp.example' }],
+    ['an MFA challenge', { token: 'partial', mfa_required: true }],
+    ['nothing', undefined],
+  ])('refuses %s', (_case, answer) => {
+    expect(medusaTokenSchema.safeParse(answer).success).toBe(false)
+  })
+})
+
+describe('medusaTokenRefreshSchema', () => {
+  it('accepts a token answer, with any field Medusa adds', () => {
+    expect(
+      medusaTokenRefreshSchema.safeParse({ token: 'jwt', expires_in: 3600 })
+        .success,
+    ).toBe(true)
+  })
+
+  it.each([
+    ['without a token', {}, [['token', 'invalid_type']]],
+    ['with an empty token', { token: '' }, [['token', 'too_small']]],
+    [
+      'with a token of the wrong type',
+      { token: 1 },
+      [['token', 'invalid_type']],
+    ],
+    [
+      'for an MFA challenge, which carries a token without an actor',
+      { token: 'partial', mfa_required: true, mfa_challenge: { id: 'mfa_1' } },
+      [['mfa_required', 'invalid_type']],
+    ],
+    [
+      'for a verification step',
+      { token: 'partial', verification_required: true },
+      [['verification_required', 'invalid_type']],
+    ],
+  ])('refuses an answer %s', (_case, answer, issues) => {
+    expect(issuesOf(medusaTokenRefreshSchema.safeParse(answer))).toEqual(issues)
+  })
+})
+
+describe('medusaCustomerResponseSchema', () => {
+  it("accepts Medusa's recorded customer answer", () => {
+    expect(
+      medusaCustomerResponseSchema.safeParse(medusaCustomerResponse).success,
+    ).toBe(true)
+  })
+
+  it('accepts fields Medusa adds, on the customer and around it', () => {
+    const answer = {
+      ...medusaCustomerResponse,
+      added: true,
+      customer: { ...medusaCustomerResponse.customer, loyalty_points: 3 },
+    }
+
+    expect(medusaCustomerResponseSchema.parse(answer)).toEqual(answer)
+  })
+
+  it('accepts a customer without a phone, as the SDK type allows', () => {
+    const { phone: _phone, ...customer } = medusaCustomerResponse.customer
+
+    expect(medusaCustomerResponseSchema.safeParse({ customer }).success).toBe(
+      true,
+    )
+  })
+
+  it.each(['id', 'email', 'first_name', 'last_name'] as const)(
+    'refuses a customer without the %s the storefront reads',
+    (field) => {
+      const { [field]: _removed, ...customer } = medusaCustomerResponse.customer
+
+      expect(
+        issuesOf(medusaCustomerResponseSchema.safeParse({ customer })),
+      ).toEqual([[`customer.${field}`, 'invalid_type']])
+    },
+  )
+
+  it.each([
+    ['an empty id', { id: '' }, 'customer.id', 'too_small'],
+    ['an id of the wrong type', { id: 7 }, 'customer.id', 'invalid_type'],
+    [
+      'an e-mail of the wrong type',
+      { email: null },
+      'customer.email',
+      'invalid_type',
+    ],
+    [
+      'a phone of the wrong type',
+      { phone: 600 },
+      'customer.phone',
+      'invalid_type',
+    ],
+  ])('refuses %s', (_case, change, path, code) => {
+    const customer = { ...medusaCustomerResponse.customer, ...change }
+
+    expect(
+      issuesOf(medusaCustomerResponseSchema.safeParse({ customer })),
+    ).toEqual([[path, code]])
+  })
+
+  it('refuses an answer without a customer', () => {
+    expect(issuesOf(medusaCustomerResponseSchema.safeParse({}))).toEqual([
+      ['customer', 'invalid_type'],
+    ])
   })
 })
