@@ -22,13 +22,19 @@ const medusa = {
 } as unknown as Medusa
 
 const customers = () => customerRepository(medusa)
+const tokenFor = (path: string) =>
+  path.endsWith('/register')
+    ? 'register-token'
+    : path === '/auth/token/refresh'
+      ? 'session-token'
+      : 'login-token'
 const customer = { id: 'cus_test' }
 
 beforeEach(() => {
   vi.clearAllMocks()
   vi.mocked(Sentry.isEnabled).mockReturnValue(true)
   clientFetch.mockImplementation(async (path: string) => ({
-    token: path.endsWith('/register') ? 'register-token' : 'login-token',
+    token: tokenFor(path),
   }))
   retrieve.mockResolvedValue({ customer })
   create.mockResolvedValue({ customer })
@@ -117,6 +123,27 @@ describe('customerRepository', () => {
     })
   })
 
+  describe('refreshToken', () => {
+    it("exchanges the registration token for the customer's session token", async () => {
+      await expect(customers().refreshToken('register-token')).resolves.toBe(
+        'session-token',
+      )
+      expect(clientFetch).toHaveBeenCalledTimes(1)
+      expect(clientFetch).toHaveBeenCalledWith('/auth/token/refresh', {
+        method: 'POST',
+        headers: { Authorization: 'Bearer register-token' },
+      })
+    })
+
+    it('rejects an answer without a token', async () => {
+      clientFetch.mockResolvedValue({})
+
+      await expect(customers().refreshToken('register-token')).rejects.toThrow(
+        'Unexpected token refresh response from Medusa',
+      )
+    })
+  })
+
   describe('calls made as the customer', () => {
     it('creates the customer with the profile fields and the given token, never the password', async () => {
       // The handler passes its whole parsed body, password included
@@ -189,6 +216,7 @@ describe('customerRepository', () => {
         'register',
         () => customers().register({ email: 'a@b.co', password: 'x' }),
       ],
+      ['refreshToken', () => customers().refreshToken('t')],
       [
         'createCustomer',
         () =>
@@ -272,6 +300,17 @@ describe('customerRepository with the real SDK client', () => {
     ).resolves.toBe('jwt')
 
     expect(requests()).toEqual(['POST /auth/customer/emailpass/register'])
+  })
+
+  it('refreshes the token with that request alone, sending the given token', async () => {
+    await expect(
+      customerRepository(sdkClient()).refreshToken('register-token'),
+    ).resolves.toBe('jwt')
+
+    expect(requests()).toEqual(['POST /auth/token/refresh'])
+    expect(
+      new Headers(network.mock.calls[0]?.[1].headers).get('authorization'),
+    ).toBe('Bearer register-token')
   })
 
   it("is needed: the SDK's own login with these defaults also opens a Medusa session", async () => {

@@ -93,6 +93,23 @@ export function customerRepository(medusa: Medusa) {
       )
     },
 
+    // The registration token belongs to the auth identity alone (an empty
+    // `actor_id`), so Medusa refuses it for `/store/customers/me`. Once the
+    // customer exists, Medusa's refresh route issues a token for that
+    // customer, which is the session. The SDK's auth.refresh() would store it
+    // on the client like auth.register() does, so this asks the route too.
+    async refreshToken(token: string): Promise<string> {
+      const answer = await medusa.client.fetch<unknown>('/auth/token/refresh', {
+        method: 'POST',
+        headers: bearer(token),
+      })
+
+      return sessionToken(
+        answer,
+        'Unexpected token refresh response from Medusa',
+      )
+    },
+
     async createCustomer(
       token: string,
       {
