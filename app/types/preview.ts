@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '~/utils/zod'
 
 import { cmsGlobalQuerySchema } from '~/types/cms'
 import { SUPPORTED_LOCALES } from '~/utils/locale'

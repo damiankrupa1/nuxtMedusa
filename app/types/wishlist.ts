@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from '~/utils/zod'
 
 // localStorage key of the saved-products list (see app/composables/wishlist.ts).
 export const WISHLIST_STORAGE_KEY = 'wishlist'

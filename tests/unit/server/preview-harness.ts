@@ -3,7 +3,7 @@
 // router params and query parsing behave as in production; only Nitro's own
 // auto-imports (useRuntimeConfig, useAppConfig, the cache, $fetch) are
 // replaced. Tests importing this need `// @vitest-environment node`.
-import type { App, EventHandler, H3Event } from 'h3'
+import type { App, AppOptions, EventHandler, H3Event } from 'h3'
 import {
   createApp,
   createError,
@@ -103,13 +103,15 @@ export interface TestRoutes {
 /**
  * An h3 app with the given routes. The `request` and `beforeResponse` hooks
  * of the plugins are wired to h3's onRequest/onBeforeResponse, as Nitro does.
- * `regions` stands in for event.$fetch('/api/regions').
+ * `regions` stands in for event.$fetch('/api/regions'). `onError` plays
+ * Nitro's error handler (without it h3 sends its own plain JSON error).
  */
 export function createTestApp(
   routes: TestRoutes,
   {
     pluginHooks = [] as Record<string, Hook[]>[],
     regions = async () => ({ regions: [] as unknown[] }),
+    onError = undefined as AppOptions['onError'],
   } = {},
 ) {
   const run = (name: string, ...args: unknown[]) =>
@@ -122,6 +124,7 @@ export function createTestApp(
     },
     onBeforeResponse: (event: H3Event, response: unknown) =>
       run('beforeResponse', event, response),
+    onError,
   })
   const router = createRouter()
   Object.entries(routes.get ?? {}).forEach(([path, handler]) =>

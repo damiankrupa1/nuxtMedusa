@@ -1,5 +1,5 @@
 import type { StoreProduct } from '@medusajs/types'
-import { z } from 'zod'
+import { z } from '~/utils/zod'
 
 // Payload globals the storefront reads. cms.repository.ts only accepts these,
 // and the server/api/cms proxy only forwards these, so a new fetcher can't be

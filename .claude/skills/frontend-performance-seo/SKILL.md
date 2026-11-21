@@ -30,6 +30,13 @@ description: Improve Nuxt storefront performance, Core Web Vitals, rendering beh
 - Verify robots, sitemap, canonical, and structured data against the actual route model before changing them.
 - Do not generate duplicate metadata or invent product facts, prices, ratings, or availability.
 
+## Response headers
+
+- Every response gets `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, a `Permissions-Policy`, the enforced `Content-Security-Policy: frame-ancestors 'self'` and a `Content-Security-Policy-Report-Only` (#90; "Security headers" in `CLAUDE.md`). The plugins are `server/plugins/frame-ancestors.ts` and `security-headers.ts`, the values are data in `server/utils/security-headers.ts` and `content-security-policy.ts`.
+- A header must not depend on the request (cookie, nonce, user agent): CDN-cached pages are shared with every visitor together with their headers. Build environment-dependent values from the runtime config.
+- A new third-party script, frame, API host or image host needs a CSP source: add it to `CSP_DIRECTIVES` (fixed hosts) or `buildContentSecurityPolicy()` (from the runtime config), update its unit test and run `tests/e2e/specs/security/csp.spec.ts`. New zod schemas in `app/` import `z` from `~/utils/zod`.
+- The CSP is report-only: it blocks nothing yet. Enforce it only after the inline-script hashes replace `'unsafe-inline'` and the checkout (Stripe 3DS, BLIK, Przelewy24, InPost) ran clean under it. Don't add HSTS in the app; Vercel sends it.
+
 ## Verification
 
 - Focus on the changed route and metric.
