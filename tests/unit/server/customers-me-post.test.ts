@@ -5,6 +5,7 @@ import type { EventHandler, H3Event } from 'h3'
 import { createError, isError } from 'h3'
 import { defineWrappedResponseHandler } from '~~/server/utils/handler'
 import { serverMedusaClient } from '~~/server/utils/medusa'
+import { medusaCustomerResponse } from '~~/tests/fixtures/medusa'
 
 vi.mock('~~/server/utils/medusa', () => ({ serverMedusaClient: vi.fn() }))
 
@@ -34,7 +35,7 @@ beforeEach(() => {
   vi.mocked(serverMedusaClient).mockReturnValue(medusa as unknown as Medusa)
   getCookie.mockReturnValue(undefined)
   readBody.mockResolvedValue({ first_name: 'Ada', last_name: 'Lovelace' })
-  updateCustomer.mockResolvedValue({ customer: { id: 'cus_test' } })
+  updateCustomer.mockResolvedValue(medusaCustomerResponse)
 })
 
 describe('POST /api/customers/me', () => {
@@ -50,9 +51,7 @@ describe('POST /api/customers/me', () => {
   it('forwards the cookie token as the Authorization header', async () => {
     getCookie.mockReturnValue('test-token')
 
-    await expect(handler(event)).resolves.toEqual({
-      customer: { id: 'cus_test' },
-    })
+    await expect(handler(event)).resolves.toEqual(medusaCustomerResponse)
     expect(updateCustomer).toHaveBeenCalledWith(
       { first_name: 'Ada', last_name: 'Lovelace' },
       {},

@@ -28,6 +28,7 @@ import type Medusa from '@medusajs/js-sdk'
 import * as Sentry from '@sentry/nuxt'
 import { defineWrappedResponseHandler } from '~~/server/utils/handler'
 import { serverMedusaClient } from '~~/server/utils/medusa'
+import { medusaCustomerResponse } from '~~/tests/fixtures/medusa'
 
 vi.mock('~~/server/utils/medusa', () => ({ serverMedusaClient: vi.fn() }))
 
@@ -64,7 +65,8 @@ const medusa = {
   },
 }
 
-const customer = { id: 'cus_test', email: 'ada@example.com' }
+// Medusa's recorded answer; the repository checks it (#84)
+const { customer } = medusaCustomerResponse
 const signin = { email: 'ada@example.com', password: 'secret' }
 const registration = {
   first_name: 'Ada',
@@ -343,6 +345,23 @@ describe('POST /api/customers/login', () => {
     ])
     expect(sentryEvents()).toBe(1)
   })
+
+  // #84: Medusa's customer is checked before the session cookie is set
+  it('answers 500, clears the cookie and reports once when the customer answer lacks its id', async () => {
+    const { id: _id, ...withoutId } = customer
+    medusa.store.customer.retrieve.mockResolvedValue({ customer: withoutId })
+
+    const response = await post(
+      '/api/customers/login',
+      signin,
+      'medusa_jwt=earlier-session',
+    )
+
+    expect(response.status).toBe(500)
+    expect(failure()?.message).toBe('Unexpected customer response from Medusa')
+    expect(response.headers.getSetCookie()).toEqual([clearedSessionCookie])
+    expect(sentryEvents()).toBe(1)
+  })
 })
 
 describe('POST /api/customers/register', () => {
@@ -472,6 +491,39 @@ describe('POST /api/customers/register', () => {
     expect(response.headers.getSetCookie()).toEqual([clearedSessionCookie])
     expect(sentryEvents()).toBe(1)
   })
+
+  // #84: an answer that is not a token never reaches the next call
+  it('answers 500, sets no cookie and reports once when the registration answers no token string', async () => {
+    medusa.auth.register.mockResolvedValue({ token: 'register-token' })
+
+    const response = await post('/api/customers/register', registration)
+
+    expect(response.status).toBe(500)
+    expect(failure()?.message).toBe(
+      'Unexpected registration response from Medusa',
+    )
+    expect(response.headers.getSetCookie()).toEqual([])
+    expect(medusa.store.customer.create).not.toHaveBeenCalled()
+    expect(sentryEvents()).toBe(1)
+  })
+
+  // #84: an MFA answer's token has no actor, so it must not become the session
+  it('answers 500 and clears the cookie when the refresh answers an MFA challenge with its token', async () => {
+    medusa.auth.refresh.mockResolvedValue({
+      token: 'partial',
+      mfa_required: true,
+      mfa_challenge: { id: 'mfa_1' },
+    })
+
+    const response = await post('/api/customers/register', registration)
+
+    expect(response.status).toBe(500)
+    expect(failure()?.message).toBe(
+      'Unexpected token refresh response from Medusa',
+    )
+    expect(response.headers.getSetCookie()).toEqual([clearedSessionCookie])
+    expect(sentryEvents()).toBe(1)
+  })
 })
 
 describe('DELETE /api/customers/logout', () => {
@@ -556,6 +608,21 @@ describe('GET /api/customers/me', () => {
 
     expect(response.status).toBe(503)
     expect(failure()?.message).toBe('Service Unavailable')
+    expect(sentryEvents()).toBe(1)
+  })
+
+  // #84: never `{ customer: null }`, which would look like a signed-out
+  // visitor, and the cookie stays
+  it('answers 500 and reports once when the customer answer is not one', async () => {
+    medusa.store.customer.retrieve.mockResolvedValue({
+      customer: { ...customer, email: null },
+    })
+
+    const response = await get('/api/customers/me', 'medusa_jwt=login-token')
+
+    expect(response.status).toBe(500)
+    expect(failure()?.message).toBe('Unexpected customer response from Medusa')
+    expect(response.headers.getSetCookie()).toEqual([])
     expect(sentryEvents()).toBe(1)
   })
 })
