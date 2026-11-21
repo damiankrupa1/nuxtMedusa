@@ -90,8 +90,19 @@ async function fillCard(page: Page, number: string) {
   await input('cardnumber').pressSequentially(number)
   await input('exp-date').pressSequentially(expiry)
   await input('cvc').pressSequentially(cvc)
+  // The postal field appears a moment after Stripe has recognised the card's
+  // country, so it is waited for (isVisible() doesn't wait): the first CI run
+  // filled it for 4242 but not for the declined card, and Stripe then answered
+  // "Your postal code is incomplete." instead of the decline. For a card with
+  // no such field the wait ends after the timeout and the number is enough.
   const postal = input('postal')
-  if (await postal.isVisible()) {
+  const hasPostal = await postal
+    .waitFor({ state: 'visible', timeout: 5_000 })
+    .then(
+      () => true,
+      () => false,
+    )
+  if (hasPostal) {
     await postal.pressSequentially(postalCode)
   }
 
