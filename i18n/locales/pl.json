@@ -441,6 +441,158 @@
           }
         }
       }
+    },
+    "about": {
+      "title": "O nas",
+      "description": "Kim jesteśmy i dlaczego wolimy mniej, ale lepiej.",
+      "eyebrow": "ŚWIAT FASHION",
+      "heading": "@:app.footer.tagline",
+      "lead": "Jesteśmy sklepem dla ludzi, którzy wolą kupić jedną dobrą rzecz niż trzy przypadkowe.",
+      "sections": {
+        "story": {
+          "heading": "Skąd się wzięliśmy",
+          "p1": "Zaczęliśmy od prostej obserwacji: w szafie najczęściej sięgamy po kilka rzeczy, które dobrze leżą, dobrze się noszą i nie wychodzą z mody po jednym sezonie. Takich rzeczy szukamy i takie chcemy sprzedawać.",
+          "p2": "Dlatego wybieramy ostrożnie, zarówno marki, jak i materiały oraz kroje, i opisujemy produkty tak, żebyś mógł zdecydować bez zgadywania.",
+          "link": "Przeczytaj naszą historię na stronie głównej"
+        },
+        "values": {
+          "heading": "Co jest dla nas ważne",
+          "items": {
+            "1": "Mniej, ale lepiej: ubrania, które nosi się latami, a nie przez jeden sezon.",
+            "2": "@:app.benefits.origin.note",
+            "3": "Bliski kontakt: pomagamy w wyborze rozmiaru i odpowiadamy na pytania przed zakupem i po nim."
+          }
+        },
+        "company": {
+          "heading": "Dane firmy",
+          "details": "Pełne dane firmy uzupełnimy wkrótce.",
+          "link": "Przejdź do sklepu"
+        }
+      }
+    },
+    "studio": {
+      "title": "Fashion Studio",
+      "description": "Nasza pracownia i to, jak powstają ubrania z linii Fashion Studio.",
+      "eyebrow": "ŚWIAT FASHION",
+      "heading": "Fashion Studio",
+      "lead": "Pracownia, w której projektujemy własną linię: spokojne kroje, dobre tkaniny i rzeczy, które łatwo ze sobą połączyć.",
+      "sections": {
+        "atelier": {
+          "heading": "Pracownia",
+          "intro": "Fashion Studio to nasza własna linia ubrań. Projektujemy ją z myślą o codzienności: o rzeczach, które dobrze wyglądają w pracy, w weekend i w podróży.",
+          "place": "Opis pracowni, czyli gdzie się mieści, kto w niej pracuje i z kim szyjemy, uzupełnimy wkrótce."
+        },
+        "process": {
+          "heading": "Jak powstają nasze ubrania",
+          "steps": {
+            "1": "Projekt: zaczynamy od kroju i od tego, jak ubranie ma się nosić na co dzień.",
+            "2": "Tkanina: dobieramy materiał do kroju i sprawdzamy, jak się zachowuje po praniu.",
+            "3": "Próby: szyjemy próbne egzemplarze i poprawiamy je, aż dobrze leżą.",
+            "4": "Szycie: dopiero sprawdzony model trafia do szycia."
+          }
+        },
+        "collection": {
+          "heading": "Kolekcja",
+          "intro": "Ubrania z linii Fashion Studio znajdziesz w sklepie, obok innych marek, które wybraliśmy.",
+          "link": "Zobacz w sklepie"
+        }
+      }
+    },
+    "journal": {
+      "title": "Dziennik",
+      "description": "Artykuły i inspiracje z naszego dziennika.",
+      "eyebrow": "ŚWIAT FASHION",
+      "heading": "Dziennik",
+      "lead": "Teksty o tym, jak wybierać, łączyć i nosić ubrania na dłużej.",
+      "sections": {
+        "articles": {
+          "heading": "Najnowsze artykuły"
+        }
+      }
+    },
+    "materialsAndCare": {
+      "title": "Materiały i pielęgnacja",
+      "description": "Jak prać, suszyć i przechowywać wełnę, bawełnę, len i jedwab, żeby ubrania służyły dłużej.",
+      "eyebrow": "ŚWIAT FASHION",
+      "heading": "Materiały i pielęgnacja",
+      "lead": "Dobre ubranie potrzebuje niewiele: właściwej temperatury, cierpliwości przy suszeniu i miejsca w szafie. Oto ogólne zasady.",
+      "sections": {
+        "label": {
+          "heading": "Najpierw metka",
+          "intro": "Wskazówki poniżej są ogólne. Pierwszeństwo ma zawsze metka ubrania, bo producent zna swoją tkaninę najlepiej.",
+          "tips": {
+            "1": "Miska z liczbą oznacza najwyższą temperaturę prania, a dłoń w misce pranie ręczne.",
+            "2": "Przekreślony trójkąt oznacza zakaz wybielania, a przekreślony kwadrat z kołem zakaz suszenia w suszarce bębnowej.",
+            "3": "Pierz ubrania na lewej stronie, z zapiętymi zamkami i guzikami, razem z rzeczami w podobnych kolorach."
+          }
+        },
+        "wool": {
+          "heading": "Wełna",
+          "intro": "Wełna dobrze się odświeża na powietrzu, więc często wystarczy ją przewietrzyć zamiast prać.",
+          "care": {
+            "1": "Pierz ręcznie albo w programie do wełny, w chłodnej wodzie, z delikatnym środkiem do wełny.",
+            "2": "Nie wykręcaj. Odciśnij wodę w ręczniku i susz na płasko, z dala od kaloryfera.",
+            "3": "Swetrów nie wieszaj na wieszaku, tylko je składaj, żeby nie straciły kształtu."
+          }
+        },
+        "cotton": {
+          "heading": "Bawełna",
+          "intro": "Bawełna jest wytrzymała i łatwo się ją pierze, ale w wysokiej temperaturze może się skurczyć.",
+          "care": {
+            "1": "Pierz w temperaturze podanej na metce, a rzeczy kolorowe zwykle w 30–40°C.",
+            "2": "Susz na wieszaku albo na płasko; w suszarce bębnowej łatwiej o skurczenie.",
+            "3": "Prasuj lekko wilgotną, a rzeczy z nadrukiem na lewej stronie."
+          }
+        },
+        "linen": {
+          "heading": "Len",
+          "intro": "Len jest chłodny i przewiewny, a z każdym praniem staje się bardziej miękki. Gniecie się, i to jest jego urok.",
+          "care": {
+            "1": "Pierz w łagodnym programie i nie przeładowuj pralki.",
+            "2": "Wyjmij od razu po praniu, wygładź dłońmi i susz na wieszaku.",
+            "3": "Prasuj lekko wilgotny w wysokiej temperaturze albo zostaw naturalne zagniecenia."
+          }
+        },
+        "silk": {
+          "heading": "Jedwab",
+          "intro": "Jedwab jest delikatny: nie lubi wysokiej temperatury, tarcia ani mocnego słońca.",
+          "care": {
+            "1": "Pierz ręcznie w letniej wodzie, ze środkiem do jedwabiu, albo oddaj do pralni, jeśli tak zaleca metka.",
+            "2": "Nie trzyj i nie wykręcaj. Susz w cieniu, na płasko albo na wieszaku.",
+            "3": "Prasuj na lewej stronie, w niskiej temperaturze, najlepiej przez bawełnianą ściereczkę."
+          }
+        },
+        "storage": {
+          "heading": "Przechowywanie",
+          "tips": {
+            "1": "Odkładaj do szafy czyste ubrania, bo plamy i zapach przyciągają mole.",
+            "2": "Wełnę i jedwab przechowuj w przewiewnych pokrowcach z bawełny, nie w foliowych.",
+            "3": "Daj ubraniom odpocząć dzień między noszeniami, a wełna i len szybciej wrócą do formy."
+          }
+        }
+      }
+    },
+    "careers": {
+      "title": "Dołącz do zespołu",
+      "description": "Praca w naszym zespole: gdzie publikujemy oferty i jak się zgłosić.",
+      "eyebrow": "ŚWIAT FASHION",
+      "heading": "Dołącz do zespołu",
+      "lead": "Szukamy ludzi, którzy lubią dobre rzeczy i dobrą obsługę.",
+      "sections": {
+        "team": {
+          "heading": "Jak pracujemy",
+          "intro": "Dbamy o to, co sprzedajemy, i o ludzi, którzy u nas kupują. Cenimy staranność, uważność i prosty język."
+        },
+        "openings": {
+          "heading": "Oferty pracy",
+          "none": "Aktualne oferty pracy opublikujemy na tej stronie."
+        },
+        "apply": {
+          "heading": "Jak się zgłosić",
+          "intro": "Jeśli chcesz z nami pracować, napisz do nas kilka zdań o sobie i o tym, czym chciałbyś się zajmować.",
+          "privacy": "Informację o przetwarzaniu danych osobowych w rekrutacji uzupełnimy wkrótce."
+        }
+      }
     }
   },
   "cart": {

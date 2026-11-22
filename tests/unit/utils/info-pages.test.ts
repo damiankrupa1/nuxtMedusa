@@ -54,6 +54,11 @@ describe('information pages', () => {
       sizeGuide: '/help/size-guide',
       trackOrder: '/help/track-order',
       faq: '/help/faq',
+      about: '/about',
+      studio: '/studio',
+      journal: '/journal',
+      materialsAndCare: '/materials-and-care',
+      careers: '/careers',
     })
     expect(INFO_PAGES.map((page) => page.id)).toEqual([...INFO_PAGE_IDS])
   })

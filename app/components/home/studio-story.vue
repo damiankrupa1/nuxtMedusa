@@ -5,6 +5,7 @@ const { data: studioStory } = useFetchStudioStory()
 <template>
   <section
     v-if="studioStory"
+    id="studio-story"
     class="flex flex-col items-center gap-10 px-6 py-16 md:flex-row md:gap-20 md:px-16 md:py-24"
   >
     <div

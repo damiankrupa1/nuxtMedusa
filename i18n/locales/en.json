@@ -441,6 +441,158 @@
           }
         }
       }
+    },
+    "about": {
+      "title": "About us",
+      "description": "Who we are and why we prefer less, but better.",
+      "eyebrow": "THE FASHION WORLD",
+      "heading": "@:app.footer.tagline",
+      "lead": "We are a store for people who would rather buy one good thing than three random ones.",
+      "sections": {
+        "story": {
+          "heading": "Where we come from",
+          "p1": "We started from a simple observation: the clothes we reach for most are the few that fit well, wear well and don't go out of style after one season. Those are the things we look for and want to sell.",
+          "p2": "So we choose carefully, the brands as much as the materials and the cuts, and describe the products so that you can decide without guessing.",
+          "link": "Read our story on the home page"
+        },
+        "values": {
+          "heading": "What matters to us",
+          "items": {
+            "1": "Less, but better: clothes you wear for years, not for one season.",
+            "2": "@:app.benefits.origin.note",
+            "3": "Close at hand: we help you choose a size and answer questions before and after you buy."
+          }
+        },
+        "company": {
+          "heading": "Company details",
+          "details": "The full company details will be added soon.",
+          "link": "Go to the store"
+        }
+      }
+    },
+    "studio": {
+      "title": "Fashion Studio",
+      "description": "Our studio and how the clothes of the Fashion Studio line are made.",
+      "eyebrow": "THE FASHION WORLD",
+      "heading": "Fashion Studio",
+      "lead": "The studio where we design our own line: calm cuts, good fabrics and pieces that are easy to combine.",
+      "sections": {
+        "atelier": {
+          "heading": "The studio",
+          "intro": "Fashion Studio is our own clothing line. We design it for everyday life: for pieces that look right at work, at the weekend and when travelling.",
+          "place": "A description of the studio, where it is, who works there and who sews with us, will be added soon."
+        },
+        "process": {
+          "heading": "How our clothes are made",
+          "steps": {
+            "1": "Design: we start from the cut and from how the piece should wear every day.",
+            "2": "Fabric: we match the material to the cut and check how it behaves after washing.",
+            "3": "Samples: we sew sample pieces and adjust them until they fit well.",
+            "4": "Production: only a tested design goes into production."
+          }
+        },
+        "collection": {
+          "heading": "The collection",
+          "intro": "You'll find the Fashion Studio line in the store, next to the other brands we have chosen.",
+          "link": "See it in the store"
+        }
+      }
+    },
+    "journal": {
+      "title": "Journal",
+      "description": "Articles and inspiration from our journal.",
+      "eyebrow": "THE FASHION WORLD",
+      "heading": "Journal",
+      "lead": "Stories about choosing, combining and wearing clothes for longer.",
+      "sections": {
+        "articles": {
+          "heading": "Latest articles"
+        }
+      }
+    },
+    "materialsAndCare": {
+      "title": "Materials and care",
+      "description": "How to wash, dry and store wool, cotton, linen and silk so that your clothes last longer.",
+      "eyebrow": "THE FASHION WORLD",
+      "heading": "Materials and care",
+      "lead": "A good piece of clothing needs little: the right temperature, patience when drying and room in the wardrobe. Here are the general rules.",
+      "sections": {
+        "label": {
+          "heading": "The label first",
+          "intro": "The advice below is general. The care label always comes first, because the maker knows its fabric best.",
+          "tips": {
+            "1": "A tub with a number gives the highest washing temperature; a hand in a tub means hand wash.",
+            "2": "A crossed-out triangle means do not bleach; a crossed-out square with a circle means do not tumble dry.",
+            "3": "Wash clothes inside out, with zips and buttons closed, together with similar colours."
+          }
+        },
+        "wool": {
+          "heading": "Wool",
+          "intro": "Wool freshens up well in the air, so airing it is often enough instead of washing.",
+          "care": {
+            "1": "Hand wash or use a wool programme, in cool water, with a gentle wool detergent.",
+            "2": "Don't wring it. Press the water out in a towel and dry it flat, away from the radiator.",
+            "3": "Don't hang jumpers; fold them so that they keep their shape."
+          }
+        },
+        "cotton": {
+          "heading": "Cotton",
+          "intro": "Cotton is durable and easy to wash, but it can shrink at high temperatures.",
+          "care": {
+            "1": "Wash at the temperature on the label; coloured items usually at 30–40°C.",
+            "2": "Dry on a hanger or flat; a tumble dryer makes shrinking more likely.",
+            "3": "Iron it slightly damp, and printed items inside out."
+          }
+        },
+        "linen": {
+          "heading": "Linen",
+          "intro": "Linen is cool and breathable and gets softer with every wash. It creases, and that is part of its charm.",
+          "care": {
+            "1": "Use a gentle programme and don't overload the machine.",
+            "2": "Take it out straight after washing, smooth it with your hands and dry it on a hanger.",
+            "3": "Iron it slightly damp at a high temperature, or keep the natural creases."
+          }
+        },
+        "silk": {
+          "heading": "Silk",
+          "intro": "Silk is delicate: it doesn't like high temperatures, rubbing or strong sunlight.",
+          "care": {
+            "1": "Hand wash in lukewarm water with a silk detergent, or take it to a dry cleaner if the label says so.",
+            "2": "Don't rub or wring it. Dry it in the shade, flat or on a hanger.",
+            "3": "Iron it inside out at a low temperature, ideally through a cotton cloth."
+          }
+        },
+        "storage": {
+          "heading": "Storage",
+          "tips": {
+            "1": "Put clothes away clean, as stains and smells attract moths.",
+            "2": "Keep wool and silk in breathable cotton covers, not in plastic ones.",
+            "3": "Give clothes a day's rest between wears; wool and linen recover their shape faster."
+          }
+        }
+      }
+    },
+    "careers": {
+      "title": "Join the team",
+      "description": "Working with us: where we publish openings and how to apply.",
+      "eyebrow": "THE FASHION WORLD",
+      "heading": "Join the team",
+      "lead": "We are looking for people who like good things and good service.",
+      "sections": {
+        "team": {
+          "heading": "How we work",
+          "intro": "We care about what we sell and about the people who buy from us. We value care, attention and plain language."
+        },
+        "openings": {
+          "heading": "Open positions",
+          "none": "Current openings will be published on this page."
+        },
+        "apply": {
+          "heading": "How to apply",
+          "intro": "If you would like to work with us, write us a few sentences about yourself and what you would like to do.",
+          "privacy": "Information on how personal data is processed in recruitment will be added soon."
+        }
+      }
     }
   },
   "cart": {

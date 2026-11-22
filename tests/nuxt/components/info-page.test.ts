@@ -76,6 +76,10 @@ describe('information page layout in Nuxt', () => {
       expect(shipping.get('h1').text()).toBe('Dostawa i płatności')
       // pages.shippingAndPayments.sections.cost.rules.1 = @:product.delivery.free
       expect(shipping.get('#cost li').text()).toBe('Darmowa dostawa od 399 zł')
+
+      const about = await mountPage('about')
+      // pages.about.heading = @:app.footer.tagline
+      expect(about.get('h1').text()).toBe('Dobrze wybrane. Na dłużej.')
     } finally {
       await $i18n.setLocale('en')
     }
@@ -164,6 +168,23 @@ describe('information page layout in Nuxt', () => {
       table.findAll('thead th[scope="col"]').map((th) => th.text()),
     ).toEqual(['Size', 'Chest', 'Waist', 'Hips'])
     expect(table.findAll('tbody th[scope="row"]').length).toBeGreaterThan(0)
+  })
+
+  it('lists the Payload journal articles', async () => {
+    const wrapper = await mountPage('journal')
+
+    await vi.waitFor(() => expect(wrapper.text()).toContain('Caring for wool'))
+    expect(wrapper.get('#articles h2').text()).toBe('Latest articles')
+  })
+
+  it('renders no article section without the Payload journal', async () => {
+    fetchJournalSection.mockResolvedValue(null)
+
+    const wrapper = await mountPage('journal')
+
+    await vi.waitFor(() => expect(fetchJournalSection).toHaveBeenCalled())
+    expect(wrapper.find('#articles').exists()).toBe(false)
+    expect(wrapper.findAll('h1')).toHaveLength(1)
   })
 })
 

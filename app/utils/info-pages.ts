@@ -206,6 +206,116 @@ export const INFO_PAGES: InfoPage[] = [
       },
     ],
   },
+  {
+    id: 'about',
+    path: '/about',
+    group: INFO_PAGE_GROUP.world,
+    status: INFO_PAGE_STATUS.draft,
+    sections: [
+      {
+        id: 'story',
+        // The home page's studio-story section tells the story; this page
+        // links to it instead of repeating it
+        blocks: [text('p1'), text('p2'), link('link', '/#studio-story')],
+      },
+      {
+        id: 'values',
+        blocks: [list('items', 3)],
+      },
+      {
+        id: 'company',
+        blocks: [
+          // TODO(owner): the company name, registered address and register
+          // numbers, as in the terms of sale
+          placeholder('details'),
+          link('link', '/store'),
+        ],
+      },
+    ],
+  },
+  {
+    id: 'studio',
+    path: '/studio',
+    group: INFO_PAGE_GROUP.world,
+    status: INFO_PAGE_STATUS.draft,
+    sections: [
+      {
+        id: 'atelier',
+        blocks: [
+          text('intro'),
+          // TODO(owner): where the studio is, who works there and which
+          // workshops sew the clothes
+          placeholder('place'),
+        ],
+      },
+      {
+        id: 'process',
+        // TODO(owner): confirm that these steps describe how the line is
+        // really made, or correct them
+        blocks: [list('steps', 4, true)],
+      },
+      {
+        id: 'collection',
+        blocks: [text('intro'), link('link', '/store')],
+      },
+    ],
+  },
+  {
+    id: 'journal',
+    path: '/journal',
+    group: INFO_PAGE_GROUP.world,
+    status: INFO_PAGE_STATUS.draft,
+    sections: [
+      {
+        id: 'articles',
+        blocks: [{ kind: 'journal' }],
+      },
+    ],
+  },
+  {
+    id: 'materialsAndCare',
+    path: '/materials-and-care',
+    group: INFO_PAGE_GROUP.world,
+    status: INFO_PAGE_STATUS.draft,
+    toc: true,
+    sections: [
+      { id: 'label', blocks: [text('intro'), list('tips', 3)] },
+      { id: 'wool', blocks: [text('intro'), list('care', 3)] },
+      { id: 'cotton', blocks: [text('intro'), list('care', 3)] },
+      { id: 'linen', blocks: [text('intro'), list('care', 3)] },
+      { id: 'silk', blocks: [text('intro'), list('care', 3)] },
+      { id: 'storage', blocks: [list('tips', 3)] },
+    ],
+  },
+  {
+    id: 'careers',
+    path: '/careers',
+    group: INFO_PAGE_GROUP.world,
+    status: INFO_PAGE_STATUS.draft,
+    sections: [
+      {
+        id: 'team',
+        blocks: [text('intro')],
+      },
+      {
+        id: 'openings',
+        blocks: [
+          // TODO(owner): the open positions, if any (none are invented here)
+          placeholder('none'),
+        ],
+      },
+      {
+        id: 'apply',
+        blocks: [
+          text('intro'),
+          { kind: 'contact' },
+          // TODO(owner): the recruitment privacy notice (who processes the
+          // CV, for how long), to be written with a lawyer
+          placeholder('privacy'),
+        ],
+      },
+    ],
+  },
 ]
 
 export function getInfoPage(id: InfoPageId): InfoPage {

@@ -31,6 +31,11 @@ export const INFO_PAGE_IDS = [
   'sizeGuide',
   'trackOrder',
   'faq',
+  'about',
+  'studio',
+  'journal',
+  'materialsAndCare',
+  'careers',
 ] as const
 
 export type InfoPageId = (typeof INFO_PAGE_IDS)[number]
