@@ -174,6 +174,38 @@ describe('seo utils', () => {
       ])
     })
 
+    it('leaves out the information pages while they are drafts', () => {
+      const urls = buildCatalogSitemapUrls({
+        countryCodes: ['pl'],
+        products: [],
+        categories: [],
+        collections: [],
+      })
+
+      expect(urls).toEqual([{ loc: '/pl' }, { loc: '/pl/store' }])
+    })
+
+    it('lists the published information pages of every country', () => {
+      const urls = buildCatalogSitemapUrls({
+        countryCodes: ['pl', 'de'],
+        products: [],
+        categories: [],
+        collections: [],
+        infoPagePaths: ['/help/faq', '/about'],
+      })
+
+      expect(urls).toEqual([
+        { loc: '/pl' },
+        { loc: '/pl/store' },
+        { loc: '/pl/help/faq' },
+        { loc: '/pl/about' },
+        { loc: '/de' },
+        { loc: '/de/store' },
+        { loc: '/de/help/faq' },
+        { loc: '/de/about' },
+      ])
+    })
+
     it('lists nothing without countries', () => {
       expect(
         buildCatalogSitemapUrls({

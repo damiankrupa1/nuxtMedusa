@@ -195,6 +195,252 @@
         "signIn": "Zaloguj się",
         "register": "Załóż konto"
       }
+    },
+    "info": {
+      "breadcrumb": "Ścieżka nawigacji",
+      "groups": {
+        "help": "Pomoc",
+        "world": "Świat Fashion"
+      },
+      "toc": "Na tej stronie",
+      "contact": {
+        "heading": "Masz pytanie?",
+        "text": "Jeśli nie znalazłeś tu odpowiedzi, napisz albo zadzwoń. Gdy pytanie dotyczy zamówienia, podaj jego numer, a pomożemy szybciej.",
+        "email": "E-mail",
+        "phone": "Telefon",
+        "hours": "Godziny pracy"
+      }
+    },
+    "shippingAndPayments": {
+      "title": "Dostawa i płatności",
+      "description": "Jak dostarczamy zamówienia, od czego zależy koszt dostawy i jak możesz zapłacić.",
+      "eyebrow": "POMOC",
+      "heading": "Dostawa i płatności",
+      "lead": "Wszystko, co warto wiedzieć, zanim zapłacisz: metody dostawy, koszty i sposoby płatności.",
+      "sections": {
+        "delivery": {
+          "heading": "Metody dostawy",
+          "intro": "Metodę dostawy wybierasz podczas składania zamówienia, na kroku „Dostawa”.",
+          "methods": {
+            "1": "Paczkomat InPost: wskazujesz automat na mapie, a paczkę odbierasz wtedy, kiedy Ci wygodnie.",
+            "2": "Kurier: przesyłka trafia na adres podany w zamówieniu."
+          },
+          "checkout": "Na kroku dostawy widzisz metody dostępne dla Twojego kraju razem z ich ceną, zanim przejdziesz do płatności."
+        },
+        "cost": {
+          "heading": "Koszt dostawy",
+          "rules": {
+            "1": "@:product.delivery.free",
+            "2": "Poniżej tego progu cenę dostawy zobaczysz w podsumowaniu zamówienia, zanim zapłacisz."
+          },
+          "prices": "Cennik poszczególnych metod dostawy uzupełnimy wkrótce."
+        },
+        "time": {
+          "heading": "Czas dostawy",
+          "dispatch": "Czas wysyłki podajemy przy każdym produkcie, obok przycisku „Dodaj do koszyka”.",
+          "carriers": "Informację o tym, ile trwa doręczenie u poszczególnych przewoźników, uzupełnimy wkrótce."
+        },
+        "payments": {
+          "heading": "Płatności",
+          "intro": "Płacisz na ostatnim kroku zamówienia. Płatności obsługuje operator płatności Stripe.",
+          "methods": {
+            "1": "Karta płatnicza: wpisujesz numer karty, datę ważności i kod CVC. Twój bank może poprosić o dodatkowe potwierdzenie płatności.",
+            "2": "BLIK: wpisujesz sześciocyfrowy kod z aplikacji banku i potwierdzasz płatność w aplikacji. BLIK działa dla płatności w złotych.",
+            "3": "Przelewy24: przechodzisz na stronę swojego banku, zatwierdzasz przelew i wracasz do sklepu."
+          },
+          "security": "Danych karty nie zapisujemy: wpisujesz je w bezpiecznym polu operatora płatności."
+        },
+        "vat": {
+          "heading": "Ceny i VAT",
+          "prices": "Ceny podajemy w walucie Twojego regionu. Podatki widać osobno w podsumowaniu koszyka i zamówienia; ich wysokość zależy od kraju dostawy.",
+          "invoice": "Informacje o fakturach VAT uzupełnimy wkrótce."
+        }
+      }
+    },
+    "returns": {
+      "title": "Zwroty i reklamacje",
+      "description": "Jak zwrócić produkt w ustawowym terminie i jak zgłosić reklamację.",
+      "eyebrow": "POMOC",
+      "heading": "Zwroty i reklamacje",
+      "lead": "Zwrot to Twoja decyzja, reklamacja to nasza odpowiedzialność. Opisujemy obie sprawy osobno, krok po kroku.",
+      "sections": {
+        "withdrawal": {
+          "heading": "Zwrot, czyli odstąpienie od umowy",
+          "right": "Kupując przez internet, możesz odstąpić od umowy bez podawania przyczyny w ciągu 14 dni od dnia, w którym odebrałeś przesyłkę.",
+          "period": "Informację o tym, czy w naszym sklepie obowiązuje dłuższy termin zwrotu, uzupełnimy wkrótce."
+        },
+        "steps": {
+          "heading": "Jak zwrócić produkt",
+          "items": {
+            "1": "Przed upływem terminu poinformuj nas, że odstępujesz od umowy: napisz do nas i podaj numer zamówienia.",
+            "2": "Zapakuj produkty tak, by nie uszkodziły się w drodze, i dołącz numer zamówienia.",
+            "3": "Odeślij paczkę nie później niż 14 dni od dnia, w którym nas poinformowałeś.",
+            "4": "Gdy otrzymamy produkty, zwrócimy Ci pieniądze na zasadach opisanych poniżej."
+          },
+          "address": "Adres do zwrotów uzupełnimy wkrótce.",
+          "cost": "Informację o tym, kto pokrywa koszt odesłania paczki, uzupełnimy wkrótce."
+        },
+        "refund": {
+          "heading": "Zwrot pieniędzy",
+          "rules": {
+            "1": "Pieniądze zwracamy tą samą metodą płatności, której użyłeś, chyba że umówimy się inaczej.",
+            "2": "Zwracamy je w ciągu 14 dni od otrzymania Twojej informacji o odstąpieniu od umowy. Możemy wstrzymać zwrot, dopóki nie otrzymamy produktów albo dowodu ich odesłania.",
+            "3": "Zwracamy też koszt dostawy do Ciebie, do wysokości najtańszej zwykłej metody dostawy dostępnej w sklepie."
+          }
+        },
+        "complaints": {
+          "heading": "Reklamacja",
+          "liability": "Odpowiadamy za zgodność produktu z umową. Jeśli w ciągu dwóch lat od dostawy okaże się, że produkt ma wadę, możesz go zareklamować.",
+          "steps": {
+            "1": "Napisz do nas: podaj numer zamówienia, opisz problem i, jeśli możesz, dołącz zdjęcia.",
+            "2": "Napisz, czego oczekujesz: naprawy albo wymiany produktu, a gdy to niemożliwe, obniżenia ceny albo odstąpienia od umowy.",
+            "3": "Jeśli poprosimy o przesłanie produktu, podpowiemy, jak to zrobić."
+          },
+          "answer": "Na reklamację odpowiadamy w ciągu 14 dni.",
+          "address": "Adres do wysyłki reklamowanych produktów i informację o kosztach przesyłki uzupełnimy wkrótce."
+        }
+      }
+    },
+    "sizeGuide": {
+      "title": "Tabela rozmiarów",
+      "description": "Wymiary ciała dla naszych rozmiarów i wskazówki, jak się zmierzyć.",
+      "eyebrow": "POMOC",
+      "heading": "Tabela rozmiarów",
+      "lead": "Dwie minuty z centymetrem krawieckim mogą oszczędzić Ci zwrotu. Zmierz się i porównaj wymiary z tabelą.",
+      "sections": {
+        "table": {
+          "heading": "Wymiary",
+          "intro": "Porównaj swoje wymiary z tabelą i wybierz rozmiar, w którym mieszczą się wszystkie trzy.",
+          "source": "Tabelę uzupełnimy o wymiary poszczególnych kolekcji."
+        },
+        "measure": {
+          "heading": "Jak się zmierzyć",
+          "intro": "Mierz się w bieliźnie, centymetrem przylegającym do ciała, ale go nie ściskaj. Najłatwiej z czyjąś pomocą.",
+          "points": {
+            "1": "Klatka piersiowa: w najszerszym miejscu, z centymetrem poprowadzonym poziomo pod pachami.",
+            "2": "Talia: w najwęższym miejscu tułowia, zwykle kilka centymetrów nad pępkiem.",
+            "3": "Biodra: w najszerszym miejscu, ze złączonymi stopami."
+          },
+          "between": "Na stronie produktu znajdziesz wskazówkę dotyczącą kroju. Jeśli Twoje wymiary wypadają pomiędzy dwoma rozmiarami, przy dopasowanym kroju wybierz większy."
+        }
+      }
+    },
+    "trackOrder": {
+      "title": "Śledź zamówienie",
+      "description": "Skąd wziąć numer przesyłki i jak sprawdzić, co dzieje się z Twoim zamówieniem.",
+      "eyebrow": "POMOC",
+      "heading": "Gdzie jest moja paczka?",
+      "lead": "Status przesyłki sprawdzisz u przewoźnika. Podpowiadamy, skąd wziąć link do śledzenia i co zrobić, gdy go nie masz.",
+      "sections": {
+        "how": {
+          "heading": "Jak to działa",
+          "steps": {
+            "1": "Po złożeniu zamówienia wysyłamy e-mail z jego potwierdzeniem i numerem.",
+            "2": "Gdy przekażemy paczkę przewoźnikowi, otrzymasz od niego e-mail z numerem przesyłki i linkiem do śledzenia.",
+            "3": "Przy dostawie do Paczkomatu InPost przewoźnik da Ci też znać, kiedy paczka będzie gotowa do odbioru."
+          }
+        },
+        "account": {
+          "heading": "Masz konto?",
+          "intro": "Wiadomości o zamówieniu wysyłamy na adres e-mail podany w zamówieniu. Po zalogowaniu sprawdzisz na stronie konta, jaki adres jest przypisany do Twojego konta.",
+          "link": "Przejdź do konta"
+        },
+        "missing": {
+          "heading": "Nie dostałeś wiadomości?",
+          "checks": {
+            "1": "Zajrzyj do folderu ze spamem i ofertami w swojej skrzynce.",
+            "2": "Sprawdź, czy adres e-mail w potwierdzeniu zamówienia jest poprawny. Jeśli nie, napisz do nas i podaj numer zamówienia."
+          }
+        }
+      }
+    },
+    "faq": {
+      "title": "Najczęstsze pytania",
+      "description": "Odpowiedzi na pytania o zamówienia, dostawę, płatności, zwroty, rozmiary, pielęgnację i konto.",
+      "eyebrow": "POMOC",
+      "heading": "Najczęstsze pytania",
+      "lead": "Krótkie odpowiedzi na to, o co pytacie najczęściej. Szczegóły znajdziesz na pozostałych stronach pomocy.",
+      "sections": {
+        "orders": {
+          "heading": "Zamówienia",
+          "questions": {
+            "place": {
+              "q": "Jak złożyć zamówienie?",
+              "a": "Dodaj produkty do koszyka i przejdź do płatności. Podaj adres, wybierz dostawę i zapłać. Potwierdzenie zamówienia wyślemy e-mailem."
+            },
+            "change": {
+              "q": "Czy mogę zmienić lub anulować zamówienie?",
+              "a": "Napisz do nas jak najszybciej i podaj numer zamówienia, a sprawdzimy, czy paczka nie została jeszcze wysłana. Po doręczeniu możesz skorzystać z prawa do zwrotu."
+            }
+          }
+        },
+        "delivery": {
+          "heading": "Dostawa",
+          "questions": {
+            "methods": {
+              "q": "Jak mogę otrzymać zamówienie?",
+              "a": "Do Paczkomatu InPost albo kurierem pod wskazany adres. Metody i ceny dla Twojego kraju zobaczysz na kroku dostawy, a więcej o nich na stronie „Dostawa i płatności”."
+            },
+            "track": {
+              "q": "Jak sprawdzić, gdzie jest moja paczka?",
+              "a": "Gdy wyślemy zamówienie, przewoźnik prześle Ci e-mailem numer przesyłki i link do śledzenia. Więcej na stronie „Śledź zamówienie”."
+            }
+          }
+        },
+        "payments": {
+          "heading": "Płatności",
+          "questions": {
+            "methods": {
+              "q": "Jak mogę zapłacić?",
+              "a": "Kartą płatniczą, BLIK-iem albo przez Przelewy24. Metodę wybierasz na ostatnim kroku zamówienia."
+            }
+          }
+        },
+        "returns": {
+          "heading": "Zwroty",
+          "questions": {
+            "how": {
+              "q": "Jak zwrócić produkt?",
+              "a": "Masz 14 dni od odebrania paczki, by odstąpić od umowy bez podawania przyczyny. Poinformuj nas o tym i odeślij produkty. Kolejne kroki opisujemy na stronie „Zwroty i reklamacje”."
+            },
+            "refund": {
+              "q": "Kiedy dostanę zwrot pieniędzy?",
+              "a": "W ciągu 14 dni od otrzymania Twojej informacji o odstąpieniu od umowy, tą samą metodą, którą zapłaciłeś. Możemy wstrzymać zwrot, dopóki nie otrzymamy produktów albo dowodu ich odesłania."
+            }
+          }
+        },
+        "sizes": {
+          "heading": "Rozmiary",
+          "questions": {
+            "choose": {
+              "q": "Jak dobrać rozmiar?",
+              "a": "Zmierz klatkę piersiową, talię i biodra, a potem porównaj wymiary z tabelą rozmiarów. Tabelę otworzysz też przy każdym produkcie, obok wyboru rozmiaru."
+            }
+          }
+        },
+        "care": {
+          "heading": "Pielęgnacja",
+          "questions": {
+            "wash": {
+              "q": "Jak prać i przechowywać ubrania?",
+              "a": "Zawsze zaczynaj od metki z symbolami pielęgnacji. Ogólne wskazówki dla wełny, bawełny, lnu i jedwabiu znajdziesz na stronie „Materiały i pielęgnacja”."
+            }
+          }
+        },
+        "account": {
+          "heading": "Konto",
+          "questions": {
+            "needed": {
+              "q": "Czy muszę zakładać konto?",
+              "a": "Nie. Zamówienie złożysz bez konta, podając adres e-mail podczas składania zamówienia."
+            },
+            "create": {
+              "q": "Jak założyć konto?",
+              "a": "Przejdź na stronę konta, wybierz rejestrację, podaj swoje dane i ustal hasło."
+            }
+          }
+        }
+      }
     }
   },
   "cart": {

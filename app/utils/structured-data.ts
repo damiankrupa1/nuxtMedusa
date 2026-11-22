@@ -1,6 +1,7 @@
 import type { StoreProduct } from '@medusajs/types'
 import { getVariantAvailability } from '~/utils/product'
 import type { ProductJsonLd, ProductOfferJsonLd } from '~/types/seo'
+import type { FaqEntry, FaqPageJsonLd } from '~/types/info-page'
 
 // schema.org Product for a product page, built only from what Medusa returns
 // for the page's region: one Offer per variant that has a price there, with
@@ -51,6 +52,24 @@ export function buildProductJsonLd(
     ...(product.description ? { description: product.description } : {}),
     ...(images.length ? { image: [...new Set(images)] } : {}),
     offers,
+  }
+}
+
+// schema.org FAQPage for the FAQ page, from the questions it shows. Only a
+// published page may render it (useInfoPageSeo): a draft's answers are not
+// reviewed yet. Null without questions.
+export function buildFaqPageJsonLd(entries: FaqEntry[]): FaqPageJsonLd | null {
+  const questions = entries.filter((entry) => entry.question && entry.answer)
+  if (!questions.length) return null
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: questions.map((entry) => ({
+      '@type': 'Question',
+      name: entry.question,
+      acceptedAnswer: { '@type': 'Answer', text: entry.answer },
+    })),
   }
 }
 
