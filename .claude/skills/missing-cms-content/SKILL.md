@@ -17,7 +17,7 @@ Entries are added as each home page section is implemented.
 ## Footer: help, world and legal link columns — wired to Payload
 
 - **Needs**: Figma's footer has three static columns beyond the brand/contact block — "Help" (shipping & payments, returns, size guide, order tracking, FAQ), "The Fashion world" (about, studio, journal, materials & care, careers), and a legal links row (terms, privacy, cookies, accessibility).
-- **Now**: `app/components/app/footer/menu/help.vue`, `menu/world.vue` and `copyright.vue` read `useFetchFooterContent()` (Payload `FooterContent` global); a column or the legal row is not rendered without data. As with the header nav, the destination pages (support/FAQ, about/studio, journal, legal) still don't exist — Payload only supplies labels/URLs.
+- **Now**: `app/components/app/footer/menu/help.vue`, `menu/world.vue` and `copyright.vue` read `useFetchFooterContent()` (Payload `FooterContent` global); a column or the legal row is not rendered without data. The help and world destinations exist since #107 (`INFO_PAGES` in `app/utils/info-pages.ts`: `/help/shipping-and-payments`, `/help/returns`, `/help/size-guide`, `/help/track-order`, `/help/faq`, `/about`, `/studio`, `/journal`, `/materials-and-care`, `/careers`), as drafts with their copy in i18n; the owner still has to enter those URLs in Payload (the seed has `URL_PLACEHOLDER`). The legal pages still don't exist.
 
 ## Footer: brand contact details and social handle — wired to Payload
 
