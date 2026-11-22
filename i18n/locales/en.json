@@ -69,6 +69,12 @@
       "errorConsent": "Please accept the privacy policy to sign up.",
       "success": "Thanks for signing up — check your inbox soon."
     },
+    "sizeTable": {
+      "size": "Size",
+      "chest": "Chest",
+      "waist": "Waist",
+      "hips": "Hips"
+    },
     "footer": {
       "tagline": "Well chosen. For longer.",
       "shopping": {
@@ -261,11 +267,7 @@
     "sizeGuide": {
       "link": "Size guide",
       "title": "Size guide",
-      "description": "Approximate body measurements in centimetres.",
-      "size": "Size",
-      "chest": "Chest",
-      "waist": "Waist",
-      "hips": "Hips"
+      "description": "Approximate body measurements in centimetres."
     }
   },
   "store": {

@@ -69,6 +69,12 @@
       "errorConsent": "Zaakceptuj politykę prywatności, aby się zapisać.",
       "success": "Dziękujemy za zapis — sprawdź wkrótce swoją skrzynkę."
     },
+    "sizeTable": {
+      "size": "Rozmiar",
+      "chest": "Klatka piersiowa",
+      "waist": "Talia",
+      "hips": "Biodra"
+    },
     "footer": {
       "tagline": "Dobrze wybrane. Na dłużej.",
       "shopping": {
@@ -261,11 +267,7 @@
     "sizeGuide": {
       "link": "Tabela rozmiarów",
       "title": "Tabela rozmiarów",
-      "description": "Orientacyjne wymiary ciała w centymetrach.",
-      "size": "Rozmiar",
-      "chest": "Klatka piersiowa",
-      "waist": "Talia",
-      "hips": "Biodra"
+      "description": "Orientacyjne wymiary ciała w centymetrach."
     }
   },
   "store": {
