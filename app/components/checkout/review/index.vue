@@ -16,14 +16,12 @@ const {
   <div>
     <div class="mb-6 text-sm">
       {{ $t('checkout.review.termsIntro') }}
-      <strong>{{ $t('checkout.review.termsOfUse') }}</strong
-      >,
+      <strong>{{ $t('checkout.review.termsOfUse') }}</strong>,
       <strong>{{ $t('checkout.review.termsOfSale') }}</strong>
       {{ $t('auth.register.and') }}
       <strong>{{ $t('checkout.review.returnsPolicy') }}</strong>
       {{ $t('checkout.review.privacyPolicyAck') }}
-      <strong>{{ $t('checkout.review.privacyPolicy') }}</strong
-      >.
+      <strong>{{ $t('checkout.review.privacyPolicy') }}</strong>.
     </div>
 
     <div v-if="stripeMethod === 'card'" class="mb-6">
