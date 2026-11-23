@@ -43,14 +43,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # pnpm must be on PATH before setup-node, whose `cache: pnpm` runs it
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           # Latest Node 22.x satisfies Nuxt 4.6.3's ^22.22.3 engine requirement.
           node-version: 22
@@ -65,7 +65,7 @@ jobs:
 
       - name: Cache Playwright browsers
         id: browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}-${{ inputs.all_browsers && 'all' || 'chromium' }}
@@ -124,7 +124,7 @@ jobs:
       # throwaway and its JWT and cookie secrets are random per run.
       - name: Upload the Medusa log
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-medusa-log
           path: ${{ steps.medusa.outputs.log-file || format('{0}/e2e-medusa.log', runner.temp) }}
@@ -141,7 +141,7 @@ jobs:
 
       - name: Upload the report
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: playwright-report/
@@ -151,7 +151,7 @@ jobs:
       # Traces (kept for the first retry of a failing test) and screenshots
       - name: Upload test results
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results
           path: test-results/
