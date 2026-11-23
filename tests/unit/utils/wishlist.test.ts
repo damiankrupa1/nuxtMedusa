@@ -4,9 +4,9 @@ import { WISHLIST_MAX_ITEMS } from '~/types/wishlist'
 import {
   addWishlistEntry,
   isInWishlist,
-  orderProductsByWishlist,
   parseWishlist,
   removeWishlistEntry,
+  resolveWishlistItems,
   serializeWishlist,
 } from '~/utils/wishlist'
 
@@ -128,27 +128,49 @@ describe('removeWishlistEntry and isInWishlist', () => {
   })
 })
 
-describe('orderProductsByWishlist', () => {
+describe('resolveWishlistItems', () => {
   it('follows the order the products were saved in', () => {
     const entries = [entry('c', 30), entry('a', 20), entry('b', 10)]
     const products = [{ id: 'a' }, { id: 'b' }, { id: 'c' }]
 
-    expect(orderProductsByWishlist(products, entries)).toEqual([
-      { id: 'c' },
-      { id: 'a' },
-      { id: 'b' },
+    expect(resolveWishlistItems(entries, products, ['c', 'a', 'b'])).toEqual([
+      { productId: 'c', product: { id: 'c' } },
+      { productId: 'a', product: { id: 'a' } },
+      { productId: 'b', product: { id: 'b' } },
     ])
   })
 
-  it('leaves out a saved product Medusa no longer returns', () => {
-    const entries = [entry('gone', 30), entry('a', 20)]
+  it('keeps a saved product Medusa no longer returns, without a product, in its place', () => {
+    const entries = [entry('c', 30), entry('gone', 20), entry('a', 10)]
 
-    expect(orderProductsByWishlist([{ id: 'a' }], entries)).toEqual([
-      { id: 'a' },
+    expect(
+      resolveWishlistItems(
+        entries,
+        [{ id: 'a' }, { id: 'c' }],
+        ['c', 'gone', 'a'],
+      ),
+    ).toEqual([
+      { productId: 'c', product: { id: 'c' } },
+      { productId: 'gone', product: null },
+      { productId: 'a', product: { id: 'a' } },
     ])
   })
 
   it('ignores a product that is not saved', () => {
-    expect(orderProductsByWishlist([{ id: 'x' }], [entry('a', 1)])).toEqual([])
+    expect(
+      resolveWishlistItems([entry('a', 1)], [{ id: 'x' }], ['a', 'x']),
+    ).toEqual([{ productId: 'a', product: null }])
+  })
+
+  it('does not take a product saved after the request for a missing one', () => {
+    const entries = [entry('new', 30), entry('a', 20)]
+
+    expect(resolveWishlistItems(entries, [{ id: 'a' }], ['a'])).toEqual([
+      { productId: 'a', product: { id: 'a' } },
+    ])
+  })
+
+  it('is empty for an empty list', () => {
+    expect(resolveWishlistItems([], [{ id: 'a' }], [])).toEqual([])
   })
 })
