@@ -75,6 +75,20 @@ export const testData = {
     },
   } satisfies Record<string, SeededProduct>,
 
+  // The seed's shipping option with the manual fulfillment provider (no
+  // InPost parcel locker to pick), flat price per region
+  shippingOptions: {
+    standard: { name: 'Standard', prices: { pln: 14.99, eur: 9.99 } },
+  },
+
+  // Payment providers of the seeded regions: the manual one always, the
+  // Stripe card one only when the e2e Medusa got a Stripe test secret key.
+  // The labels are the storefront's (app/utils/payment.ts), not translated.
+  paymentProviders: {
+    manual: { id: 'pp_system_default', label: 'Manual Payment' },
+    stripeCard: { id: 'pp_stripe_stripe', label: 'Credit card' },
+  },
+
   // Handles that must not exist anywhere
   unknown: {
     product: 'e2e-no-such-product',

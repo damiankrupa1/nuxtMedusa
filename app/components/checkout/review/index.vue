@@ -16,22 +16,22 @@ const {
   <div>
     <div class="mb-6 text-sm">
       {{ $t('checkout.review.termsIntro') }}
-      <strong>{{ $t('checkout.review.termsOfUse') }}</strong
-      >,
+      <strong>{{ $t('checkout.review.termsOfUse') }}</strong>,
       <strong>{{ $t('checkout.review.termsOfSale') }}</strong>
       {{ $t('auth.register.and') }}
       <strong>{{ $t('checkout.review.returnsPolicy') }}</strong>
       {{ $t('checkout.review.privacyPolicyAck') }}
-      <strong>{{ $t('checkout.review.privacyPolicy') }}</strong
-      >.
+      <strong>{{ $t('checkout.review.privacyPolicy') }}</strong>.
     </div>
 
     <div v-if="stripeMethod === 'card'" class="mb-6">
       <h3 class="text-sm font-medium mb-2">
         {{ $t('checkout.review.creditCardInfo') }}
       </h3>
+      <!-- data-testid: the e2e suite finds Stripe's card iframe inside it -->
       <div
         ref="cardContainer"
+        data-testid="stripe-card-element"
         class="p-4 border rounded-lg border-neutral-200 bg-white"
       />
       <!--
