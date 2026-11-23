@@ -3,12 +3,69 @@ import { describe, expect, it } from 'vitest'
 
 import { SORT_OPTIONS } from '~/types/filter'
 import {
+  findProductInPayload,
   getCheapestVariant,
   getVariantAvailability,
   isVariantInStock,
   optionsAsKeyMap,
   sortProducts,
 } from '~/utils/product'
+
+describe('findProductInPayload', () => {
+  const coat = { id: 'prod_1', handle: 'wool-coat' }
+  const scarf = { id: 'prod_2', handle: 'scarf' }
+
+  it('finds the product in the products list of any entry', () => {
+    expect(
+      findProductInPayload(
+        {
+          'cms:footer:pl': { links: [] },
+          'products:::::24:0:reg_pl:pl': { products: [coat, scarf], count: 2 },
+        },
+        'scarf',
+      ),
+    ).toBe(scarf)
+  })
+
+  it('is null when no entry has that handle', () => {
+    expect(
+      findProductInPayload({ list: { products: [coat] } }, 'unknown'),
+    ).toBeNull()
+    expect(findProductInPayload({}, 'wool-coat')).toBeNull()
+  })
+
+  it('skips entries that are not objects, as a failed fetch leaves them', () => {
+    // A fetch that failed or found nothing leaves `null` (or another
+    // primitive) in the payload; reading `.products` of it threw, and the
+    // product page answered 500 while Medusa was down
+    expect(
+      findProductInPayload(
+        {
+          failed: null,
+          missing: undefined,
+          text: 'x',
+          count: 3,
+          list: { products: [coat] },
+        },
+        'wool-coat',
+      ),
+    ).toBe(coat)
+    expect(findProductInPayload({ failed: null }, 'wool-coat')).toBeNull()
+  })
+
+  it('skips entries whose products is not an array, or holds non-objects', () => {
+    expect(
+      findProductInPayload(
+        {
+          a: { products: 'none' },
+          b: { products: [null, 7, 'x'] },
+          c: { other: [coat] },
+        },
+        'wool-coat',
+      ),
+    ).toBeNull()
+  })
+})
 
 describe('product utils', () => {
   const makeProduct = (

@@ -35,31 +35,6 @@ export const useFetchProducts = (
   )
 }
 
-const findProductInPayload = (
-  payload: Record<string, unknown>,
-  handle: string,
-): StoreProduct | null => {
-  let foundProduct: StoreProduct | null = null
-
-  Object.values(payload).forEach((entry) => {
-    if (foundProduct) return
-
-    const productsList = (entry as { products?: unknown }).products
-    if (!Array.isArray(productsList)) return
-
-    const product = productsList.find(
-      (item) =>
-        typeof item === 'object' &&
-        item !== null &&
-        (item as Record<string, unknown>).handle === handle,
-    ) as StoreProduct | undefined
-
-    if (product) foundProduct = product
-  })
-
-  return foundProduct
-}
-
 export const useFetchProductByHandle = (handle: string) => {
   const { country } = useCountry()
   const { locale } = useI18n()
