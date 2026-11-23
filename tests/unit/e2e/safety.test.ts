@@ -25,6 +25,23 @@ describe('findUnsafeE2eEnvironment', () => {
     expect(problems[0]).toContain('pk_live_')
   })
 
+  it.each(['sk_test_secret123', 'rk_test_secret123', 'sk_live_secret123'])(
+    'refuses %s-like keys that are not publishable test keys, without repeating them',
+    (key) => {
+      const problems = findUnsafeE2eEnvironment({
+        NUXT_PUBLIC_STRIPE_KEY: key,
+      })
+
+      expect(problems).toHaveLength(1)
+      expect(problems[0]).toContain('pk_test_')
+      expect(problems[0]).not.toContain('secret123')
+    },
+  )
+
+  it('accepts no Stripe key at all', () => {
+    expect(findUnsafeE2eEnvironment({ NUXT_PUBLIC_STRIPE_KEY: '' })).toEqual([])
+  })
+
   it.each([
     [
       'NUXT_PUBLIC_MEDUSA_BACKEND_URL',

@@ -9,10 +9,18 @@ name: E2E
 # Docker, migrations and the deterministic e2e seed, from the medusaDemo
 # repository's e2e-medusa action), so the specs tagged @medusa run too. Never
 # production data or keys: the database lives in tmpfs and is gone with the
-# runner. Stripe isn't configured: neither a pk_test_ key for the storefront
-# (E2E_STRIPE_KEY) nor an sk_test_ key for the Medusa (the action's
-# `stripe-secret-key`), so the @stripe specs stay left out until the owner
-# adds both, test mode only, as secrets.
+# runner.
+#
+# Stripe, test mode only, from two repository secrets of the same Stripe
+# account: E2E_STRIPE_KEY (pk_test_, for the storefront build) and
+# E2E_STRIPE_SECRET_KEY (sk_test_, for the Medusa, as the action's
+# `stripe-secret-key`; the seed then attaches pp_stripe_stripe to the
+# regions). Pull requests from forks (and Dependabot) get no secrets: both
+# are empty, the Medusa has no Stripe, and the @stripe specs are left out
+# (tests/e2e/support/env.ts), so the job still passes. The storefront gets
+# the pk_test_ key only when the secret key is there too, so a missing
+# sk_test_ key skips the @stripe specs instead of failing them. Secrets are
+# masked in the log; the @stripe specs record no trace (see the spec).
 
 on:
   push:
@@ -43,14 +51,14 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # pnpm must be on PATH before setup-node, whose `cache: pnpm` runs it
       - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           # Latest Node 22.x satisfies Nuxt 4.6.3's ^22.22.3 engine requirement.
           node-version: 22
@@ -65,7 +73,7 @@ jobs:
 
       - name: Cache Playwright browsers
         id: browsers
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}-${{ inputs.all_browsers && 'all' || 'chromium' }}
@@ -93,13 +101,16 @@ jobs:
       # and outputs at that commit against test-data.ts and the steps below,
       # and change both in the same pull request.
       #
-      # No inputs: the defaults (port 9100, CORS for 127.0.0.1:3100 and
-      # localhost:3100) are what tests/e2e/support/env.ts uses, and
-      # `stripe-secret-key` stays empty (see the top of this file).
+      # The default port 9100 and CORS for 127.0.0.1:3100 and localhost:3100
+      # are what tests/e2e/support/env.ts uses. `stripe-secret-key` is the
+      # sk_test_ secret (empty without it, see the top of this file); the
+      # action and the seed refuse anything but an sk_test_ key.
       - name: Start the e2e Medusa
         id: medusa
         timeout-minutes: 10
         uses: damiankrupa1/medusaDemo/.github/actions/e2e-medusa@91440fe6a7e7710c82a39b8cdc691cc6c494ac02 # main, 2026-11-21
+        with:
+          stripe-secret-key: ${{ secrets.E2E_STRIPE_SECRET_KEY }}
 
       # Builds the app with the e2e environment (tests/e2e/support/env.ts),
       # serves it with `nuxt preview` and starts the Payload stub. The suite
@@ -114,6 +125,9 @@ jobs:
         env:
           E2E_MEDUSA_BACKEND_URL: ${{ steps.medusa.outputs.backend-url }}
           E2E_MEDUSA_PUBLISHABLE_KEY: ${{ steps.medusa.outputs.publishable-key }}
+          # pk_test_ only (safety.ts refuses anything else), and only when the
+          # Medusa got the sk_test_ key too; empty = @stripe specs left out
+          E2E_STRIPE_KEY: ${{ secrets.E2E_STRIPE_SECRET_KEY != '' && secrets.E2E_STRIPE_KEY || '' }}
         run: pnpm test:e2e
 
       # Medusa's own log (the action writes it to a file, at the fallback
@@ -124,7 +138,7 @@ jobs:
       # throwaway and its JWT and cookie secrets are random per run.
       - name: Upload the Medusa log
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-medusa-log
           path: ${{ steps.medusa.outputs.log-file || format('{0}/e2e-medusa.log', runner.temp) }}
@@ -141,7 +155,7 @@ jobs:
 
       - name: Upload the report
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: playwright-report/
@@ -151,7 +165,7 @@ jobs:
       # Traces (kept for the first retry of a failing test) and screenshots
       - name: Upload test results
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results
           path: test-results/
