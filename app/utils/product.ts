@@ -6,6 +6,35 @@ import type {
 import { SORT_OPTIONS, type SortOptionsType } from '~/types/filter'
 import type { SchemaAvailability } from '~/types/seo'
 
+/**
+ * A product with this handle in the payload entries of other list fetches
+ * (`products:*`), so opening a product from a list needs no request. An entry
+ * can be anything the payload holds: `null` (a fetch that failed or found
+ * nothing), a string, an object without `products`. Those are skipped; reading
+ * `.products` of a `null` entry threw, which made the product page answer 500
+ * whenever Medusa was down.
+ */
+export function findProductInPayload(
+  payload: Record<string, unknown>,
+  handle: string,
+): StoreProduct | null {
+  const lists = Object.values(payload).flatMap((entry): unknown[] => {
+    if (typeof entry !== 'object' || entry === null) return []
+
+    const productsList = (entry as { products?: unknown }).products
+    return Array.isArray(productsList) ? productsList : []
+  })
+
+  const product = lists.find(
+    (item) =>
+      typeof item === 'object' &&
+      item !== null &&
+      (item as Record<string, unknown>).handle === handle,
+  ) as StoreProduct | undefined
+
+  return product ?? null
+}
+
 export function getCheapestVariant(product?: StoreProduct) {
   if (!product || !product.id) {
     throw new Error('No product provided')

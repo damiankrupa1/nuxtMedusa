@@ -7,9 +7,9 @@ import {
 import {
   addWishlistEntry,
   isInWishlist,
-  orderProductsByWishlist,
   parseWishlist,
   removeWishlistEntry,
+  resolveWishlistItems,
   serializeWishlist,
 } from '~/utils/wishlist'
 
@@ -83,8 +83,11 @@ export const useWishlist = () => {
 }
 
 // The saved products, fetched in the browser only (the list is not known on
-// the server) and shown in the order they were saved. The key encodes
-// everything the request depends on, as in the other fetchers.
+// the server) and shown in the order they were saved. A saved id Medusa does
+// not return comes back as an item without a product (see
+// resolveWishlistItems), not as a failure: `error` is only for a request that
+// failed, when nothing is known about the products. The key encodes everything
+// the request depends on, as in the other fetchers.
 export const useFetchWishlistProducts = () => {
   const { country } = useCountry()
   const { locale } = useI18n()
@@ -97,23 +100,28 @@ export const useFetchWishlistProducts = () => {
     () =>
       `wishlist:${productIds.value.join(',')}:${country.value?.region_id}:${medusaLocale.value}`,
     async () => {
-      if (!productIds.value.length) return []
+      const ids = [...productIds.value]
+      if (!ids.length) return { ids, products: [] }
       const { products } = await listProducts(
         {
-          id: productIds.value,
+          id: ids,
           region_id: country.value?.region_id,
           limit: WISHLIST_MAX_ITEMS,
         },
         medusaLocale.value,
       )
-      return products
+      return { ids, products }
     },
     { server: false },
   )
 
-  const products = computed(() =>
-    orderProductsByWishlist(data.value ?? [], entries.value),
+  // Empty until an answer arrives (never "everything is unavailable" while
+  // loading), and only what the answer was asked for is judged missing.
+  const items = computed(() =>
+    data.value
+      ? resolveWishlistItems(entries.value, data.value.products, data.value.ids)
+      : [],
   )
 
-  return { products, status, error, refresh }
+  return { items, status, error, refresh }
 }

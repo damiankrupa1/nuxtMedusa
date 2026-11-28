@@ -58,16 +58,31 @@ export function removeWishlistEntry(
   return entries.filter((entry) => entry.productId !== productId)
 }
 
+// A saved product and what the wishlist page shows for it: the product, or
+// `null` when Medusa no longer returns it (deleted or unpublished).
+export interface WishlistItem<T> {
+  productId: string
+  product: T | null
+}
+
 // Products come back from Medusa in its own order; the wishlist shows them in
-// the order they were saved. A saved id that Medusa no longer returns (the
-// product was deleted or unpublished) has no product and is left out.
-export function orderProductsByWishlist<T extends { id: string }>(
-  products: T[],
+// the order they were saved. A saved id the request asked for (`requestedIds`)
+// and Medusa did not return has no product: it stays in the list as an
+// unavailable item so the shopper learns why it vanished and can remove it. An
+// id that was not part of the request (saved after it was made) is left out
+// until the next one answers, so it is never taken for a missing product.
+export function resolveWishlistItems<T extends { id: string }>(
   entries: WishlistEntry[],
-): T[] {
+  products: T[],
+  requestedIds: string[],
+): WishlistItem<T>[] {
   const byId = new Map(products.map((product) => [product.id, product]))
-  return entries.flatMap((entry) => {
+  const requested = new Set(requestedIds)
+  return entries.flatMap((entry): WishlistItem<T>[] => {
     const product = byId.get(entry.productId)
-    return product ? [product] : []
+    if (product) return [{ productId: entry.productId, product }]
+    return requested.has(entry.productId)
+      ? [{ productId: entry.productId, product: null }]
+      : []
   })
 }

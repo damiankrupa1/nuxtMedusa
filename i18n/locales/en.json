@@ -189,6 +189,10 @@
         "choose": "Choose {option}",
         "chooseFirst": "Choose {option} first."
       },
+      "unavailable": {
+        "title": "This product is no longer available",
+        "text": "It was removed from the store or is no longer sold."
+      },
       "account": {
         "heading": "Good choices are worth keeping.",
         "text": "Sign in to have your wishlist at hand on every device.",
@@ -660,7 +664,9 @@
     "fitHint": "Straight cut. Choose your usual size.",
     "wishlist": {
       "add": "Add to favourites",
-      "remove": "Remove from favourites"
+      "remove": "Remove from favourites",
+      "addTitled": "Add {title} to favourites",
+      "removeTitled": "Remove {title} from favourites"
     },
     "sizeGuide": {
       "link": "Size guide",

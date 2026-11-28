@@ -15,14 +15,14 @@ useSeoMeta({
 })
 
 const { loaded, productIds } = useWishlist()
-const { products, status, error, refresh } = useFetchWishlistProducts()
+const { items, status, error, refresh } = useFetchWishlistProducts()
 
 const isLoading = computed(
   () =>
     !loaded.value ||
     (productIds.value.length > 0 &&
       (status.value === 'idle' || status.value === 'pending') &&
-      products.value.length === 0),
+      items.value.length === 0),
 )
 const hasFailed = computed(() => loaded.value && !!error.value)
 const isEmpty = computed(
@@ -30,7 +30,7 @@ const isEmpty = computed(
     loaded.value &&
     !error.value &&
     !isLoading.value &&
-    products.value.length === 0,
+    items.value.length === 0,
 )
 </script>
 
@@ -69,7 +69,7 @@ const isEmpty = computed(
           <h2 class="text-base leading-normal text-color-ink">
             {{ $t('pages.wishlist.saved') }}
             <template v-if="!isLoading && !hasFailed">
-              ({{ products.length }})
+              ({{ items.length }})
             </template>
           </h2>
           <!--
@@ -128,11 +128,12 @@ const isEmpty = computed(
         <template v-else>
           <ul class="grid grid-cols-2 gap-5 lg:grid-cols-4">
             <li
-              v-for="product in products"
-              :key="product.id"
+              v-for="item in items"
+              :key="item.productId"
               class="flex min-w-0"
             >
-              <WishlistItem :product="product" />
+              <WishlistItem v-if="item.product" :product="item.product" />
+              <WishlistUnavailableItem v-else :product-id="item.productId" />
             </li>
           </ul>
           <div class="flex justify-center pt-2.5">
