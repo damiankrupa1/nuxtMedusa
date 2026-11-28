@@ -44,8 +44,9 @@ What the storefront expects from Payload for the draft preview (the storefront s
   - `helpLinks`, `worldLinks`, `legalLinks` — each an array of `{ label: text (localized), url: text }`.
   - `contact` — group `{ email: text, phone: text, hours: text (localized) }`, all **optional**: an empty one is left out of the footer, and the block is hidden when none is entered.
   - `social` — group `{ handle: text }`, **optional** (hidden when empty).
-- **Consumed by**: `useFetchFooterContent()` → `app/components/app/footer/menu/help.vue`, `menu/world.vue`, `menu/brand.vue`, `copyright.vue`.
+- **Consumed by**: `useFetchFooterContent()` → `app/components/app/footer/menu/help.vue`, `menu/world.vue`, `menu/brand.vue`, `copyright.vue`; `contact` also by the information pages (`InfoContact`, `app/components/info/contact.vue`: the closing "Any questions?" block of the help pages and the careers page's application e-mail, hidden without it).
 - **Type**: `CmsFooterContent` in `app/types/cms.ts`.
+- **URLs to enter** (#107; the seed still has `URL_PLACEHOLDER`), country-relative like every CMS URL: `helpLinks` → `/help/shipping-and-payments`, `/help/returns`, `/help/size-guide`, `/help/track-order`, `/help/faq`; `worldLinks` → `/about`, `/studio`, `/journal`, `/materials-and-care`, `/careers` (the list is `INFO_PAGES` in `app/utils/info-pages.ts`). `legalLinks` have no pages yet (separate issue).
 
 ## `StudioStory` (Global) — implemented
 
@@ -67,7 +68,7 @@ What the storefront expects from Payload for the draft preview (the storefront s
 
 - **Slug**: `journal-section`
 - **Fields**: `eyebrow`, `heading`, `viewAllLabel` — localized text; `viewAllUrl` — text; `articles` — array (fixed at 3 today) of `{ category: text (localized), readingTime: text (localized), title: text (localized), summary: text (localized), image: upload relationship to Media, url: text }`.
-- **Consumed by**: `useFetchJournalSection()` → `app/components/home/journal.vue`.
+- **Consumed by**: `useFetchJournalSection()` → `app/components/home/journal.vue` and the journal page (`/journal`, #107), both with `AppJournalCard`; the page lists the same `articles` and leaves the list out without the Global. Point `viewAllUrl` at `/journal`.
 - **Type**: `CmsJournalSection` in `app/types/cms.ts`.
 - **Note**: deliberately a Global with an array field, not a `JournalArticles` Collection — the home page only ever shows a fixed curated set of cards, not a paginated/browsable blog. If a real article-per-page blog is wanted later, that's a bigger, separate feature (a true `Collection` with slugs and detail pages) and should replace this, not extend it.
 
