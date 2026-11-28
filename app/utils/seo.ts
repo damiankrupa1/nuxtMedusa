@@ -1,6 +1,7 @@
 // Imported explicitly (not auto-imported): server/api/__sitemap__ uses this
 // file as well, and Nitro doesn't auto-import app/utils
 import { getLocaleFromCountryCode } from '~/utils/locale'
+import { getIndexableInfoPagePaths } from '~/utils/info-pages'
 import type {
   CatalogSitemapInput,
   CountryLinksInput,
@@ -110,7 +111,8 @@ function toItemUrls(
     }))
 }
 
-// The indexable catalog pages of every country: home, store, and one page per
+// The indexable pages of every country: home, store, the published
+// information pages (a draft is left out, see INFO_PAGES), and one page per
 // product, category and collection. Paths are relative; @nuxtjs/sitemap
 // prefixes them with the site URL.
 export function buildCatalogSitemapUrls({
@@ -118,10 +120,12 @@ export function buildCatalogSitemapUrls({
   products,
   categories,
   collections,
+  infoPagePaths = getIndexableInfoPagePaths(),
 }: CatalogSitemapInput): SitemapUrl[] {
   return [...new Set(countryCodes)].flatMap((countryCode) => [
     { loc: toCountryPath(countryCode, '/') },
     { loc: toCountryPath(countryCode, '/store') },
+    ...infoPagePaths.map((path) => ({ loc: toCountryPath(countryCode, path) })),
     ...toItemUrls(countryCode, '/products', products),
     ...toItemUrls(countryCode, '/categories', categories),
     ...toItemUrls(countryCode, '/collections', collections),

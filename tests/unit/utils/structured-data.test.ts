@@ -1,7 +1,11 @@
 import type { StoreProduct } from '@medusajs/types'
 import { describe, expect, it } from 'vitest'
 
-import { buildProductJsonLd, serializeJsonLd } from '~/utils/structured-data'
+import {
+  buildFaqPageJsonLd,
+  buildProductJsonLd,
+  serializeJsonLd,
+} from '~/utils/structured-data'
 
 const URL = 'https://shop.example.com/pl/products/shorts'
 
@@ -106,6 +110,45 @@ describe('buildProductJsonLd', () => {
 
     expect(jsonLd).not.toHaveProperty('description')
     expect(jsonLd).not.toHaveProperty('image')
+  })
+})
+
+describe('buildFaqPageJsonLd', () => {
+  it('maps every question with its answer', () => {
+    expect(
+      buildFaqPageJsonLd([
+        { question: 'How can I pay?', answer: 'By card or BLIK.' },
+        { question: 'Do I need an account?', answer: 'No.' },
+      ]),
+    ).toEqual({
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'How can I pay?',
+          acceptedAnswer: { '@type': 'Answer', text: 'By card or BLIK.' },
+        },
+        {
+          '@type': 'Question',
+          name: 'Do I need an account?',
+          acceptedAnswer: { '@type': 'Answer', text: 'No.' },
+        },
+      ],
+    })
+  })
+
+  it('leaves out a question without an answer', () => {
+    expect(
+      buildFaqPageJsonLd([
+        { question: 'How can I pay?', answer: '' },
+        { question: 'Do I need an account?', answer: 'No.' },
+      ])?.mainEntity,
+    ).toHaveLength(1)
+  })
+
+  it('returns null without questions', () => {
+    expect(buildFaqPageJsonLd([])).toBeNull()
   })
 })
 

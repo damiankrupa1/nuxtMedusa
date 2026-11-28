@@ -21,38 +21,11 @@ const { data: journalSection } = useFetchJournalSection()
     </div>
 
     <div class="grid grid-cols-1 gap-7 sm:grid-cols-3">
-      <AppLink
+      <AppJournalCard
         v-for="article in journalSection.articles"
         :key="article.title"
-        :to="article.url"
-        class="flex flex-col gap-[17px]"
-      >
-        <div class="h-[284px] w-full overflow-hidden">
-          <NuxtImg
-            :src="article.image.url"
-            :alt="article.image.alt"
-            sizes="100vw sm:33vw"
-            class="size-full object-cover"
-            loading="lazy"
-          />
-        </div>
-        <div class="flex items-start justify-between text-color-muted">
-          <p class="text-[9px]">{{ article.category }}</p>
-          <p class="text-[10px]">{{ article.readingTime }}</p>
-        </div>
-        <div class="flex items-start gap-5">
-          <p class="flex-1 font-serif text-[29px] leading-[1.1] text-color-ink">
-            {{ article.title }}
-          </p>
-          <UIcon
-            name="i-lucide-arrow-up-right"
-            class="size-[18px] shrink-0 text-color-ink"
-          />
-        </div>
-        <p class="text-xs leading-[1.6] text-color-muted">
-          {{ article.summary }}
-        </p>
-      </AppLink>
+        :article="article"
+      />
     </div>
   </section>
 </template>

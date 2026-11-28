@@ -17,7 +17,7 @@ Entries are added as each home page section is implemented.
 ## Footer: help, world and legal link columns — wired to Payload
 
 - **Needs**: Figma's footer has three static columns beyond the brand/contact block — "Help" (shipping & payments, returns, size guide, order tracking, FAQ), "The Fashion world" (about, studio, journal, materials & care, careers), and a legal links row (terms, privacy, cookies, accessibility).
-- **Now**: `app/components/app/footer/menu/help.vue`, `menu/world.vue` and `copyright.vue` read `useFetchFooterContent()` (Payload `FooterContent` global); a column or the legal row is not rendered without data. As with the header nav, the destination pages (support/FAQ, about/studio, journal, legal) still don't exist — Payload only supplies labels/URLs.
+- **Now**: `app/components/app/footer/menu/help.vue`, `menu/world.vue` and `copyright.vue` read `useFetchFooterContent()` (Payload `FooterContent` global); a column or the legal row is not rendered without data. The help and world destinations exist since #107 (`INFO_PAGES` in `app/utils/info-pages.ts`: `/help/shipping-and-payments`, `/help/returns`, `/help/size-guide`, `/help/track-order`, `/help/faq`, `/about`, `/studio`, `/journal`, `/materials-and-care`, `/careers`), as drafts with their copy in i18n; the owner still has to enter those URLs in Payload (the seed has `URL_PLACEHOLDER`). The legal pages still don't exist.
 
 ## Footer: brand contact details and social handle — wired to Payload
 
@@ -52,4 +52,4 @@ Entries are added as each home page section is implemented.
 ## Home: journal / editorial articles — wired to Payload
 
 - **Needs**: 3 blog-style article cards (category, reading time, title, summary, photo) linking to full articles.
-- **Now**: `app/components/home/journal.vue` reads `useFetchJournalSection()` (Payload `JournalSection` global — a fixed-size curated list, not a paginated blog collection); the section is not rendered without data. The section still has `id="journal"`. Article `url`s still have nowhere real to point until actual article pages/routes exist — Payload only supplies the label/URL per card, same gap as the header nav and footer link columns.
+- **Now**: `app/components/home/journal.vue` reads `useFetchJournalSection()` (Payload `JournalSection` global — a fixed-size curated list, not a paginated blog collection); the section is not rendered without data. The section still has `id="journal"`. Article `url`s still have nowhere real to point until actual article pages/routes exist — Payload only supplies the label/URL per card. The journal page (`/journal`, #107) lists the same cards (`AppJournalCard`) and is a target for `viewAllUrl`, but it is no blog either: with three curated articles it is thin, and individual article pages would need a `JournalArticles` collection.

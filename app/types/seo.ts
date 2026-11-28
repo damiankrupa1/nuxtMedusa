@@ -40,6 +40,9 @@ export type CatalogSitemapInput = {
   products: SitemapCatalogItem[]
   categories: SitemapCatalogItem[]
   collections: SitemapCatalogItem[]
+  // Published information pages, relative to the country (default: the
+  // indexable ones of INFO_PAGES)
+  infoPagePaths?: string[]
 }
 
 export type SchemaAvailability = 'InStock' | 'OutOfStock' | 'BackOrder'
