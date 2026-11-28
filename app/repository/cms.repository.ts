@@ -5,6 +5,8 @@ import type {
   CmsCategoryTiles,
   CmsFooterContent,
   CmsGlobalSlug,
+  CmsInfoPage,
+  CmsInfoPageSlug,
   CmsJournalSection,
   CmsNavigation,
   CmsShopTheLook,
@@ -16,6 +18,7 @@ import {
   cmsCampaignSlidesSchema,
   cmsCategoryTilesSchema,
   cmsFooterContentSchema,
+  cmsInfoPageSchema,
   cmsJournalSectionSchema,
   cmsNavigationSchema,
   cmsShopTheLookSchema,
@@ -235,6 +238,15 @@ export function cmsRepository() {
         1,
         preview,
       )
+    },
+    // `null` for a page with no published copy (Payload's `{}`) as well as for
+    // a failure: either way the page answers 404, there is no fallback.
+    async fetchInfoPage(
+      slug: CmsInfoPageSlug,
+      locale: string,
+      preview?: CmsPreviewRequest,
+    ): Promise<CmsInfoPage | null> {
+      return fetchGlobal(slug, cmsInfoPageSchema, locale, 0, preview)
     },
   }
 }

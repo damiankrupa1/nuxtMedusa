@@ -1,12 +1,14 @@
 <script setup lang="ts">
-// Information page (#107): route, status and sections in INFO_PAGES
-// (app/utils/info-pages.ts), copy in i18n under `pages.trackOrder`. There is
-// no order lookup here on purpose: a guest lookup needs backend support.
+// Information page (#107, #121): route, status and structure in INFO_PAGES
+// (app/utils/info-pages.ts), copy in the page's Payload global. A page with
+// no published copy answers 404 (see useInfoPage()).
 definePageMeta({ cdnCache: true, prefooter: true })
 
-useInfoPageSeo('trackOrder')
+const { content, ready, notFoundWhenMissing } = useInfoPage('trackOrder')
+await ready
+notFoundWhenMissing()
 </script>
 
 <template>
-  <InfoPage id="trackOrder" />
+  <InfoPage id="trackOrder" :content="content" />
 </template>

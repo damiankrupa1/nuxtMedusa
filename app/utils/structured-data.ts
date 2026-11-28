@@ -56,7 +56,7 @@ export function buildProductJsonLd(
 }
 
 // schema.org FAQPage for the FAQ page, from the questions it shows. Only a
-// published page may render it (useInfoPageSeo): a draft's answers are not
+// published page may render it (useInfoPage): a draft's answers are not
 // reviewed yet. Null without questions.
 export function buildFaqPageJsonLd(entries: FaqEntry[]): FaqPageJsonLd | null {
   const questions = entries.filter((entry) => entry.question && entry.answer)

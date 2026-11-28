@@ -3,6 +3,8 @@ import type {
   CmsCampaignSlides,
   CmsCategoryTiles,
   CmsFooterContent,
+  CmsInfoPage,
+  CmsInfoPageSlug,
   CmsJournalSection,
   CmsNavigation,
   CmsStudioStory,
@@ -103,6 +105,16 @@ export const useFetchCampaignSlides = () => {
   return useCmsAsyncData<CmsCampaignSlides>(
     `cms:campaign-slides:${locale.value}`,
     async (preview) => await fetchCampaignSlides(locale.value, preview),
+  )
+}
+
+export const useFetchInfoPage = (slug: CmsInfoPageSlug) => {
+  const { locale } = useI18n()
+  const { fetchInfoPage } = cmsRepository()
+
+  return useCmsAsyncData<CmsInfoPage>(
+    `cms:${slug}:${locale.value}`,
+    async (preview) => await fetchInfoPage(slug, locale.value, preview),
   )
 }
 
