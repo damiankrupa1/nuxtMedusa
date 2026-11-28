@@ -20,7 +20,148 @@ export const payloadImage = {
 
 const link = (label: string, url: string) => ({ id: `row-${url}`, label, url })
 
+// An information page (#121) as Payload sends it, with row ids on sections and
+// blocks next to the contract fields
+type InfoBlockFixture = { blockType: string } & Record<string, unknown>
+
+const infoBlock = (block: InfoBlockFixture, index = 0) => ({
+  id: `block-${index}`,
+  ...block,
+})
+
+const infoSection = (
+  anchor: string,
+  heading: string,
+  blocks: InfoBlockFixture[],
+) => ({
+  id: `section-${anchor}`,
+  anchor,
+  heading,
+  blocks: blocks.map(infoBlock),
+})
+
+const infoPage = (
+  title: string,
+  sections: ReturnType<typeof infoSection>[],
+  heading = `${title}, in short`,
+) => ({
+  ...payloadMeta,
+  title,
+  description: `About: ${title.toLowerCase()}.`,
+  eyebrow: 'HELP',
+  heading,
+  lead: `What to know about ${title.toLowerCase()}.`,
+  sections,
+  _status: 'published',
+})
+
+const text = (value: string) => ({ blockType: 'text', text: value })
+const items = (...values: string[]) =>
+  values.map((value, index) => ({ id: `item-${index}`, text: value }))
+const simpleInfoPage = (title: string) =>
+  infoPage(title, [infoSection('overview', 'Overview', [text('Details.')])])
+
+// Payload answers `{}` for a global that has no published version, like the
+// four legal pages until the owner has written them
+export const payloadInfoPages = {
+  'info-shipping': infoPage('Delivery and payments', [
+    infoSection('delivery', 'Delivery', [
+      text('We deliver with InPost.'),
+      { blockType: 'list', ordered: false, items: items('Parcel locker') },
+    ]),
+  ]),
+  'info-returns': infoPage('Returns and complaints', [
+    infoSection('withdrawal', 'Returns: withdrawing from the contract', [
+      text('You can withdraw from the contract within 14 days.'),
+      {
+        blockType: 'placeholder',
+        text: 'The return address will be added soon.',
+      },
+    ]),
+    infoSection('steps', 'How to return a product', [
+      {
+        blockType: 'list',
+        ordered: true,
+        items: items('Write to us', 'Pack the product'),
+      },
+    ]),
+    infoSection('refund', 'Refunds', [
+      {
+        blockType: 'list',
+        ordered: false,
+        items: items('Same payment method'),
+      },
+    ]),
+    infoSection('complaints', 'Complaints', [
+      text('We answer within 14 days.'),
+    ]),
+  ]),
+  'info-size-guide': infoPage('Size guide', [
+    infoSection('table', 'Size table', [
+      text('Approximate measurements.'),
+      { blockType: 'sizeTable' },
+    ]),
+  ]),
+  'info-track-order': infoPage('Track your order', [
+    infoSection('account', 'Have an account?', [
+      text('Sign in to see your orders.'),
+      { blockType: 'link', label: 'Go to your account', to: '/account' },
+    ]),
+  ]),
+  'info-faq': infoPage('Frequently asked questions', [
+    infoSection('orders', 'Orders', [
+      {
+        blockType: 'faq',
+        items: [
+          {
+            id: 'q-1',
+            question: 'How do I place an order?',
+            answer: 'Add a product to the cart and check out.',
+          },
+          {
+            id: 'q-2',
+            question: 'Can I change an order?',
+            answer: 'Write to us before it ships.',
+          },
+        ],
+      },
+    ]),
+    infoSection('payments', 'Payments', [
+      {
+        blockType: 'faq',
+        items: [
+          {
+            id: 'q-3',
+            question: 'How can I pay?',
+            answer: 'By card, BLIK or Przelewy24.',
+          },
+        ],
+      },
+    ]),
+  ]),
+  'info-about': simpleInfoPage('About us'),
+  'info-studio': simpleInfoPage('Fashion Studio'),
+  'info-journal': infoPage('Journal', [
+    infoSection('articles', 'Latest articles', [{ blockType: 'journal' }]),
+  ]),
+  'info-materials': infoPage('Materials and care', [
+    infoSection('wool', 'Wool', [text('Air it more, wash it less.')]),
+    infoSection('linen', 'Linen', [text('Wash it cool.')]),
+  ]),
+  'info-careers': infoPage('Careers', [
+    infoSection('apply', 'How to apply', [
+      text('Write to us.'),
+      { blockType: 'contact' },
+    ]),
+  ]),
+  'info-terms': {},
+  'info-privacy': {},
+  'info-cookies': {},
+  'info-accessibility': {},
+}
+
 export const payloadGlobals = {
+  ...payloadInfoPages,
   navigation: {
     ...payloadMeta,
     primaryNav: [link('New in', '/store')],

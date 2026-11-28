@@ -1,9 +1,10 @@
-// Information pages linked from the footer (#107): the help pages and the
-// "Świat Fashion" pages. Their copy lives in i18n (`pages.<id>.*`) for now;
-// the shape below is kept uniform (a page with sections, a section with
-// blocks) so that moving it to Payload later changes the source, not the
-// markup. The registry with every page's path and status is INFO_PAGES in
-// app/utils/info-pages.ts.
+import type { CmsInfoPageSlug } from '~/types/cms'
+
+// Information pages linked from the footer (#107, #121): the help pages, the
+// "Świat Fashion" pages and the legal pages. The storefront keeps their
+// structure (which pages exist, route, footer group, status), in INFO_PAGES
+// (app/utils/info-pages.ts); the copy is a Payload global per page
+// (CMS_INFO_PAGE_SLUGS in app/types/cms.ts).
 
 // A draft page is rendered, but `noindex` and left out of the sitemap, until
 // the owner has reviewed its facts and switches it to `published`.
@@ -19,12 +20,12 @@ export type InfoPageStatus =
 export const INFO_PAGE_GROUP = {
   help: 'help',
   world: 'world',
+  legal: 'legal',
 } as const
 
 export type InfoPageGroup =
   (typeof INFO_PAGE_GROUP)[keyof typeof INFO_PAGE_GROUP]
 
-// The page ids double as the i18n key segment: `pages.<id>.*`
 export const INFO_PAGE_IDS = [
   'shippingAndPayments',
   'returns',
@@ -36,43 +37,18 @@ export const INFO_PAGE_IDS = [
   'journal',
   'materialsAndCare',
   'careers',
+  'terms',
+  'privacy',
+  'cookies',
+  'accessibility',
 ] as const
 
 export type InfoPageId = (typeof INFO_PAGE_IDS)[number]
 
-// One block of a section. Every `key` is relative to the section's own i18n
-// key (`pages.<page>.sections.<section>.`), so the definition stays short.
-export type InfoBlock =
-  // A paragraph
-  | { kind: 'text'; key: string }
-  // A paragraph that stands in for a fact the owner has to supply (a return
-  // address, a price, a vacancy). It is shown in neutral wording and marked
-  // `TODO(owner)` where it is defined; never replace it with an invented
-  // value, only with the owner's.
-  | { kind: 'placeholder'; key: string }
-  // A bulleted or numbered list: `<key>.1` ... `<key>.<items>`
-  | { kind: 'list'; key: string; items: number; ordered?: boolean }
-  // A link to another page of the store (a path relative to the country)
-  | { kind: 'link'; key: string; to: string }
-  // The size table shared with the product page (AppSizeTable)
-  | { kind: 'sizeTable' }
-  // Questions and answers: `<key>.<question>.q` / `.a`, shown as an
-  // accordion (InfoFaq) and, on a published page, as FAQPage JSON-LD
-  | { kind: 'faq'; key: string; questions: string[] }
-  // The contact details from the Payload footer global (hidden without them)
-  | { kind: 'contact' }
-  // The articles of the Payload journal global (hidden without them)
-  | { kind: 'journal' }
-
-export type InfoSection = {
-  // Anchor of the section and its i18n key: `pages.<page>.sections.<id>`,
-  // whose `heading` is the section's h2
-  id: string
-  blocks: InfoBlock[]
-}
-
 export type InfoPage = {
   id: InfoPageId
+  // The Payload global that holds the page's copy
+  slug: CmsInfoPageSlug
   // Route under /[countryCode], as the owner enters it in the footer
   path: string
   group: InfoPageGroup
@@ -82,10 +58,9 @@ export type InfoPage = {
   // Ends the page with the shared "Any questions?" block and the contact
   // details from the Payload footer (`pages.info.contact.*`)
   contact?: boolean
-  sections: InfoSection[]
 }
 
-// A question with its answer, already translated
+// A question with its answer
 export type FaqEntry = {
   question: string
   answer: string

@@ -1,18 +1,24 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  CMS_INFO_PAGE_SLUGS,
   cmsBrandsSchema,
   cmsCampaignSlidesSchema,
   cmsCategoryTilesSchema,
   cmsFooterContentSchema,
   cmsGlobalQuerySchema,
   cmsImageSchema,
+  cmsInfoPageSchema,
   cmsJournalSectionSchema,
   cmsNavigationSchema,
   cmsShopTheLookSchema,
   cmsStudioStorySchema,
 } from '~/types/cms'
-import { payloadGlobals, payloadImage } from '~~/tests/fixtures/cms'
+import {
+  payloadGlobals,
+  payloadImage,
+  payloadInfoPages,
+} from '~~/tests/fixtures/cms'
 
 describe('cms global schemas', () => {
   it.each([
@@ -49,6 +55,123 @@ describe('cms global schemas', () => {
     })
 
     expect(result.success).toBe(false)
+  })
+})
+
+describe('cmsInfoPageSchema', () => {
+  const returns = payloadInfoPages['info-returns']
+  const section = returns.sections[0]!
+
+  it.each(CMS_INFO_PAGE_SLUGS)(
+    'accepts the %s global as Payload sends it',
+    (slug) => {
+      expect(cmsInfoPageSchema.safeParse(payloadInfoPages[slug]).success).toBe(
+        true,
+      )
+    },
+  )
+
+  it('reads the contract fields only, without Payload ids and meta', () => {
+    const page = cmsInfoPageSchema.parse(returns)
+
+    expect(page).toEqual({
+      title: 'Returns and complaints',
+      description: 'About: returns and complaints.',
+      eyebrow: 'HELP',
+      heading: 'Returns and complaints, in short',
+      lead: 'What to know about returns and complaints.',
+      sections: expect.any(Array),
+    })
+    expect(page?.sections[0]).toEqual({
+      anchor: 'withdrawal',
+      heading: 'Returns: withdrawing from the contract',
+      blocks: [
+        { blockType: 'text', text: expect.any(String) },
+        { blockType: 'placeholder', text: expect.any(String) },
+      ],
+    })
+  })
+
+  it.each([{}, { id: 1, globalType: 'info-terms' }])(
+    'reads %j (no published copy) as no page, not as an error',
+    (empty) => {
+      expect(cmsInfoPageSchema.parse(empty)).toBeNull()
+    },
+  )
+
+  it('reads a list without `ordered` as a bulleted list', () => {
+    const page = cmsInfoPageSchema.parse({
+      ...returns,
+      sections: [
+        {
+          ...section,
+          blocks: [
+            { blockType: 'list', ordered: null, items: [{ text: 'A' }] },
+          ],
+        },
+      ],
+    })
+
+    expect(page?.sections[0]?.blocks[0]).toEqual({
+      blockType: 'list',
+      ordered: false,
+      items: [{ text: 'A' }],
+    })
+  })
+
+  it.each([
+    ['a missing heading', { heading: undefined }],
+    ['a null lead', { lead: null }],
+    ['sections that are not a list', { sections: {} }],
+    [
+      'an unknown block type',
+      { sections: [{ ...section, blocks: [{ blockType: 'video' }] }] },
+    ],
+    [
+      'a text block without text',
+      { sections: [{ ...section, blocks: [{ blockType: 'text' }] }] },
+    ],
+    [
+      'a section anchor that is not a plain id',
+      { sections: [{ ...section, anchor: 'a b"><x' }] },
+    ],
+    ['duplicate section anchors', { sections: [section, section] }],
+  ])('rejects a page with %s', (_case, change) => {
+    expect(cmsInfoPageSchema.safeParse({ ...returns, ...change }).success).toBe(
+      false,
+    )
+  })
+
+  it.each(['/account', '/help/returns#refund', '/'])(
+    'accepts the link target %s',
+    (to) => {
+      expect(
+        cmsInfoPageSchema.safeParse({
+          ...returns,
+          sections: [
+            { ...section, blocks: [{ blockType: 'link', label: 'Go', to }] },
+          ],
+        }).success,
+      ).toBe(true)
+    },
+  )
+
+  it.each([
+    'https://evil.example.com',
+    '//evil.example.com',
+    'javascript:alert(1)',
+    'account',
+    '/a b',
+    '',
+  ])('rejects the link target %p', (to) => {
+    expect(
+      cmsInfoPageSchema.safeParse({
+        ...returns,
+        sections: [
+          { ...section, blocks: [{ blockType: 'link', label: 'Go', to }] },
+        ],
+      }).success,
+    ).toBe(false)
   })
 })
 

@@ -200,6 +200,70 @@ describe('cms repository', () => {
     expect(fetchMock).not.toHaveBeenCalled()
   })
 
+  describe('information pages', () => {
+    it('fetches the page global at depth 0 and keeps the contract fields', async () => {
+      fetchMock.mockResolvedValue(payloadGlobals['info-faq'])
+
+      const result = await cmsRepository().fetchInfoPage('info-faq', 'pl')
+
+      expect(fetchMock).toHaveBeenCalledWith('/api/cms/info-faq', {
+        query: { locale: 'pl', depth: 0 },
+      })
+      expect(result?.title).toBe('Frequently asked questions')
+      expect(result?.sections.map(({ anchor }) => anchor)).toEqual([
+        'orders',
+        'payments',
+      ])
+      expect(result).not.toHaveProperty('_status')
+      expect(result).not.toHaveProperty('globalType')
+    })
+
+    it('answers null, without reporting, for a page with no published copy', async () => {
+      fetchMock.mockResolvedValue({})
+
+      const result = await cmsRepository().fetchInfoPage('info-terms', 'en')
+
+      expect(result).toBeNull()
+      expect(captureError).not.toHaveBeenCalled()
+    })
+
+    it('answers null and reports once a page that does not match the contract', async () => {
+      fetchMock.mockResolvedValue({
+        ...payloadGlobals['info-faq'],
+        sections: [{ anchor: 'orders', heading: 'Orders', blocks: [{}] }],
+      })
+
+      expect(await cmsRepository().fetchInfoPage('info-faq', 'en')).toBeNull()
+      expect(await cmsRepository().fetchInfoPage('info-faq', 'en')).toBeNull()
+
+      expect(captureError).toHaveBeenCalledTimes(1)
+      expect(captureError).toHaveBeenCalledWith(
+        expect.any(Error),
+        expect.objectContaining({
+          source: 'payload',
+          global: 'info-faq',
+          type: 'invalid_response',
+        }),
+      )
+    })
+
+    it('fetches the draft of a page from the uncached preview route', async () => {
+      const token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.c2lnbmF0dXJl'
+      fetchMock.mockResolvedValue(payloadGlobals['info-faq'])
+
+      const result = await cmsRepository().fetchInfoPage('info-faq', 'pl', {
+        token,
+      })
+
+      expect(fetchMock).toHaveBeenCalledWith('/api/preview/cms/info-faq', {
+        query: { locale: 'pl', depth: 0 },
+        headers: { 'x-preview-token': token },
+        cache: 'no-store',
+      })
+      expect(result).not.toBeNull()
+    })
+  })
+
   describe('in draft preview mode', () => {
     const token = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.c2lnbmF0dXJl'
 

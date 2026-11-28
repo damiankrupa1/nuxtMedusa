@@ -1,12 +1,14 @@
 <script setup lang="ts">
-// Information page (#107): route, status and sections in INFO_PAGES
-// (app/utils/info-pages.ts), copy in i18n under `pages.faq`. The FAQPage
-// JSON-LD is rendered by useInfoPageSeo() once the page is published.
+// Information page (#107, #121): route, status and structure in INFO_PAGES
+// (app/utils/info-pages.ts), copy in the page's Payload global. A page with
+// no published copy answers 404 (see useInfoPage()).
 definePageMeta({ cdnCache: true, prefooter: true })
 
-useInfoPageSeo('faq')
+const { content, ready, notFoundWhenMissing } = useInfoPage('faq')
+await ready
+notFoundWhenMissing()
 </script>
 
 <template>
-  <InfoPage id="faq" />
+  <InfoPage id="faq" :content="content" />
 </template>

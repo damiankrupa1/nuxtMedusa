@@ -4,23 +4,31 @@ import { expect, test } from '~~/tests/e2e/support/fixtures'
 import {
   CMS_GLOBAL_SLUGS,
   CMS_GLOBAL_MAX_DEPTH,
+  CMS_INFO_PAGE_SLUGS,
   cmsBrandsSchema,
   cmsCampaignSlidesSchema,
   cmsCategoryTilesSchema,
   cmsFooterContentSchema,
+  cmsInfoPageSchema,
   cmsJournalSectionSchema,
   cmsNavigationSchema,
   cmsShopTheLookSchema,
   cmsStudioStorySchema,
 } from '~/types/cms'
-import type { CmsGlobalSlug } from '~/types/cms'
+import type { CmsGlobalSlug, CmsInfoPageSlug } from '~/types/cms'
 import type { StubRequest } from '~~/tests/e2e/support/payload-stub'
 
 // The storefront's same-origin Payload proxy (server/api/cms/[slug].get.ts),
 // backed by the local Payload stub the app is built against. No Medusa needed.
 
+// The fourteen information pages are parsed with one schema
+const infoPageSchemas = Object.fromEntries(
+  CMS_INFO_PAGE_SLUGS.map((slug) => [slug, cmsInfoPageSchema]),
+) as Record<CmsInfoPageSlug, z.ZodType>
+
 // The schema each global is parsed with in cms.repository.ts
 const schemas = {
+  ...infoPageSchemas,
   navigation: cmsNavigationSchema,
   'footer-content': cmsFooterContentSchema,
   'studio-story': cmsStudioStorySchema,

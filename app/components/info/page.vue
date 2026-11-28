@@ -1,12 +1,16 @@
 <script setup lang="ts">
+import type { CmsInfoPage } from '~/types/cms'
 import type { InfoPageId } from '~/types/info-page'
 import { getInfoPage } from '~/utils/info-pages'
 
-// The shared layout of the information pages (#107): breadcrumb, the h1
-// intro, an optional table of contents and the sections. No design exists
+// The shared layout of the information pages (#107, #121): breadcrumb, the h1
+// intro, an optional table of contents and the sections. The copy is the
+// page's Payload global (`content`); without it nothing is rendered, there is
+// no stand-in text (the page answers 404, see useInfoPage()). No design exists
 // for these screens; spacing follows the wishlist and store pages.
-const { id } = defineProps<{
+const { id, content } = defineProps<{
   id: InfoPageId
+  content: CmsInfoPage | null
 }>()
 
 const page = computed(() => getInfoPage(id))
@@ -20,7 +24,7 @@ const showContact = computed(
 </script>
 
 <template>
-  <div>
+  <div v-if="content">
     <UContainer class="pt-[26px]">
       <nav
         :aria-label="$t('pages.info.breadcrumb')"
@@ -30,17 +34,17 @@ const showContact = computed(
         <span aria-hidden="true">/</span>
         <span>{{ $t(`pages.info.groups.${page.group}`) }}</span>
         <span aria-hidden="true">/</span>
-        <span aria-current="page">{{ $t(`pages.${page.id}.title`) }}</span>
+        <span aria-current="page">{{ content.title }}</span>
       </nav>
 
       <AppSectionIntro
         as="h1"
         size="lg"
-        :eyebrow="$t(`pages.${page.id}.eyebrow`)"
-        :heading="$t(`pages.${page.id}.heading`)"
+        :eyebrow="content.eyebrow"
+        :heading="content.heading"
         class="max-w-[720px] pb-10 pt-8"
       >
-        {{ $t(`pages.${page.id}.lead`) }}
+        {{ content.lead }}
       </AppSectionIntro>
     </UContainer>
 
@@ -49,7 +53,7 @@ const showContact = computed(
         class="flex flex-col gap-10 border-t border-color-line pt-10 lg:flex-row lg:gap-16"
       >
         <nav
-          v-if="page.toc"
+          v-if="page.toc && content.sections.length"
           :aria-label="$t('pages.info.toc')"
           class="lg:sticky lg:top-28 lg:w-[220px] lg:shrink-0 lg:self-start"
         >
@@ -57,12 +61,12 @@ const showContact = computed(
             {{ $t('pages.info.toc') }}
           </p>
           <ul class="flex flex-col gap-2 text-[13px] leading-[1.6]">
-            <li v-for="section in page.sections" :key="section.id">
+            <li v-for="section in content.sections" :key="section.anchor">
               <a
-                :href="`#${section.id}`"
+                :href="`#${section.anchor}`"
                 class="text-color-ink underline-offset-2 outline-offset-2 hover:underline focus-visible:outline-2 focus-visible:outline-(--color-ink)"
               >
-                {{ $t(`pages.${page.id}.sections.${section.id}.heading`) }}
+                {{ section.heading }}
               </a>
             </li>
           </ul>
@@ -70,9 +74,8 @@ const showContact = computed(
 
         <div class="flex min-w-0 max-w-[720px] flex-1 flex-col gap-12">
           <InfoSection
-            v-for="section in page.sections"
-            :key="section.id"
-            :page="page"
+            v-for="section in content.sections"
+            :key="section.anchor"
             :section="section"
           />
 

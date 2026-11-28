@@ -46,7 +46,7 @@ What the storefront expects from Payload for the draft preview (the storefront s
   - `social` — group `{ handle: text }`, **optional** (hidden when empty).
 - **Consumed by**: `useFetchFooterContent()` → `app/components/app/footer/menu/help.vue`, `menu/world.vue`, `menu/brand.vue`, `copyright.vue`; `contact` also by the information pages (`InfoContact`, `app/components/info/contact.vue`: the closing "Any questions?" block of the help pages and the careers page's application e-mail, hidden without it).
 - **Type**: `CmsFooterContent` in `app/types/cms.ts`.
-- **URLs to enter** (#107; the seed still has `URL_PLACEHOLDER`), country-relative like every CMS URL: `helpLinks` → `/help/shipping-and-payments`, `/help/returns`, `/help/size-guide`, `/help/track-order`, `/help/faq`; `worldLinks` → `/about`, `/studio`, `/journal`, `/materials-and-care`, `/careers` (the list is `INFO_PAGES` in `app/utils/info-pages.ts`). `legalLinks` have no pages yet (separate issue).
+- **URLs to enter** (#107, #121; the seed still has `URL_PLACEHOLDER`), country-relative like every CMS URL: `helpLinks` → `/help/shipping-and-payments`, `/help/returns`, `/help/size-guide`, `/help/track-order`, `/help/faq`; `worldLinks` → `/about`, `/studio`, `/journal`, `/materials-and-care`, `/careers`; `legalLinks` → `/terms`, `/privacy`, `/cookies`, `/accessibility` (the list is `INFO_PAGES` in `app/utils/info-pages.ts`). A legal link leads to a 404 until that page's copy is published, so enter it then.
 
 ## `StudioStory` (Global) — implemented
 
@@ -95,6 +95,17 @@ What the storefront expects from Payload for the draft preview (the storefront s
 - **Consumed by**: `useFetchShopTheLook()` → `app/components/home/shop-the-look.vue`. Resolved against real Medusa products by `app/services/cms.service.ts`'s `getResolvedShopTheLook()` before reaching the composable — any handle that doesn't match a real product is dropped, and the matching `StoreProduct`s are attached as `products` for live price/total rendering.
 - **Type**: `CmsShopTheLook` in `app/types/cms.ts`; the resolved shape (`CmsShopTheLook & { products: StoreProduct[] }`) is `ResolvedShopTheLook` in `app/services/cms.service.ts`.
 - **Note**: Payload never stores price/stock — those always come live from the resolved Medusa products. A stale or typo'd handle just drops that product from the look instead of showing a broken price.
+
+## Information pages (14 Globals) — implemented (storefront #118, #119, #121)
+
+The copy of the footer's information pages, one Global per page from one factory in Payload (`src/globals/InfoPages.ts`, list in `src/globals/infoPageList.ts`; the full contract is in the Payload repo's `payload-backend-todo` skill, "Information pages"). The storefront keeps the **structure** (route, footer group, `status` draft/published, `toc`, `contact`) in `INFO_PAGES` (`app/utils/info-pages.ts`); Payload holds the **copy**.
+
+- **Slugs** (`CMS_INFO_PAGE_SLUGS`, `app/types/cms.ts`): `info-shipping`, `info-returns`, `info-size-guide`, `info-track-order`, `info-faq`, `info-about`, `info-studio`, `info-journal`, `info-materials`, `info-careers`, and the legal pages `info-terms`, `info-privacy`, `info-cookies`, `info-accessibility`. `INFO_PAGES[].slug` maps a route to its global.
+- **Shape** (`cmsInfoPageSchema`, fetched with `depth=0`): `{ title, description, eyebrow, heading, lead, sections: [{ anchor, heading, blocks }] }`. `anchor` is a plain id (`/^[A-Za-z][\w-]*$/`), unique per page: it is the element id, the `#fragment` and the table of contents key. `blocks` is a union on `blockType`: `text` and `placeholder` `{ text }`, `list` `{ ordered, items: [{ text }] }`, `link` `{ label, to }` (`to` is a path inside the store: starts with `/`, not `//`, no spaces), `faq` `{ items: [{ question, answer }] }`, and `sizeTable`, `contact`, `journal` with no fields (the storefront fills them from the product page's size table, the `footer-content` contact details and the `journal-section` articles). A page that doesn't match is dropped like any other global: reported once, and the page answers 404.
+- **No copy**: Payload answers `{}` before the first publication and after "Unpublish"; the four legal Globals are empty on purpose until the owner or a lawyer writes them. That parses to "no page" without a Sentry event, and the page answers 404 (no static fallback). `status` stays in the storefront: a page is `noindex` and out of the sitemap until the owner switches it to `published` in `INFO_PAGES`, and that should only happen once its copy is published in Payload.
+- **Consumed by**: `useFetchInfoPage(slug)` (cache key `cms:<slug>:${locale}`) → `useInfoPage()` → `InfoPage`/`InfoSection` in `app/components/info/`.
+- **Preview**: each slug is in `CMS_GLOBAL_SLUGS`, so `/api/preview` and `/api/preview/cms/<slug>` accept it; the Preview button opens the page's own route, and an unpublished page opens too (no 404 while previewing).
+- **Size table**: stays the product page's mock until #58; the `sizeTable` block shows it.
 
 ## Not yet implemented (see `missing-cms-content` for the product-side need)
 

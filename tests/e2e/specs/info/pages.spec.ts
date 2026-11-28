@@ -2,16 +2,31 @@ import { expect, test } from '~~/tests/e2e/support/fixtures'
 import { trackPageErrors } from '~~/tests/e2e/support/page-errors'
 import { testData } from '~~/tests/e2e/support/test-data'
 import { INFO_PAGES } from '~/utils/info-pages'
+import { payloadInfoPages } from '~~/tests/fixtures/cms'
 
-// The information pages linked from the footer (#107). They need no backend:
-// the copy is in i18n, and Payload (the stub) only adds the contact details
-// and the journal's articles. Without Medusa no region is loaded, so the
-// pages render in the default locale (English); the Polish render needs the
-// regions and is checked in the @medusa block below.
+// The information pages linked from the footer (#107, #121). They need no
+// Medusa: the copy is the page's Payload global (the stub, which answers `{}`
+// for the four legal pages, like the real Payload until the owner has written
+// them). Without Medusa no region is loaded, so the pages render in the
+// default locale (English); the Polish render needs the regions and is
+// checked in the @medusa block below.
 const country = testData.countries.primary
 
+const hasCopy = (slug: keyof typeof payloadInfoPages) =>
+  Object.keys(payloadInfoPages[slug]).length > 0
+
 test.describe('information pages', () => {
-  INFO_PAGES.forEach((page) => {
+  INFO_PAGES.filter((page) => !hasCopy(page.slug)).forEach((page) => {
+    test(`${page.path} answers 404 while Payload has no copy for it`, async ({
+      request,
+    }) => {
+      const response = await request.get(`/${country}${page.path}`)
+
+      expect(response.status()).toBe(404)
+    })
+  })
+
+  INFO_PAGES.filter((page) => hasCopy(page.slug)).forEach((page) => {
     test(`${page.path} answers 200 with one h1 and the draft gate`, async ({
       request,
     }) => {
@@ -63,9 +78,12 @@ test.describe('information pages with regions', { tag: '@medusa' }, () => {
     await gotoHydrated(`/${country}/help/returns`)
 
     await expect(page.locator('html')).toHaveAttribute('lang', 'pl')
-    // i18n/locales/pl.json: pages.returns.heading
+    // The stub answers both locales with the same copy (tests/fixtures/cms.ts)
     await expect(
-      page.getByRole('heading', { level: 1, name: 'Zwroty i reklamacje' }),
+      page.getByRole('heading', {
+        level: 1,
+        name: payloadInfoPages['info-returns'].heading,
+      }),
     ).toBeVisible()
   })
 

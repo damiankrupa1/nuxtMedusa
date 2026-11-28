@@ -4,6 +4,28 @@ import { z } from '~/utils/zod'
 // Payload globals the storefront reads. cms.repository.ts only accepts these,
 // and the server/api/cms proxy only forwards these, so a new fetcher can't be
 // added without allow-listing its global.
+// The copy of the footer's information pages, one global per page (#121): ten
+// help and "Świat Fashion" pages and four legal pages. INFO_PAGES
+// (app/utils/info-pages.ts) maps each route to its slug.
+export const CMS_INFO_PAGE_SLUGS = [
+  'info-shipping',
+  'info-returns',
+  'info-size-guide',
+  'info-track-order',
+  'info-faq',
+  'info-about',
+  'info-studio',
+  'info-journal',
+  'info-materials',
+  'info-careers',
+  'info-terms',
+  'info-privacy',
+  'info-cookies',
+  'info-accessibility',
+] as const
+
+export type CmsInfoPageSlug = (typeof CMS_INFO_PAGE_SLUGS)[number]
+
 export const CMS_GLOBAL_SLUGS = [
   'navigation',
   'footer-content',
@@ -13,6 +35,7 @@ export const CMS_GLOBAL_SLUGS = [
   'campaign-slides',
   'category-tiles',
   'shop-the-look',
+  ...CMS_INFO_PAGE_SLUGS,
 ] as const
 
 export const cmsGlobalSlugSchema = z.enum(CMS_GLOBAL_SLUGS)
@@ -212,6 +235,79 @@ export const cmsShopTheLookSchema = z.object({
 })
 
 export type CmsShopTheLook = z.infer<typeof cmsShopTheLookSchema>
+
+// An information page (#121). One schema for all fourteen globals: they come
+// from one factory in Payload. `blockType` is the block's kind; `sizeTable`,
+// `contact` and `journal` carry no fields, the storefront fills them from the
+// product page's table, the footer global and the journal global.
+//
+// Payload answers `{}` before the first publication and after "Unpublish"
+// (the four legal pages are empty on purpose until the owner writes them):
+// that is "no copy", so it parses to `null` without being reported, like a
+// missing global. Anything else that doesn't match is a contract change.
+//
+// The anchor becomes an element id and a `#fragment`, and a link's target is
+// rendered as a store link, so both are restricted to what the contract says
+// (Payload validates the same on its side).
+const cmsInfoBlockSchema = z.discriminatedUnion('blockType', [
+  z.object({ blockType: z.literal('text'), text: z.string() }),
+  // A fact only the owner knows, shown in neutral wording
+  z.object({ blockType: z.literal('placeholder'), text: z.string() }),
+  z.object({
+    blockType: z.literal('list'),
+    ordered: z
+      .boolean()
+      .nullish()
+      .transform((ordered) => ordered ?? false),
+    items: z.array(z.object({ text: z.string() })),
+  }),
+  z.object({
+    blockType: z.literal('link'),
+    label: z.string(),
+    // A path inside the store, relative to the country
+    to: z.string().regex(/^\/(?!\/)\S*$/, 'Expected a path inside the store'),
+  }),
+  z.object({
+    blockType: z.literal('faq'),
+    items: z.array(z.object({ question: z.string(), answer: z.string() })),
+  }),
+  z.object({ blockType: z.literal('sizeTable') }),
+  z.object({ blockType: z.literal('contact') }),
+  z.object({ blockType: z.literal('journal') }),
+])
+
+export type CmsInfoBlock = z.infer<typeof cmsInfoBlockSchema>
+
+const cmsInfoSectionSchema = z.object({
+  anchor: z.string().regex(/^[A-Za-z][\w-]*$/, 'Expected a plain anchor'),
+  heading: z.string(),
+  blocks: z.array(cmsInfoBlockSchema),
+})
+
+export type CmsInfoSection = z.infer<typeof cmsInfoSectionSchema>
+
+const cmsInfoPageContentSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  eyebrow: z.string(),
+  heading: z.string(),
+  lead: z.string(),
+  sections: z
+    .array(cmsInfoSectionSchema)
+    .refine(
+      (sections) =>
+        new Set(sections.map(({ anchor }) => anchor)).size === sections.length,
+      'Section anchors must be unique',
+    ),
+})
+
+export type CmsInfoPage = z.infer<typeof cmsInfoPageContentSchema>
+
+export const cmsInfoPageSchema = z.union([
+  // No copy yet: Payload's `{}`
+  z.object({ title: z.undefined().optional() }).transform((): null => null),
+  cmsInfoPageContentSchema,
+])
 
 export interface ResolvedShopTheLook extends CmsShopTheLook {
   products: StoreProduct[]

@@ -1,13 +1,14 @@
 <script setup lang="ts">
-// Information page (#107): route, status and sections in INFO_PAGES
-// (app/utils/info-pages.ts), copy in i18n under `pages.journal`. The articles
-// are the Payload `journal-section` global, the same as on the home page;
-// without it the list is left out (no stand-in articles).
+// Information page (#107, #121): route, status and structure in INFO_PAGES
+// (app/utils/info-pages.ts), copy in the page's Payload global. A page with
+// no published copy answers 404 (see useInfoPage()).
 definePageMeta({ cdnCache: true, prefooter: true })
 
-useInfoPageSeo('journal')
+const { content, ready, notFoundWhenMissing } = useInfoPage('journal')
+await ready
+notFoundWhenMissing()
 </script>
 
 <template>
-  <InfoPage id="journal" />
+  <InfoPage id="journal" :content="content" />
 </template>

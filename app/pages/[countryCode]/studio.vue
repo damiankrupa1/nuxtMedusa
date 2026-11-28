@@ -1,11 +1,14 @@
 <script setup lang="ts">
-// Information page (#107): route, status and sections in INFO_PAGES
-// (app/utils/info-pages.ts), copy in i18n under `pages.studio`.
+// Information page (#107, #121): route, status and structure in INFO_PAGES
+// (app/utils/info-pages.ts), copy in the page's Payload global. A page with
+// no published copy answers 404 (see useInfoPage()).
 definePageMeta({ cdnCache: true, prefooter: true })
 
-useInfoPageSeo('studio')
+const { content, ready, notFoundWhenMissing } = useInfoPage('studio')
+await ready
+notFoundWhenMissing()
 </script>
 
 <template>
-  <InfoPage id="studio" />
+  <InfoPage id="studio" :content="content" />
 </template>
